@@ -1,6 +1,6 @@
 <?php
 
-class TeacherDb
+class EmplyeeDb
 {
     private $con;
  
@@ -14,7 +14,7 @@ class TeacherDb
 
     public function getAll($faculty_id)
     {
-        $sql = "SELECT id, name, designation, status, phone, linked_in, address, email, department, fb_link, image_url FROM " . TEACHER_TABLE;
+        $sql = "SELECT id, name, designation, department, phone, address, image_url FROM " . EMPLOYEE_TABLE;
         //condition
         $sql = $sql . " WHERE faculty_id = $faculty_id AND deleted = 0";
         //sorting
@@ -23,23 +23,19 @@ class TeacherDb
         // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->bind_result($id, $name, $designation, $status, $phone, $linked_in, $address, $email, $department, $fb_link, $image_url);
+        $stmt->bind_result($id, $name, $designation, $department, $phone, $address, $image_url);
     
         $list = array();
         
         while ($stmt->fetch()) {
             $item = array();
             $item['id'] = $id;
+            $item['faculty_id'] = $faculty_id;
             $item['name'] = $name;
             $item['designation'] = $designation;
-            $item['status'] = $status;
-            $item['phone'] = $phone;
-            $item['linked_in'] = $linked_in;
-            $item['address'] = $address;
-            $item['email'] = $email;
             $item['department'] = $department;
-            $item['faculty_id'] = $faculty_id;
-            $item['fb_link'] = $fb_link;
+            $item['phone'] = $phone;
+            $item['address'] = $address;
             $item['image_url'] = $image_url;
           
             array_push($list, $item);
@@ -50,37 +46,33 @@ class TeacherDb
 
     public function get($id)
     {
-        $sql = "SELECT name, designation, status, phone, linked_in, address, email, department, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE; 
+        $sql = "SELECT faculty_id, name, designation, department, phone, address, image_url FROM " . EMPLOYEE_TABLE; 
         //condition
         $sql = $sql . " WHERE id = $id AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->bind_result($name, $designation, $status, $phone, $linked_in, $address, $email, $department, $faculty_id, $fb_link, $image_url);
+        $stmt->bind_result($faculty_id, $name, $designation, $department, $phone, $address, $image_url);
 
         $item = array();
         while ($stmt->fetch()) {
             $item['id'] = $id;
+            $item['faculty_id'] = $faculty_id;
             $item['name'] = $name;
             $item['designation'] = $designation;
-            $item['status'] = $status;
-            $item['phone'] = $phone;
-            $item['linked_in'] = $linked_in;
-            $item['address'] = $address;
-            $item['email'] = $email;
             $item['department'] = $department;
-            $item['faculty_id'] = $faculty_id;
-            $item['fb_link'] = $fb_link;
+            $item['phone'] = $phone;
+            $item['address'] = $address;
             $item['image_url'] = $image_url;
         }
  
         return $item;
     }
 
-    public function insert($name, $designation, $department, $faculty_id)
+    public function insert($faculty_id, $name, $designation, $department, $phone, $address, $image_url)
     {
-        $sql = "INSERT INTO " . TEACHER_TABLE . "(name, designation, department, faculty_id) 
-        VALUES ('$name', '$designation','$department', '$faculty_id')";
+        $sql = "INSERT INTO " . EMPLOYEE_TABLE . "(faculty_id, name, designation, department, phone, address, image_url) 
+        VALUES ('$faculty_id', '$name', '$designation', '$department', '$phone', '$address', '$image_url')";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
@@ -89,7 +81,7 @@ class TeacherDb
 
     public function delete($id)
     {
-        $sql = "UPDATE " . TEACHER_TABLE . " set deleted =  1 WHERE id = '$id'";
+        $sql = "UPDATE " . EMPLOYEE_TABLE . " set deleted =  1 WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute();
