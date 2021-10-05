@@ -31,7 +31,7 @@ class SliderDb
             $slider = array();
             $slider['id'] = $id;
             $slider['title'] = $title;
-            $slider['image_url'] = $image_url;
+            $slider['image_url'] = BASE_URL . SLIDER_PATH .$image_url;
           
             array_push($sliders, $slider);
         }
@@ -53,7 +53,7 @@ class SliderDb
         while ($stmt->fetch()) {
             $slider['id'] = $id;
             $slider['title'] = $title;
-            $slider['image_url'] = $image_url;
+            $slider['image_url'] = BASE_URL . SLIDER_PATH .$image_url;
         }
  
         return $slider;
