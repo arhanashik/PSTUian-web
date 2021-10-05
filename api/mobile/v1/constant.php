@@ -17,7 +17,7 @@ define('STUDENT_TABLE', 'student');
 define('DONATION_TABLE', 'donation');
 define('INFO_TABLE', 'info');
 
-define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/api/dev/');
+define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/api/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
