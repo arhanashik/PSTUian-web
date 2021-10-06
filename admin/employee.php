@@ -1,24 +1,22 @@
 <?php include('./header.php'); ?>
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Batch</h1>
+        <h1 class="mt-4">Employee</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item active">Batch</li>
+            <li class="breadcrumb-item active">Employee</li>
         </ol>
         <div class="mb-4">
         <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Batch
+        Add New Employee
         </button>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Session</th>
+                        <th scope="col">Designation</th>
                         <th scope="col">Faculty</th>
-                        <th scope="col">Students</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
                         <th scope="col">Action</th>
@@ -46,12 +44,8 @@
                             <input type="text" class="form-control" id="data-add-item-name"/>
                         </div>
                         <div class="form-group">
-                            <label for="data-add-item-title">Title</label>
-                            <input type="text" class="form-control" id="data-add-item-title"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-add-item-session">Session</label>
-                            <input type="text" class="form-control" id="data-add-item-session"/>
+                            <label for="data-add-item-designation">Designation</label>
+                            <input type="text" class="form-control" id="data-add-item-designation"/>
                         </div>
                         <div class="form-group">
                             <label for="data-add-item-faculty">Faculty</label>
@@ -60,8 +54,16 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="data-add-item-students">Total Students</label>
-                            <input type="number" class="form-control" id="data-add-item-students"/>
+                            <label for="data-add-item-department">Department</label>
+                            <input type="text" class="form-control" id="data-add-item-department"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-address">Address</label>
+                            <input type="text" class="form-control" id="data-add-item-address"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-phone">Phone</label>
+                            <input type="text" class="form-control" id="data-add-item-phone"/>
                         </div>
                     </form>
                 </div>
@@ -90,12 +92,8 @@
                             <input type="text" class="form-control" id="data-edit-item-name"/>
                         </div>
                         <div class="form-group">
-                            <label for="data-edit-item-title">Title</label>
-                            <input type="text" class="form-control" id="data-edit-item-title"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-edit-item-session">Session</label>
-                            <input type="text" class="form-control" id="data-edit-item-session"/>
+                            <label for="data-edit-item-designation">Designation</label>
+                            <input type="text" class="form-control" id="data-edit-item-designation"/>
                         </div>
                         <div class="form-group">
                             <label for="data-edit-item-faculty">Faculty</label>
@@ -104,8 +102,16 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="data-edit-item-students">Total Students</label>
-                            <input type="number" class="form-control" id="data-edit-item-students"/>
+                            <label for="data-edit-item-department">Department</label>
+                            <input type="text" class="form-control" id="data-edit-item-department"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-address">Address</label>
+                            <input type="text" class="form-control" id="data-edit-item-address"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-phone">Phone</label>
+                            <input type="text" class="form-control" id="data-edit-item-phone"/>
                         </div>
                     </form>
                 </div>
@@ -116,23 +122,54 @@
             </div>
         </div>
     </div>
+
+    <!-- Data Details Modal -->
+    <div class="modal fade" id="data-details-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="data-item-name">Name</label>
+                    <p type="text" class="form-control" id="data-item-name"></p>
+                    <label for="data-item-designation">Designation</label>
+                    <p type="text" class="form-control" id="data-item-designation"></p>
+                    <label for="data-item-faculty">Faculty</label>
+                    <p type="text" class="form-control" id="data-item-faculty"></p>
+                    <label for="data-item-department">Department</label>
+                    <p type="text" class="form-control" id="data-item-department"></p>
+                    <label for="data-item-address">Address</label>
+                    <p type="text" class="form-control" id="data-item-address"></p>
+                    <label for="data-item-phone">Phone</label>
+                    <p type="text" class="form-control" id="data-item-phone"></p>
+                    <label for="data-item-image-url">Image url</label>
+                    <p type="text" class="form-control" id="data-item-image-url"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <script>
     var faculties = [];
     $(document).ready(function() {
         loadFaculties();
-        loadBatches();
+        loadEmployees();
     });
 
-    function loadBatches() {
+    function loadEmployees() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=getAll',
+            url:'/PSTUian-web/admin/api/employee.php?call=getAll',
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
-                var batches = JSON.parse(response);
-                for (i = 0; i < batches.length; i++) {
-                    $('#data-table > tbody:last-child').append(generateTr(batches[i]));
+                var list = JSON.parse(response);
+                for (i = 0; i < list.length; i++) {
+                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
                 }
             },
             error: function(xhr, status, error) {
@@ -157,40 +194,47 @@
         });
     }
 
-    function generateTr(batch) {
-        // console.log(JSON.stringify(faculty));
-        var param = JSON.stringify(batch);
-        var deleted = batch.deleted !== 0;
+    function generateTr(item) {
+        var param = JSON.stringify(item);
+        var deleted = item.deleted !== 0;
         var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
-        var btnRestore = `<button class="btn btn-secondary" onclick='restoreBatch(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
-        var btnDelete = `<button class="btn btn-danger" onclick='deleteBatch(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
-        return `<tr id="${batch.id}">` + 
-        `<th scope="row">${batch.id}</th>` +
-        `<td>${batch.name}</td>` +
-        `<td>${batch.title}</td>` +
-        `<td>${batch.session}</td>` +
-        `<td>${batch.short_title}</td>` +
-        `<td>${batch.total_student}</td>` +
-        `<td>${batch.created_at}</td>` +
-        `<td>${batch.updated_at}</td>` +
-        `<td id="td-action-${batch.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-json='${param}'><i class="far fa-file-alt"></i></button>`;
+        var btnRestore = `<button class="btn btn-secondary" onclick='restoreEmployee(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
+        var btnDelete = `<button class="btn btn-danger" onclick='deleteEmployee(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        return `<tr id="${item.id}">` + 
+        `<th scope="row">${item.id}</th>` +
+        `<td>${item.name}</td>` +
+        `<td>${item.designation}</td>` +
+        `<td>${item.short_title}</td>` +
+        `<td>${item.created_at}</td>` +
+        `<td>${item.updated_at}</td>` +
+        `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete}</td>` +
         `</tr>`;
     }
 
     function addData() {
         var name = $('#data-add-item-name').val();
-        var title = $('#data-add-item-title').val();
-        var session = $('#data-add-item-session').val();
+        var designation = $('#data-add-item-designation').val();
         var faculty_id = $('#data-add-item-faculty').val();
-        var total_student = $('#data-add-item-students').val();
+        var department = $('#data-add-item-department').val();
+        var address = $('#data-add-item-address').val();
+        var phone = $('#data-add-item-phone').val();
+        var data = { 
+            name: name, 
+            designation: designation, 
+            faculty_id: faculty_id, 
+            department: department, 
+            address: address,
+            phone: phone
+        }
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=add',
+            url:'/PSTUian-web/admin/api/employee.php?call=add',
             type:'post',
-            data: { name: name, title: title, session: session, faculty_id: faculty_id, total_student: total_student },
+            data: data,
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadBatches();
+                    loadEmployees();
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
@@ -208,18 +252,28 @@
     function updateData() {
         var id = $('#data-edit-item-id').val();
         var name = $('#data-edit-item-name').val();
-        var title = $('#data-edit-item-title').val();
-        var session = $('#data-edit-item-session').val();
+        var designation = $('#data-edit-item-designation').val();
         var faculty_id = $('#data-edit-item-faculty').val();
-        var total_student = $('#data-edit-item-students').val();
+        var department = $('#data-edit-item-department').val();
+        var address = $('#data-edit-item-address').val();
+        var phone = $('#data-edit-item-phone').val();
+        var data = { 
+            id: id,
+            name: name, 
+            designation: designation, 
+            faculty_id: faculty_id, 
+            department: department, 
+            address: address,
+            phone: phone
+        }
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=update',
+            url:'/PSTUian-web/admin/api/employee.php?call=update',
             type:'post',
-            data: { id: id, name: name, title: title, session: session, faculty_id: faculty_id, total_student: total_student },
+            data: data,
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadBatches();
+                    loadEmployees();
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
@@ -234,19 +288,19 @@
         });
     }
 
-    function restoreBatch(batch) {
+    function restoreEmployee(employee) {
         if(!confirm("Are you sure you want to restore this?")){
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=restore',
+            url:'/PSTUian-web/admin/api/employee.php?call=restore',
             type:'post',
-            data: { id: batch.id},
+            data: { id: employee.id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    batch.deleted = 0;
-                    $(`table#data-table tr#${batch.id}`).replaceWith(generateTr(batch));
+                    employee.deleted = 0;
+                    $(`table#data-table tr#${employee.id}`).replaceWith(generateTr(employee));
                 } else {
                     console.log(data['message']);
                 }
@@ -258,19 +312,19 @@
         });
     }
 
-    function deleteBatch(batch) {
+    function deleteEmployee(employee) {
         if(!confirm("Are you sure you want to delete this?")){
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=delete',
+            url:'/PSTUian-web/admin/api/employee.php?call=delete',
             type:'post',
-            data: { id: batch.id},
+            data: { id: employee.id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    batch.deleted = 1;
-                    $(`table#data-table tr#${batch.id}`).replaceWith(generateTr(batch));
+                    employee.deleted = 1;
+                    $(`table#data-table tr#${employee.id}`).replaceWith(generateTr(employee));
                 } else {
                     console.log(data['message']);
                 }
@@ -287,27 +341,41 @@
 
         var modal = $(this);
         modal.find('#data-add-item-name').val('');
-        modal.find('#data-add-item-title').val('');
-        modal.find('#data-add-item-session').val('');
-        modal.find('#data-add-item-students').val('');
+        modal.find('#data-add-item-designation').val('');
+        modal.find('#data-add-item-department').val('');
+        modal.find('#data-add-item-address').val('');
+        modal.find('#data-add-item-phone').val('');
 
         addFacultiesToDropdown(faculties, $('#data-add-item-faculty'));
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var batch = button.data('json');
+        var employee = button.data('json');
         addFacultiesToDropdown(faculties, $('#data-edit-item-faculty'));
 
         var modal = $(this);
-        modal.find('#data-edit-item-id').val(batch.id);
-        modal.find('#data-edit-item-name').val(batch.name);
-        modal.find('#data-edit-item-title').val(batch.title);
-        modal.find('#data-edit-item-session').val(batch.session);
-        modal.find('#data-edit-item-faculty').val(batch.faculty_id);
-        // use .change() to trigger change event
-        // modal.find('#data-edit-item-faculty').val(batch.faculty_id).change();
-        modal.find('#data-edit-item-students').val(batch.total_student);
+        modal.find('#data-edit-item-id').val(employee.id);
+        modal.find('#data-edit-item-name').val(employee.name);
+        modal.find('#data-edit-item-designation').val(employee.designation);
+        modal.find('#data-edit-item-faculty').val(employee.faculty_id)
+        modal.find('#data-edit-item-department').val(employee.department);
+        modal.find('#data-edit-item-address').val(employee.address);
+        modal.find('#data-edit-item-phone').val(employee.phone);
+    });
+
+    $('#data-details-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var item = button.data('json');
+
+        var modal = $(this);
+        modal.find('#data-item-name').text(item.name);
+        modal.find('#data-item-designation').text(item.designation);
+        modal.find('#data-item-faculty').text(item.short_title)
+        modal.find('#data-item-department').text(item.department);
+        modal.find('#data-item-address').text(item.address);
+        modal.find('#data-item-phone').text(item.phone);
+        modal.find('#data-item-image-url').text(item.image_url);
     });
 
     function addFacultiesToDropdown(faculties, dropdown) {

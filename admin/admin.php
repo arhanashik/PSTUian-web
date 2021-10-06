@@ -1,28 +1,22 @@
 <?php include('./header.php'); ?>
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Faculty</h1>
+        <h1 class="mt-4">Admin</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item active">Faculty</li>
+            <li class="breadcrumb-item active">Admin</li>
         </ol>
-        <!-- <div class="card mb-4">
-            <div class="card-body">
-                DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the
-                <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>
-                .
-            </div>
-        </div> -->
         <div class="mb-4">
         <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Faculty
+        Add New Admin
         </button>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">Short Title</th>
-                        <th scope="col">Title</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Password</th>
+                        <th scope="col">Role</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
                         <th scope="col">Action</th>
@@ -46,12 +40,19 @@
                     <form>
                         <p id="data-add-modal-error"></p>
                         <div class="form-group">
-                            <label for="data-add-item-short-title">Short Title</label>
-                            <input type="text" class="form-control" id="data-add-item-short-title"/>
+                            <label for="data-add-item-email">Email</label>
+                            <input type="text" class="form-control" id="data-add-item-email"/>
                         </div>
                         <div class="form-group">
-                            <label for="data-add-item-title">Title</label>
-                            <input type="text" class="form-control" id="data-add-item-title"/>
+                            <label for="data-add-item-password">Password</label>
+                            <input type="text" class="form-control" id="data-add-item-password"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-role">Role</label>
+                            <select class="form-select" id="data-add-item-role" aria-label="Select Role">
+                                <option selected value="admin">Admin</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -76,12 +77,19 @@
                         <p id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
-                            <label for="data-edit-item-short-title">Short Title</label>
-                            <input type="text" class="form-control" id="data-edit-item-short-title"/>
+                            <label for="data-edit-item-email">Email</label>
+                            <input type="text" class="form-control" id="data-edit-item-email"/>
                         </div>
                         <div class="form-group">
-                            <label for="data-edit-item-title">Title</label>
-                            <input type="text" class="form-control" id="data-edit-item-title"/>
+                            <label for="data-edit-item-password">Password</label>
+                            <input type="text" class="form-control" id="data-edit-item-password"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-role">Role</label>
+                            <select class="form-select" id="data-edit-item-role" aria-label="Select Role">
+                                <option selected value="admin">Admin</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -95,35 +103,19 @@
 </main>
 <script>
     $(document).ready(function() {
-        loadFaculties();
+        loadAdmins();
     });
 
-    function loadFaculties() {
+    function loadAdmins() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=getAll',
+            url:'/PSTUian-web/admin/api/admin.php?call=getAll',
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
-                var faculties = JSON.parse(response);
-                // var tableData = [];
-                for (i = 0; i < faculties.length; i++) {
-                    var faculty = faculties[i];
-                    $('#data-table > tbody:last-child').append(generateTr(faculty));
-                    // var item = [faculty.id,faculty.short_title, faculty.title, faculty.deleted, faculty.created_at, faculty.updated_at];
-                    // tableData.push(item);
+                var list = JSON.parse(response);
+                for (i = 0; i < list.length; i++) {
+                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
                 }
-                // console.log(tableData);
-                // $('#faculty-table').DataTable({
-                //     data: tableData,
-                //     columns: [
-                //         { title: "ID" },
-                //         { title: "Short Title" },
-                //         { title: "Title" },
-                //         { title: "Deleted" },
-                //         { title: "Created At" },
-                //         { title: "Updated At" }
-                //     ]
-                // });
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -132,34 +124,40 @@
         });
     }
 
-    function generateTr(faculty) {
-        // console.log(JSON.stringify(faculty));
-        var param = JSON.stringify(faculty);
-        var deleted = faculty.deleted !== 0;
-        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id="${faculty.id}" data-short-title="${faculty.short_title}" data-title="${faculty.title}"><i class="far fa-edit"></i></button>`;
-        var btnRestore = `<button class="btn btn-secondary" onclick='restoreFaculty(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
-        var btnDelete = `<button class="btn btn-danger" onclick='deleteFaculty(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
-        return `<tr id="${faculty.id}">` + 
-        `<th scope="row">${faculty.id}</th>` +
-        `<td>${faculty.short_title}</td>` +
-        `<td>${faculty.title}</td>` +
-        `<td>${faculty.created_at}</td>` +
-        `<td>${faculty.updated_at}</td>` +
-        `<td id="td-action-${faculty.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+    function generateTr(item) {
+        var param = JSON.stringify(item);
+        var deleted = item.deleted !== 0;
+        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
+        var btnRestore = `<button class="btn btn-secondary" onclick='restoreAdmin(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
+        var btnDelete = `<button class="btn btn-danger" onclick='deleteAdmin(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        return `<tr id="${item.id}">` + 
+        `<th scope="row">${item.id}</th>` +
+        `<td>${item.email}</td>` +
+        `<td>${item.password}</td>` +
+        `<td>${item.role}</td>` +
+        `<td>${item.created_at}</td>` +
+        `<td>${item.updated_at}</td>` +
+        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
         `</tr>`;
     }
 
     function addData() {
-        var shortTitle = $('#data-add-item-short-title').val();
-        var title = $('#data-add-item-title').val();
+        var email = $('#data-add-item-email').val();
+        var password = $('#data-add-item-password').val();
+        var role = $('#data-add-item-role').val();
+        var data = { 
+            email: email, 
+            password: password,
+            role: role
+        }
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=add',
+            url:'/PSTUian-web/admin/api/admin.php?call=add',
             type:'post',
-            data: { short_title: shortTitle, title: title },
+            data: data,
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadFaculties();
+                    loadAdmins();
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
@@ -176,16 +174,23 @@
 
     function updateData() {
         var id = $('#data-edit-item-id').val();
-        var shortTitle = $('#data-edit-item-short-title').val();
-        var title = $('#data-edit-item-title').val();
+        var email = $('#data-edit-item-email').val();
+        var password = $('#data-edit-item-password').val();
+        var role = $('#data-edit-item-role').val();
+        var data = { 
+            id: id,
+            email: email, 
+            password: password,
+            role: role
+        }
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=update',
+            url:'/PSTUian-web/admin/api/admin.php?call=update',
             type:'post',
-            data: { id: id, short_title: shortTitle, title: title },
+            data: data,
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadFaculties();
+                    loadAdmins();
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
@@ -200,22 +205,19 @@
         });
     }
 
-    function restoreFaculty(faculty) {
+    function restoreAdmin(admin) {
         if(!confirm("Are you sure you want to restore this?")){
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=restore',
+            url:'/PSTUian-web/admin/api/admin.php?call=restore',
             type:'post',
-            data: { id: faculty.id},
+            data: { id: admin.id},
             success:function(response){
-                console.log(response);
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    // $(`table#data-table tr#${id}`).remove();
-                    // $(`#td-deleted-${id}`).html('true');
-                    faculty.deleted = 0;
-                    $(`table#data-table tr#${faculty.id}`).replaceWith(generateTr(faculty));
+                    admin.deleted = 0;
+                    $(`table#data-table tr#${admin.id}`).replaceWith(generateTr(admin));
                 } else {
                     console.log(data['message']);
                 }
@@ -227,22 +229,19 @@
         });
     }
 
-    function deleteFaculty(faculty) {
+    function deleteAdmin(admin) {
         if(!confirm("Are you sure you want to delete this?")){
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=delete',
+            url:'/PSTUian-web/admin/api/admin.php?call=delete',
             type:'post',
-            data: { id: faculty.id},
+            data: { id: admin.id },
             success:function(response){
-                console.log(response);
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    // $(`table#data-table tr#${id}`).remove();
-                    // $(`#td-deleted-${id}`).html('true');
-                    faculty.deleted = 1;
-                    $(`table#data-table tr#${faculty.id}`).replaceWith(generateTr(faculty));
+                    admin.deleted = 1;
+                    $(`table#data-table tr#${admin.id}`).replaceWith(generateTr(admin));
                 } else {
                     console.log(data['message']);
                 }
@@ -258,20 +257,20 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
-        modal.find('#data-add-item-short-title').val('');
-        modal.find('#data-add-item-title').val('');
+        modal.find('#data-add-item-email').val('');
+        modal.find('#data-add-item-password').val('');
+        modal.find('#data-add-item-role').val('admin');
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var id = button.data('id');
-        var shortTitle = button.data('short-title');
-        var title = button.data('title');
+        var item = button.data('json');
 
         var modal = $(this);
-        modal.find('#data-edit-item-id').val(id);
-        modal.find('#data-edit-item-short-title').val(shortTitle);
-        modal.find('#data-edit-item-title').val(title);
+        modal.find('#data-edit-item-id').val(item.id);
+        modal.find('#data-edit-item-email').val(item.email);
+        modal.find('#data-edit-item-password').val(item.password);
+        modal.find('#data-edit-item-role').val(item.role);
     });
 </script>
 <?php include('./footer.php'); ?>

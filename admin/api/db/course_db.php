@@ -1,6 +1,6 @@
 <?php
 
-class FacultyDb
+class CourseDb
 {
     private $con;
  
@@ -14,16 +14,12 @@ class FacultyDb
 
     public function getAll()
     {
-        $sql = "SELECT * FROM " . FACULTY_TABLE;
-        //condition
-        // $sql = $sql . " WHERE deleted = 0";
+        $sql = "SELECT c.*, f.short_title FROM " . COURSE_TABLE . " AS c LEFT JOIN " . FACULTY_TABLE . " AS f 
+        ON c.faculty_id = f.id";
         //sorting
-        $sql = $sql . " ORDER BY created_at ASC";
-        //constraints
-        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
+        $sql = $sql . " ORDER BY f.short_title";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        // $stmt->bind_result($id, $short_title, $title, $deleted, $created_at, $updated_at);
         $result = $stmt->get_result();
     
         $list = array();
@@ -34,11 +30,11 @@ class FacultyDb
         return $list;
     }
 
-    public function get($faculty_id)
+    public function get($id)
     {
-        $sql = "SELECT id, short_title, title FROM " . FACULTY_TABLE; 
+        $sql = "SELECT id, short_title, title FROM " . COURSE_TABLE; 
         //condition
-        $sql = $sql . " WHERE id = '$faculty_id' AND deleted = 0";
+        $sql = $sql . " WHERE id = '$id' AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
@@ -54,19 +50,20 @@ class FacultyDb
         return $faculty;
     }
 
-    public function insert($short_title, $title)
+    public function insert($course_code, $course_title, $credit_hour, $faculty_id)
     {
-        $sql = "INSERT INTO " . FACULTY_TABLE . "(short_title, title) 
-        VALUES ('$short_title', '$title')";
+        $sql = "INSERT INTO " . COURSE_TABLE . "(course_code, course_title, credit_hour, faculty_id) 
+        VALUES ('$course_code', '$course_title', '$credit_hour', '$faculty_id')";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
         return $this->con->insert_id;
     }
 
-    public function update($id, $short_title, $title)
+    public function update($id, $course_code, $course_title, $credit_hour, $faculty_id)
     {
-        $sql = "UPDATE " . FACULTY_TABLE . " set short_title = '$short_title', title = '$title', updated_at = NOW() WHERE id = '$id'";
+        $sql = "UPDATE " . COURSE_TABLE . " set course_code = '$course_code', course_title = '$course_title', 
+        credit_hour = '$credit_hour', faculty_id = '$faculty_id', updated_at = NOW() WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute();
@@ -74,7 +71,7 @@ class FacultyDb
 
     public function delete($id)
     {
-        $sql = "UPDATE " . FACULTY_TABLE . " set deleted = 1, updated_at = NOW() WHERE id = '$id'";
+        $sql = "UPDATE " . COURSE_TABLE . " set deleted = 1, updated_at = NOW() WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute();
@@ -82,7 +79,7 @@ class FacultyDb
 
     public function restore($id)
     {
-        $sql = "UPDATE " . FACULTY_TABLE . " set deleted = 0, updated_at = NOW() WHERE id = '$id'";
+        $sql = "UPDATE " . COURSE_TABLE . " set deleted = 0, updated_at = NOW() WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute();
