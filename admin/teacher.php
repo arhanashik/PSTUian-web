@@ -205,7 +205,6 @@
             url:'/PSTUian-web/admin/api/faculty.php?call=getAll',
             type:'get',
             success:function(response){
-                $('#data-table tbody').empty();
                 faculties = JSON.parse(response);
             },
             error: function(xhr, status, error) {
