@@ -16,8 +16,10 @@ define('EMPLOYEE_TABLE', 'employee');
 define('STUDENT_TABLE', 'student');
 define('DONATION_TABLE', 'donation');
 define('INFO_TABLE', 'info');
+define('ADMIN_TABLE', 'admin');
+define('AUTH_TABLE', 'auth');
 
-define('BASE_URL', 'https://api.pstuian.com/');
+define('BASE_URL', 'https://admin.pstuian.com/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
