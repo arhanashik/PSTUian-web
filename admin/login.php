@@ -41,33 +41,34 @@ if (isset($_SESSION['admin'])) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
-$(document).ready(function() {
-    $("#btnSubmit").click(function() {
-        var email = $("#email").val().trim();
-        var password = $("#password").val().trim();
+    var baseUrl = '/PSTUian-web/admin/api/';
+    $(document).ready(function() {
+        $("#btnSubmit").click(function() {
+            var email = $("#email").val().trim();
+            var password = $("#password").val().trim();
 
-        if(email === "" || password === "") {
-            return;
-        }
-        $.ajax({
-            url: '/PSTUian-web/admin/api/auth.php?call=signIn',
-            type:'post',
-            data:{email: email, password: password},
-            success:function(response){
-                var data = JSON.parse(response);
-                if(data['code'] == 200){
-                    window.location = "index.php";
-                }else{
-                    $("#error").text(data['message']);
-                }
-            },
-            error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                $("#error").text(err.Message);
+            if(email === "" || password === "") {
+                return;
             }
+            $.ajax({
+                url: `${baseUrl}auth.php?call=signIn`,
+                type:'post',
+                data:{email: email, password: password},
+                success:function(response){
+                    var data = JSON.parse(response);
+                    if(data['code'] == 200){
+                        window.location = "index.php";
+                    }else{
+                        $("#error").text(data['message']);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var err = JSON.parse(xhr.responseText);
+                    $("#error").text(err.Message);
+                }
+            });
         });
     });
-});
 </script>
 </body>
 </html>
