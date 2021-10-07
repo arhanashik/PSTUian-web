@@ -1,12 +1,12 @@
 <?php
-require_once './db/student_db.php';
 require_once './validate_request.php';
+require_once './db/student_db.php';
  
 $response = array();
 $response['success'] = false;
 $response['message'] = 'Required parameters are missing';
 
-if ($validate && isset($_GET['call'])) 
+if (isset($_GET['call'])) 
 {
     $db = new StudentDb();
     switch ($_GET['call']) 

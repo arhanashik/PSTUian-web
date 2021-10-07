@@ -111,6 +111,7 @@
             url:`${baseUrl}admin.php?call=getAll`,
             type:'get',
             success:function(response){
+                console.log(response);
                 $('#data-table tbody').empty();
                 var list = JSON.parse(response);
                 for (i = 0; i < list.length; i++) {
