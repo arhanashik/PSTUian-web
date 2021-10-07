@@ -1,21 +1,19 @@
 <?php include('./header.php'); ?>
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Slider</h1>
+        <h1 class="mt-4">Authentication</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item active">Slider</li>
+            <li class="breadcrumb-item active">Authentication</li>
         </ol>
         <div class="mb-4">
-        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Slider
-        </button>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Image Url</th>
+                        <th scope="col">User Id</th>
+                        <th scope="col">User Type</th>
+                        <th scope="col">Auth Token</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
                         <th scope="col">Action</th>
@@ -39,12 +37,19 @@
                     <form>
                         <p id="data-add-modal-error"></p>
                         <div class="form-group">
-                            <label for="data-add-item-title">Title</label>
-                            <input type="text" class="form-control" id="data-add-item-title"/>
+                            <label for="data-add-item-email">Email</label>
+                            <input type="text" class="form-control" id="data-add-item-email"/>
                         </div>
                         <div class="form-group">
-                            <label for="data-add-item-image">Image Url</label>
-                            <input type="text" class="form-control" id="data-add-item-image"/>
+                            <label for="data-add-item-password">Password</label>
+                            <input type="text" class="form-control" id="data-add-item-password"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-role">Role</label>
+                            <select class="form-select" id="data-add-item-role" aria-label="Select Role">
+                                <option selected value="admin">Admin</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -69,12 +74,19 @@
                         <p id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
-                            <label for="data-edit-item-title">Course Title</label>
-                            <input type="text" class="form-control" id="data-edit-item-title"/>
+                            <label for="data-edit-item-email">Email</label>
+                            <input type="text" class="form-control" id="data-edit-item-email"/>
                         </div>
                         <div class="form-group">
-                            <label for="data-edit-item-image">Image Url</label>
-                            <input type="text" class="form-control" id="data-edit-item-image"/>
+                            <label for="data-edit-item-password">Password</label>
+                            <input type="text" class="form-control" id="data-edit-item-password"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-role">Role</label>
+                            <select class="form-select" id="data-edit-item-role" aria-label="Select Role">
+                                <option selected value="admin">Admin</option>
+                                <option value="super_admin">Super Admin</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -88,17 +100,23 @@
 </main>
 <script>
     $(document).ready(function() {
-        loadSliders();
+        loadAuths();
     });
 
-    function loadSliders() {
+    function loadAuths() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=getAll',
+            url:`${baseUrl}auth.php?call=getAll`,
             type:'get',
             success:function(response){
                 console.log(response);
                 $('#data-table tbody').empty();
                 var list = JSON.parse(response);
+                if(list['code'] && list['code'] !== 200) {
+                    $('#toast-title').text('Failed');
+                    $('#toast-message').text(list['message']);
+                    $('#toast').toast('show');
+                    return;
+                }
                 for (i = 0; i < list.length; i++) {
                     $('#data-table > tbody:last-child').append(generateTr(list[i]));
                 }
@@ -113,92 +131,32 @@
     function generateTr(item) {
         var param = JSON.stringify(item);
         var deleted = item.deleted !== 0;
-        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
-        var btnRestore = `<button class="btn btn-secondary" onclick='restoreSlider(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
-        var btnDelete = `<button class="btn btn-danger" onclick='deleteSlider(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnRestore = `<button class="btn btn-secondary" onclick='restoreAuth(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
+        var btnDelete = `<button class="btn btn-danger" onclick='deleteAuth(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
-        `<td>${item.title}</td>` +
-        `<td>${item.image_url}</td>` +
+        `<td>${item.user_id}</td>` +
+        `<td>${item.user_type}</td>` +
+        `<td>${item.auth_token}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
-        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${item.id}">${deleted? btnRestore : btnDelete}</td>` +
         `</tr>`;
     }
 
-    function addData() {
-        var title = $('#data-add-item-title').val();
-        var image = $('#data-add-item-image').val();
-        var data = { 
-            title: title, 
-            image_url: image
-        }
-        $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=add',
-            type:'post',
-            data: data,
-            success:function(response){
-                var data = JSON.parse(response);
-                if(data['success'] === true) {
-                    loadSliders();
-                    $('#data-add-modal').modal('hide');
-                } else {
-                    $('#data-add-modal-error').text(data['message']);
-                    console.log(data['message']);
-                }
-            },
-            error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                $('#data-add-modal-error').text(err.Message);
-                console.log(err);
-            }
-        });
-    }
-
-    function updateData() {
-        var id = $('#data-edit-item-id').val();
-        var title = $('#data-edit-item-title').val();
-        var image = $('#data-edit-item-image').val();
-        var data = { 
-            id: id,
-            title: title, 
-            image_url: image
-        }
-        $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=update',
-            type:'post',
-            data: data,
-            success:function(response){
-                var data = JSON.parse(response);
-                if(data['success'] === true) {
-                    loadSliders();
-                    $('#data-edit-modal').modal('hide');
-                } else {
-                    $('#data-edit-modal-error').text(data['message']);
-                    console.log(data['message']);
-                }
-            },
-            error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                $('#data-edit-modal-error').text(err.Message);
-                console.log(err);
-            }
-        });
-    }
-
-    function restoreSlider(slider) {
+    function restoreAuth(auth) {
         if(!confirm("Are you sure you want to restore this?")){
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=restore',
+            url: `${baseUrl}auth.php?call=restore`,
             type:'post',
-            data: { id: slider.id},
+            data: { id: auth.id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    slider.deleted = 0;
-                    $(`table#data-table tr#${slider.id}`).replaceWith(generateTr(slider));
+                    auth.deleted = 0;
+                    $(`table#data-table tr#${auth.id}`).replaceWith(generateTr(auth));
                 } else {
                     console.log(data['message']);
                 }
@@ -210,19 +168,19 @@
         });
     }
 
-    function deleteSlider(slider) {
+    function deleteAuth(auth) {
         if(!confirm("Are you sure you want to delete this?")){
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=delete',
+            url: `${baseUrl}auth.php?call=delete`,
             type:'post',
-            data: { id: slider.id},
+            data: { id: auth.id },
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    slider.deleted = 1;
-                    $(`table#data-table tr#${slider.id}`).replaceWith(generateTr(slider));
+                    auth.deleted = 1;
+                    $(`table#data-table tr#${auth.id}`).replaceWith(generateTr(auth));
                 } else {
                     console.log(data['message']);
                 }
@@ -238,8 +196,9 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
-        modal.find('#data-add-item-title').val('');
-        modal.find('#data-add-item-image').val('');
+        modal.find('#data-add-item-email').val('');
+        modal.find('#data-add-item-password').val('');
+        modal.find('#data-add-item-role').val('admin');
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
@@ -248,8 +207,9 @@
 
         var modal = $(this);
         modal.find('#data-edit-item-id').val(item.id);
-        modal.find('#data-edit-item-title').val(item.title);
-        modal.find('#data-edit-item-image').val(item.image_url);
+        modal.find('#data-edit-item-email').val(item.email);
+        modal.find('#data-edit-item-password').val(item.password);
+        modal.find('#data-edit-item-role').val(item.role);
     });
 </script>
 <?php include('./footer.php'); ?>

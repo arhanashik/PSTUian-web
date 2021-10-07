@@ -137,7 +137,7 @@
 
     function loadDonations() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/donation.php?call=getAll',
+            url: `${baseUrl}donation.php?call=getAll`,
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
@@ -186,7 +186,7 @@
             reference: reference
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/donation.php?call=add',
+            url: `${baseUrl}donation.php?call=add`,
             type:'post',
             data: data,
             success:function(response){
@@ -221,7 +221,7 @@
             reference: reference
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/donation.php?call=update',
+            url: `${baseUrl}donation.php?call=update`,
             type:'post',
             data: data,
             success:function(response){
@@ -247,7 +247,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/donation.php?call=confirm',
+            url: `${baseUrl}donation.php?call=confirm`,
             type:'post',
             data: { id: donation.id},
             success:function(response){
@@ -270,7 +270,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/donation.php?call=unconfirm',
+            url: `${baseUrl}donation.php?call=unconfirm`,
             type:'post',
             data: { id: donation.id},
             success:function(response){
@@ -293,7 +293,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/donation.php?call=restore',
+            url: `${baseUrl}donation.php?call=restore`,
             type:'post',
             data: { id: donation.id},
             success:function(response){
@@ -317,7 +317,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/donation.php?call=delete',
+            url: `${baseUrl}donation.php?call=delete`,
             type:'post',
             data: { id: donation.id},
             success:function(response){

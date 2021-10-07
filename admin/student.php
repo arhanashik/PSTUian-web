@@ -32,8 +32,6 @@
                         <th scope="col">Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Reg</th>
-                        <th scope="col">Faculty</th>
-                        <th scope="col">Batch</th>
                         <th scope="col">Session</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
@@ -200,7 +198,7 @@
 
     function loadFaculties() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=getAll',
+            url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
             success:function(response){
                 faculties = JSON.parse(response);
@@ -218,11 +216,11 @@
 
     function loadBatches(faculty_id) {
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=getAll',
+            url: `${baseUrl}batch.php?call=getAll`,
             type:'get',
             data: {faculty_id: faculty_id},
             success:function(response){
-                // console.log(response);
+                $('#data-table tbody').empty();
                 batches = JSON.parse(response);
                 addBatchesToDropdown(batches, $('#batches'));
                 if(batches && batches.length > 0) {
@@ -240,7 +238,7 @@
 
     function loadStudents(faculty_id, batch_id) {
         $.ajax({
-            url:'/PSTUian-web/admin/api/student.php?call=getAll',
+            url: `${baseUrl}student.php?call=getAll`,
             type:'get',
             data: { faculty_id: faculty_id, batch_id: batch_id },
             success:function(response) {
@@ -268,8 +266,6 @@
         `<th scope="row">${item.id}</th>` +
         `<td>${item.name}</td>` +
         `<td>${item.reg}</td>` +
-        `<td>${item.faculty}</td>` +
-        `<td>${item.batch}</td>` +
         `<td>${item.session}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
@@ -293,7 +289,7 @@
             session: session
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/student.php?call=add',
+            url: `${baseUrl}student.php?call=add`,
             type:'post',
             data: data,
             success:function(response){
@@ -330,7 +326,7 @@
             session: session
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/student.php?call=update',
+            url: `${baseUrl}student.php?call=update`,
             type:'post',
             data: data,
             success:function(response){
@@ -356,7 +352,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/student.php?call=restore',
+            url: `${baseUrl}student.php?call=restore`,
             type:'post',
             data: { id: student.id},
             success:function(response){
@@ -380,7 +376,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/student.php?call=delete',
+            url: `${baseUrl}student.php?call=delete`,
             type:'post',
             data: { id: student.id},
             success:function(response){

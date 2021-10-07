@@ -108,7 +108,7 @@
             new_password: newPassword
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/admin.php?call=changePassword',
+            url: `${baseUrl}admin.php?call=changePassword`,
             type:'post',
             data: data,
             success:function(response){

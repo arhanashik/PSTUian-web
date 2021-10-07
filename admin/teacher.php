@@ -17,13 +17,6 @@
                         <th scope="col">Name</th>
                         <th scope="col">Designation</th>
                         <th scope="col">Faculty</th>
-                        <!-- <th scope="col">Department</th> -->
-                        <!-- <th scope="col">Address</th> -->
-                        <!-- <th scope="col">Phone</th> -->
-                        <!-- <th scope="col">Email</th> -->
-                        <!-- <th scope="col">ImageUrl</th> -->
-                        <!-- <th scope="col">LinkedIn</th> -->
-                        <!-- <th scope="col">Facebook</th> -->
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
                         <th scope="col">Action</th>
@@ -184,7 +177,7 @@
 
     function loadTeachers() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/teacher.php?call=getAll',
+            url: `${baseUrl}teacher.php?call=getAll`,
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
@@ -202,7 +195,7 @@
 
     function loadFaculties() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=getAll',
+            url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
             success:function(response){
                 faculties = JSON.parse(response);
@@ -226,10 +219,6 @@
         `<td>${item.name}</td>` +
         `<td>${item.designation}</td>` +
         `<td>${item.short_title}</td>` +
-        // `<td>${item.department}</td>` +
-        // `<td>${item.address}</td>` +
-        // `<td>${item.phone}</td>` +
-        // `<td>${item.email}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
         `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete}</td>` +
@@ -254,7 +243,7 @@
             email: email
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/teacher.php?call=add',
+            url: `${baseUrl}teacher.php?call=add`,
             type:'post',
             data: data,
             success:function(response){
@@ -295,7 +284,7 @@
             email: email
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/teacher.php?call=update',
+            url: `${baseUrl}teacher.php?call=update`,
             type:'post',
             data: data,
             success:function(response){
@@ -321,7 +310,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/teacher.php?call=restore',
+            url: `${baseUrl}teacher.php?call=restore`,
             type:'post',
             data: { id: teacher.id},
             success:function(response){
@@ -345,7 +334,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/teacher.php?call=delete',
+            url: `${baseUrl}teacher.php?call=delete`,
             type:'post',
             data: { id: teacher.id},
             success:function(response){
@@ -422,9 +411,5 @@
             dropdown.append(item);
         }
     }
-
-    // function validate(str) {
-    //     return (typeof str == 'undefined' || str !== null && !str.length)? str : '~';
-    // }
 </script>
 <?php include('./footer.php'); ?>

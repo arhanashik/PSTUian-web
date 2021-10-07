@@ -1,10 +1,11 @@
 <?php
+require_once './validate_request.php';
 require_once './db/batch_db.php';
  
 $response = array();
 $response['success'] = false;
 $response['message'] = 'Required parameters are missing';
- 
+
 if (isset($_GET['call'])) 
 {
     $db = new BatchDb();

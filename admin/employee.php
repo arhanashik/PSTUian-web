@@ -163,7 +163,7 @@
 
     function loadEmployees() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/employee.php?call=getAll',
+            url: `${baseUrl}employee.php?call=getAll`,
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
@@ -181,7 +181,7 @@
 
     function loadFaculties() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=getAll',
+            url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
             success:function(response){
                 faculties = JSON.parse(response);
@@ -227,7 +227,7 @@
             phone: phone
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/employee.php?call=add',
+            url: `${baseUrl}employee.php?call=add`,
             type:'post',
             data: data,
             success:function(response){
@@ -266,7 +266,7 @@
             phone: phone
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/employee.php?call=update',
+            url: `${baseUrl}employee.php?call=update`,
             type:'post',
             data: data,
             success:function(response){
@@ -292,7 +292,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/employee.php?call=restore',
+            url: `${baseUrl}employee.php?call=restore`,
             type:'post',
             data: { id: employee.id},
             success:function(response){
@@ -316,7 +316,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/employee.php?call=delete',
+            url: `${baseUrl}employee.php?call=delete`,
             type:'post',
             data: { id: employee.id},
             success:function(response){
