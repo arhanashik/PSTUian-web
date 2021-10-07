@@ -13,7 +13,7 @@
                 <a class="nav-link" id="nav-link-tables" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTables" aria-expanded="false" aria-controls="collapseTables">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                     Tables
-                    <div class="sb-sidenav-collapse-arrow" id="btnCollapseTables"><i class="fas fa-angle-down"></i></div>
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
                 <div class="collapse show" id="collapseTables" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
@@ -31,6 +31,10 @@
                 <a class="nav-link" href="admin.php">
                     <div class="sb-nav-link-icon"><i class="fas fa-user-cog"></i></div>
                     Admin
+                </a>
+                <a class="nav-link" href="auth.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-unlock-alt"></i></i></div>
+                    Authentication
                 </a>
                 <a class="nav-link" href="settings.php">
                     <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>

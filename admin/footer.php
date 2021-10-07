@@ -40,7 +40,7 @@
                 $('#collapseTables').addClass('show');
             }
             //store nav bar collapse state
-            $( "#btnCollapseTables" ).click(function() {
+            $( "#nav-link-tables" ).click(function() {
                 var isCollapsed = $('#nav-link-tables').hasClass('collapsed');
                 var collapsed = isCollapsed? 'collapsed' : 'expanded';
                 localStorage.setItem("nav_bar_tables_expanded", collapsed);

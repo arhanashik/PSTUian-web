@@ -15,6 +15,17 @@ if (isset($_GET['call'])) {
     $adminDb = new AdminDb();
     $util = new Util();
     switch ($_GET['call']) {
+        case 'getAll':
+            //get the auth token from the request header
+            if(isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
+                $auth_token = $_SERVER['HTTP_X_AUTH_TOKEN'];
+                $validate = $db->isValidToken($auth_token);
+                if($validate) {
+                    $response = $db->getAll();
+                }
+            }
+            break;
+
         case 'signIn':
             if (isset($_POST['email']) && strlen($_POST['email']) > 0 
                 && isset($_POST['password']) && strlen($_POST['password']) > 0
@@ -79,6 +90,24 @@ if (isset($_GET['call'])) {
                 }
             }
     
+            break;
+
+        case 'delete':
+            $id = $_POST['id'];
+            $result = $db->delete($id);
+
+            $response['success'] = true;
+            $response['message'] = 'Deleted Successfully';
+            $response['data'] = $result;
+            break;
+
+        case 'restore':
+            $id = $_POST['id'];
+            $result = $db->restore($id);
+
+            $response['success'] = true;
+            $response['message'] = 'Restored Successfully';
+            $response['data'] = $result;
             break;
     }
 }

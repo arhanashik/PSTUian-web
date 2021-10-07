@@ -102,28 +102,19 @@
         $.ajax({
             url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
-            success:function(response){
+            success:function(response) {
                 $('#data-table tbody').empty();
                 var faculties = JSON.parse(response);
-                // var tableData = [];
+                if(faculties['code'] && faculties['code'] !== 200) {
+                    $('#toast-title').text('Failed');
+                    $('#toast-message').text(faculties['message']);
+                    $('#toast').toast('show');
+                    return;
+                }
                 for (i = 0; i < faculties.length; i++) {
                     var faculty = faculties[i];
                     $('#data-table > tbody:last-child').append(generateTr(faculty));
-                    // var item = [faculty.id,faculty.short_title, faculty.title, faculty.deleted, faculty.created_at, faculty.updated_at];
-                    // tableData.push(item);
                 }
-                // console.log(tableData);
-                // $('#faculty-table').DataTable({
-                //     data: tableData,
-                //     columns: [
-                //         { title: "ID" },
-                //         { title: "Short Title" },
-                //         { title: "Title" },
-                //         { title: "Deleted" },
-                //         { title: "Created At" },
-                //         { title: "Updated At" }
-                //     ]
-                // });
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);

@@ -1,22 +1,19 @@
 <?php include('./header.php'); ?>
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Admin</h1>
+        <h1 class="mt-4">Authentication</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item active">Admin</li>
+            <li class="breadcrumb-item active">Authentication</li>
         </ol>
         <div class="mb-4">
-        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Admin
-        </button>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Password</th>
-                        <th scope="col">Role</th>
+                        <th scope="col">User Id</th>
+                        <th scope="col">User Type</th>
+                        <th scope="col">Auth Token</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
                         <th scope="col">Action</th>
@@ -103,14 +100,15 @@
 </main>
 <script>
     $(document).ready(function() {
-        loadAdmins();
+        loadAuths();
     });
 
-    function loadAdmins() {
+    function loadAuths() {
         $.ajax({
-            url:`${baseUrl}admin.php?call=getAll`,
+            url:`${baseUrl}auth.php?call=getAll`,
             type:'get',
             success:function(response){
+                console.log(response);
                 $('#data-table tbody').empty();
                 var list = JSON.parse(response);
                 if(list['code'] && list['code'] !== 200) {
@@ -133,97 +131,32 @@
     function generateTr(item) {
         var param = JSON.stringify(item);
         var deleted = item.deleted !== 0;
-        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
-        var btnRestore = `<button class="btn btn-secondary" onclick='restoreAdmin(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
-        var btnDelete = `<button class="btn btn-danger" onclick='deleteAdmin(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnRestore = `<button class="btn btn-secondary" onclick='restoreAuth(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
+        var btnDelete = `<button class="btn btn-danger" onclick='deleteAuth(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
-        `<td>${item.email}</td>` +
-        `<td>${item.password}</td>` +
-        `<td>${item.role}</td>` +
+        `<td>${item.user_id}</td>` +
+        `<td>${item.user_type}</td>` +
+        `<td>${item.auth_token}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
-        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${item.id}">${deleted? btnRestore : btnDelete}</td>` +
         `</tr>`;
     }
 
-    function addData() {
-        var email = $('#data-add-item-email').val();
-        var password = $('#data-add-item-password').val();
-        var role = $('#data-add-item-role').val();
-        var data = { 
-            email: email, 
-            password: password,
-            role: role
-        }
-        $.ajax({
-            url:`${baseUrl}admin.php?call=add`,
-            type:'post',
-            data: data,
-            success:function(response){
-                var data = JSON.parse(response);
-                if(data['success'] === true) {
-                    loadAdmins();
-                    $('#data-add-modal').modal('hide');
-                } else {
-                    $('#data-add-modal-error').text(data['message']);
-                    console.log(data['message']);
-                }
-            },
-            error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                $('#data-add-modal-error').text(err.Message);
-                console.log(err);
-            }
-        });
-    }
-
-    function updateData() {
-        var id = $('#data-edit-item-id').val();
-        var email = $('#data-edit-item-email').val();
-        var password = $('#data-edit-item-password').val();
-        var role = $('#data-edit-item-role').val();
-        var data = { 
-            id: id,
-            email: email, 
-            password: password,
-            role: role
-        }
-        $.ajax({
-            url: `${baseUrl}admin.php?call=update`,
-            type:'post',
-            data: data,
-            success:function(response){
-                var data = JSON.parse(response);
-                if(data['success'] === true) {
-                    loadAdmins();
-                    $('#data-edit-modal').modal('hide');
-                } else {
-                    $('#data-edit-modal-error').text(data['message']);
-                    console.log(data['message']);
-                }
-            },
-            error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                $('#data-edit-modal-error').text(err.Message);
-                console.log(err);
-            }
-        });
-    }
-
-    function restoreAdmin(admin) {
+    function restoreAuth(auth) {
         if(!confirm("Are you sure you want to restore this?")){
             return false;
         }
         $.ajax({
-            url: `${baseUrl}admin.php?call=restore`,
+            url: `${baseUrl}auth.php?call=restore`,
             type:'post',
-            data: { id: admin.id},
+            data: { id: auth.id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    admin.deleted = 0;
-                    $(`table#data-table tr#${admin.id}`).replaceWith(generateTr(admin));
+                    auth.deleted = 0;
+                    $(`table#data-table tr#${auth.id}`).replaceWith(generateTr(auth));
                 } else {
                     console.log(data['message']);
                 }
@@ -235,19 +168,19 @@
         });
     }
 
-    function deleteAdmin(admin) {
+    function deleteAuth(auth) {
         if(!confirm("Are you sure you want to delete this?")){
             return false;
         }
         $.ajax({
-            url: `${baseUrl}admin.php?call=delete`,
+            url: `${baseUrl}auth.php?call=delete`,
             type:'post',
-            data: { id: admin.id },
+            data: { id: auth.id },
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    admin.deleted = 1;
-                    $(`table#data-table tr#${admin.id}`).replaceWith(generateTr(admin));
+                    auth.deleted = 1;
+                    $(`table#data-table tr#${auth.id}`).replaceWith(generateTr(auth));
                 } else {
                     console.log(data['message']);
                 }
