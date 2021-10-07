@@ -41,7 +41,7 @@ if (isset($_SESSION['admin']) && isset($_SESSION['auth_token'])) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <script>
-    var baseUrl = '/PSTUian-web/admin/api/';
+    var baseUrl = 'api/';
     $(document).ready(function() {
         $("#btnSubmit").click(function() {
             var email = $("#email").val().trim();
