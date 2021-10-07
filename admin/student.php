@@ -220,7 +220,7 @@
             type:'get',
             data: {faculty_id: faculty_id},
             success:function(response){
-                // console.log(response);
+                $('#data-table tbody').empty();
                 batches = JSON.parse(response);
                 addBatchesToDropdown(batches, $('#batches'));
                 if(batches && batches.length > 0) {
