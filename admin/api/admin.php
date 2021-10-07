@@ -1,11 +1,12 @@
 <?php
 require_once './db/admin_db.php';
+require_once './validate_request.php';
  
 $response = array();
 $response['success'] = false;
 $response['message'] = 'Required parameters are missing';
- 
-if (isset($_GET['call'])) 
+
+if ($validate && isset($_GET['call'])) 
 {
     $db = new AdminDb();
     switch ($_GET['call']) 

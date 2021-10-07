@@ -1,11 +1,12 @@
 <?php
 session_start();
-if(!isset($_SESSION['admin'])){
+if(!isset($_SESSION['admin']) && !isset($_SESSION['auth_token'])) {
    header('Location: login.php');
    return;
 }
 
 $admin = $_SESSION['admin'];
+$auth_token = $_SESSION['auth_token'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +28,12 @@ $admin = $_SESSION['admin'];
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
             // Base api url
-            var baseUrl = '/PSTUian-web/admin/api/';
+            var baseUrl = 'api/';
+
+            //adding headers to ajax
+            $.ajaxSetup({
+                headers: { 'x-auth-token': '<?php echo $auth_token; ?>' }
+            });
         </script>
     </head>
     <body class="sb-nav-fixed">

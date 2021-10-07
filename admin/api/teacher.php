@@ -1,11 +1,12 @@
 <?php
 require_once './db/teacher_db.php';
+require_once './validate_request.php';
  
 $response = array();
 $response['success'] = false;
 $response['message'] = 'Required parameters are missing';
- 
-if (isset($_GET['call'])) 
+
+if ($validate && isset($_GET['call'])) 
 {
     $db = new TeacherDb();
     switch ($_GET['call']) 
@@ -68,4 +69,5 @@ if (isset($_GET['call']))
     }
 }
 
+// echo http_response_code(404);
 echo json_encode($response);

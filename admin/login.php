@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (isset($_SESSION['admin'])) {
+if (isset($_SESSION['admin']) && isset($_SESSION['auth_token'])) {
     header("location: index.php");
 }
 ?>
@@ -53,7 +53,7 @@ if (isset($_SESSION['admin'])) {
             $.ajax({
                 url: `${baseUrl}auth.php?call=signIn`,
                 type:'post',
-                data:{email: email, password: password},
+                data:{ email: email, password: password, user_type: 'admin' },
                 success:function(response){
                     var data = JSON.parse(response);
                     if(data['code'] == 200){
