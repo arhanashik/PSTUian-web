@@ -126,7 +126,7 @@
 
     function loadBatches() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=getAll',
+            url: `${baseUrl}batch.php?call=getAll`,
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
@@ -144,7 +144,7 @@
 
     function loadFaculties() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=getAll',
+            url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
             success:function(response){
                 faculties = JSON.parse(response);
@@ -183,7 +183,7 @@
         var faculty_id = $('#data-add-item-faculty').val();
         var total_student = $('#data-add-item-students').val();
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=add',
+            url: `${baseUrl}batch.php?call=add`,
             type:'post',
             data: { name: name, title: title, session: session, faculty_id: faculty_id, total_student: total_student },
             success:function(response){
@@ -212,7 +212,7 @@
         var faculty_id = $('#data-edit-item-faculty').val();
         var total_student = $('#data-edit-item-students').val();
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=update',
+            url: `${baseUrl}batch.php?call=update`,
             type:'post',
             data: { id: id, name: name, title: title, session: session, faculty_id: faculty_id, total_student: total_student },
             success:function(response){
@@ -238,7 +238,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=restore',
+            url: `${baseUrl}batch.php?call=restore`,
             type:'post',
             data: { id: batch.id},
             success:function(response){
@@ -262,7 +262,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/batch.php?call=delete',
+            url: `${baseUrl}batch.php?call=delete`,
             type:'post',
             data: { id: batch.id},
             success:function(response){

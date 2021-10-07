@@ -108,7 +108,7 @@
 
     function loadAdmins() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/admin.php?call=getAll',
+            url:`${baseUrl}admin.php?call=getAll`,
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
@@ -151,7 +151,7 @@
             role: role
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/admin.php?call=add',
+            url:`${baseUrl}admin.php?call=add`,
             type:'post',
             data: data,
             success:function(response){
@@ -184,7 +184,7 @@
             role: role
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/admin.php?call=update',
+            url: `${baseUrl}admin.php?call=update`,
             type:'post',
             data: data,
             success:function(response){
@@ -210,7 +210,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/admin.php?call=restore',
+            url: `${baseUrl}admin.php?call=restore`,
             type:'post',
             data: { id: admin.id},
             success:function(response){
@@ -234,7 +234,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/admin.php?call=delete',
+            url: `${baseUrl}admin.php?call=delete`,
             type:'post',
             data: { id: admin.id },
             success:function(response){

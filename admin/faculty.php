@@ -100,7 +100,7 @@
 
     function loadFaculties() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=getAll',
+            url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
@@ -153,7 +153,7 @@
         var shortTitle = $('#data-add-item-short-title').val();
         var title = $('#data-add-item-title').val();
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=add',
+            url: `${baseUrl}faculty.php?call=add`,
             type:'post',
             data: { short_title: shortTitle, title: title },
             success:function(response){
@@ -179,7 +179,7 @@
         var shortTitle = $('#data-edit-item-short-title').val();
         var title = $('#data-edit-item-title').val();
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=update',
+            url: `${baseUrl}faculty.php?call=update`,
             type:'post',
             data: { id: id, short_title: shortTitle, title: title },
             success:function(response){
@@ -205,7 +205,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=restore',
+            url: `${baseUrl}faculty.php?call=restore`,
             type:'post',
             data: { id: faculty.id},
             success:function(response){
@@ -232,7 +232,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=delete',
+            url: `${baseUrl}faculty.php?call=delete`,
             type:'post',
             data: { id: faculty.id},
             success:function(response){

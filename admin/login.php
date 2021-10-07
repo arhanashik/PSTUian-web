@@ -50,7 +50,7 @@ $(document).ready(function() {
             return;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/auth.php?call=signIn',
+            url: '/PSTUian-web/admin/api/auth.php?call=signIn',
             type:'post',
             data:{email: email, password: password},
             success:function(response){

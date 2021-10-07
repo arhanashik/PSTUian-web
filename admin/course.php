@@ -117,7 +117,7 @@
 
     function loadCourses() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/course.php?call=getAll',
+            url: `${baseUrl}course.php?call=getAll`,
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
@@ -135,7 +135,7 @@
 
     function loadFaculties() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/faculty.php?call=getAll',
+            url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
             success:function(response){
                 faculties = JSON.parse(response);
@@ -177,7 +177,7 @@
             faculty_id: faculty_id
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/course.php?call=add',
+            url: `${baseUrl}course.php?call=add`,
             type:'post',
             data: data,
             success:function(response){
@@ -212,7 +212,7 @@
             faculty_id: faculty_id
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/course.php?call=update',
+            url: `${baseUrl}course.php?call=update`,
             type:'post',
             data: data,
             success:function(response){
@@ -238,7 +238,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/course.php?call=restore',
+            url: `${baseUrl}course.php?call=restore`,
             type:'post',
             data: { id: course.id},
             success:function(response){
@@ -262,7 +262,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/course.php?call=delete',
+            url: `${baseUrl}course.php?call=delete`,
             type:'post',
             data: { id: course.id},
             success:function(response){
