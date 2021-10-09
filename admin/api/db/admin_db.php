@@ -78,7 +78,7 @@ class AdminDb
         WHERE id = '$id' AND password = '$old_password'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
     public function updateRole($id, $role)

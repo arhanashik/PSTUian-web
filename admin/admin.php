@@ -38,14 +38,14 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-email">Email</label>
                             <input type="text" class="form-control" id="data-add-item-email"/>
                         </div>
                         <div class="form-group">
                             <label for="data-add-item-password">Password</label>
-                            <input type="text" class="form-control" id="data-add-item-password"/>
+                            <input type="password" class="form-control" id="data-add-item-password" minlength="6"/>
                         </div>
                         <div class="form-group">
                             <label for="data-add-item-role">Role</label>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-edit-modal-error"></p>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-email">Email</label>
@@ -82,7 +82,7 @@
                         </div>
                         <div class="form-group">
                             <label for="data-edit-item-password">Password</label>
-                            <input type="text" class="form-control" id="data-edit-item-password"/>
+                            <input type="password" class="form-control" id="data-edit-item-password" minlength="6"/>
                         </div>
                         <div class="form-group">
                             <label for="data-edit-item-role">Role</label>
@@ -167,7 +167,6 @@
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -200,7 +199,6 @@
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -263,6 +261,7 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-add-modal-error').html('');
         modal.find('#data-add-item-email').val('');
         modal.find('#data-add-item-password').val('');
         modal.find('#data-add-item-role').val('admin');
@@ -273,6 +272,7 @@
         var item = button.data('json');
 
         var modal = $(this);
+        modal.find('#data-edit-modal-error').html('');
         modal.find('#data-edit-item-id').val(item.id);
         modal.find('#data-edit-item-email').val(item.email);
         modal.find('#data-edit-item-password').val(item.password);

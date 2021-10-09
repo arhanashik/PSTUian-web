@@ -43,15 +43,15 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-password-change-modal-error"></p>
+                        <p class="text-danger" id="data-password-change-modal-error"></p>
                         <input type="text" class="form-control"  id="data-password-change-item-id" hidden value="<?php echo $_SESSION['admin']['id']; ?>"/>
                         <div class="form-group">
                             <label for="data-password-change-item-old-password">Old Password</label>
-                            <input type="text" class="form-control" id="data-password-change-item-old-password"/>
+                            <input type="password" class="form-control" id="data-password-change-item-old-password"/>
                         </div>
                         <div class="form-group">
                             <label for="data-password-change-item-new-password">New Password</label>
-                            <input type="text" class="form-control" id="data-password-change-item-new-password"/>
+                            <input type="password" class="form-control" id="data-password-change-item-new-password"/>
                         </div>
                     </form>
                 </div>
@@ -94,6 +94,7 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-password-change-modal-error').html('');
         modal.find('#data-password-change-item-old-password').val('');
         modal.find('#data-password-change-item-new-password').val('');
     });
@@ -119,7 +120,6 @@
                     $('#toast').toast('show');
                 } else {
                     $('#data-password-change-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {

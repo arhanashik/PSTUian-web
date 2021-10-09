@@ -34,6 +34,10 @@ $auth_token = $_SESSION['auth_token'];
             $.ajaxSetup({
                 headers: { 'x-auth-token': '<?php echo $auth_token; ?>' }
             });
+
+            $(function() { // do things when the document is ready
+                
+            });
         </script>
     </head>
     <body class="sb-nav-fixed">

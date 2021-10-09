@@ -28,7 +28,7 @@
     </div>
 
     <!-- Data Add Modal -->
-    <div class="modal fade" id="data-add-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="data-add-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -37,20 +37,29 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-title">Title</label>
                             <input type="text" class="form-control" id="data-add-item-title"/>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="input-group mb-3">
                             <label for="data-add-item-image">Image Url</label>
-                            <input type="text" class="form-control" id="data-add-item-image"/>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="data-add-item-image">
+                                <label class="custom-file-label" for="data-add-item-image">Choose file</label>
+                            </div>
+                        </div> -->
+                        <label for="data-add-item-image">Image</label>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="data-add-item-image" accept=".jpg,.jpeg,.png">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="addData()">Add</button>
+                    <button type="button" class="btn btn-primary" id="data-add-btn" onclick="addData()">
+                    Add
+                    </button>
                 </div>
             </div>
         </div>
@@ -74,7 +83,7 @@
                         </div>
                         <div class="form-group">
                             <label for="data-edit-item-image">Image Url</label>
-                            <input type="text" class="form-control" id="data-edit-item-image"/>
+                            <input type="text" class="form-control" id="data-edit-item-image" disabled/>
                         </div>
                     </form>
                 </div>
@@ -96,7 +105,6 @@
             url:'/PSTUian-web/admin/api/slider.php?call=getAll',
             type:'get',
             success:function(response){
-                console.log(response);
                 $('#data-table tbody').empty();
                 var list = JSON.parse(response);
                 for (i = 0; i < list.length; i++) {
@@ -127,16 +135,21 @@
     }
 
     function addData() {
+        var loadingStateBtn = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+        $('#data-add-btn').html(loadingStateBtn);
         var title = $('#data-add-item-title').val();
-        var image = $('#data-add-item-image').val();
-        var data = { 
-            title: title, 
-            image_url: image
-        }
+        var image = $('#data-add-item-image')[0].files[0];
+        var formData = new FormData();
+        formData.append('title', title);
+        formData.append('image', image);
         $.ajax({
             url:'/PSTUian-web/admin/api/slider.php?call=add',
             type:'post',
-            data: data,
+            data: formData,
+            // tell jQuery not to process the data
+            processData: false,
+            // tell jQuery not to set contentType
+            contentType: false,  
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
@@ -144,7 +157,6 @@
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -175,7 +187,6 @@
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -238,8 +249,10 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-add-modal-error').html('');
         modal.find('#data-add-item-title').val('');
         modal.find('#data-add-item-image').val('');
+        modal.find('#data-add-btn').html('Add');
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
@@ -250,6 +263,15 @@
         modal.find('#data-edit-item-id').val(item.id);
         modal.find('#data-edit-item-title').val(item.title);
         modal.find('#data-edit-item-image').val(item.image_url);
+    });
+
+    //restrict file size
+    const maxAllowedSize = 1 * 1024 * 1024;
+    $('#data-add-item-image').change( function() {
+        if(this.files[0].size > maxAllowedSize){
+            alert("File is too big!");
+            this.value = "";
+        };
     });
 </script>
 <?php include('./footer.php'); ?>
