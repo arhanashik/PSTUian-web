@@ -16,6 +16,10 @@ if (isset($_GET['call']))
             break;
 
         case 'add':
+            if(!isset($_POST['short_title']) || empty($_POST['short_title'])
+            || !isset($_POST['title']) || empty($_POST['title'])) {
+                break;
+            }
             $short_title = $_POST['short_title'];
             $title = $_POST['title'];
             $db = new FacultyDb();
@@ -27,6 +31,11 @@ if (isset($_GET['call']))
             break;
 
         case 'update':
+            if(!isset($_POST['id']) || empty($_POST['id']) 
+            || !isset($_POST['short_title']) || empty($_POST['short_title'])
+            || !isset($_POST['title']) || empty($_POST['title'])) {
+                break;
+            }
             $id = $_POST['id'];
             $short_title = $_POST['short_title'];
             $title = $_POST['title'];
@@ -39,6 +48,9 @@ if (isset($_GET['call']))
             break;
 
         case 'delete':
+            if(!isset($_POST['id']) || empty($_POST['id'])) {
+                break;
+            }
             $id = $_POST['id'];
             $db = new FacultyDb();
             $result = $db->delete($id);
@@ -49,6 +61,9 @@ if (isset($_GET['call']))
             break;
 
         case 'restore':
+            if(!isset($_POST['id']) || empty($_POST['id'])) {
+                break;
+            }
             $id = $_POST['id'];
             $db = new FacultyDb();
             $result = $db->restore($id);

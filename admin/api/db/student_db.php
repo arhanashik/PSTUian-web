@@ -36,7 +36,7 @@ class StudentDb
         return $list;
     }
 
-    public function getAllByFaculty($faculty_id, $batch_id)
+    public function getAllByFaculty($faculty_id)
     {
         //columns to select
         $columns = "s.*, f.short_title AS faculty, b.name AS batch";
@@ -52,7 +52,7 @@ class StudentDb
         // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->get_result();
+        $result = $stmt->get_result();
     
         $list = array();
         while ($row = $result->fetch_assoc()) {

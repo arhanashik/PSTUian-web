@@ -30,6 +30,31 @@ class EmployeeDb
         return $list;
     }
 
+    public function getAllByFaculty($faculty_id)
+    {
+        //columns to select
+        $columns = "e.*, f.short_title AS faculty";
+        //query
+        $sql = "SELECT $columns FROM " . EMPLOYEE_TABLE . " e 
+        LEFT JOIN " . FACULTY_TABLE . " f ON e.faculty_id = f.id";
+        //condition
+        $sql = $sql . " WHERE e.faculty_id = $faculty_id";
+        //sorting
+        $sql = $sql . " ORDER BY e.id ASC";
+        //constraints
+        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $list = array();
+        while ($row = $result->fetch_assoc()) {
+            array_push($list, $row);
+        }
+ 
+        return $list;
+    }
+
     public function get($id)
     {
         $sql = "SELECT id, short_title, title FROM " . EMPLOYEE_TABLE; 

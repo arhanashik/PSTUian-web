@@ -44,7 +44,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-short-title">Short Title</label>
                             <input type="text" class="form-control" id="data-add-item-short-title"/>
@@ -73,7 +73,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-edit-modal-error"></p>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-short-title">Short Title</label>
@@ -249,6 +249,7 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-add-item-error').html('');
         modal.find('#data-add-item-short-title').val('');
         modal.find('#data-add-item-title').val('');
     });
@@ -260,6 +261,7 @@
         var title = button.data('title');
 
         var modal = $(this);
+        modal.find('#data-edit-item-error').html('');
         modal.find('#data-edit-item-id').val(id);
         modal.find('#data-edit-item-short-title').val(shortTitle);
         modal.find('#data-edit-item-title').val(title);

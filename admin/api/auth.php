@@ -93,6 +93,7 @@ if (isset($_GET['call'])) {
             break;
 
         case 'delete':
+            if(!isset($_POST['id']) || empty($_POST['id'])) break;
             $id = $_POST['id'];
             $result = $db->delete($id);
 
@@ -102,6 +103,7 @@ if (isset($_GET['call'])) {
             break;
 
         case 'restore':
+            if(!isset($_POST['id']) || empty($_POST['id'])) break;
             $id = $_POST['id'];
             $result = $db->restore($id);
 

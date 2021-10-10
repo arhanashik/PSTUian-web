@@ -12,10 +12,22 @@ if (isset($_GET['call']))
     switch ($_GET['call']) 
     {
         case 'getAll':
+            if(isset($_GET['faculty_id']) && !empty($_GET['faculty_id'])) {
+                $faculty_id = $_GET['faculty_id'];
+                $response = $db->getAllByFaculty($faculty_id);
+                break;
+            }
             $response = $db->getAll();
             break;
 
         case 'add':
+            if(!isset($_POST['name']) || empty($_POST['name'])
+            || !isset($_POST['designation']) || empty($_POST['designation'])
+            || !isset($_POST['faculty_id']) || empty($_POST['faculty_id'])
+            || !isset($_POST['department']) || empty($_POST['department'])
+            || !isset($_POST['address']) || !isset($_POST['phone'])) {
+                break;
+            }
             $name = $_POST['name'];
             $designation = $_POST['designation'];
             $faculty_id = $_POST['faculty_id'];
@@ -30,6 +42,14 @@ if (isset($_GET['call']))
             break;
 
         case 'update':
+            if(!isset($_POST['id']) || empty($_POST['id'])
+            || !isset($_POST['name']) || empty($_POST['name'])
+            || !isset($_POST['designation']) || empty($_POST['designation'])
+            || !isset($_POST['faculty_id']) || empty($_POST['faculty_id'])
+            || !isset($_POST['department']) || empty($_POST['department'])
+            || !isset($_POST['address']) || !isset($_POST['phone'])) {
+                break;
+            }
             $id = $_POST['id'];
             $name = $_POST['name'];
             $designation = $_POST['designation'];
@@ -45,6 +65,9 @@ if (isset($_GET['call']))
             break;
 
         case 'delete':
+            if(!isset($_POST['id']) || empty($_POST['id'])) {
+                break;
+            }
             $id = $_POST['id'];
             $result = $db->delete($id);
 
@@ -54,6 +77,9 @@ if (isset($_GET['call']))
             break;
 
         case 'restore':
+            if(!isset($_POST['id']) || empty($_POST['id'])) {
+                break;
+            }
             $id = $_POST['id'];
             $result = $db->restore($id);
 

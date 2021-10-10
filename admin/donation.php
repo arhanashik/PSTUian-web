@@ -38,7 +38,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-name">Name</label>
                             <input type="text" class="form-control" id="data-add-item-name"/>
@@ -75,7 +75,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-edit-modal-error"></p>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-name">Name</label>
@@ -196,7 +196,6 @@
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -231,7 +230,6 @@
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {

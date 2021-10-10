@@ -31,6 +31,31 @@ class TeacherDb
         return $list;
     }
 
+    public function getAllByFaculty($faculty_id)
+    {
+        //columns to select
+        $columns = "t.*, f.short_title AS faculty";
+        //query
+        $sql = "SELECT $columns FROM " . TEACHER_TABLE . " t 
+        LEFT JOIN " . FACULTY_TABLE . " f ON t.faculty_id = f.id";
+        //condition
+        $sql = $sql . " WHERE t.faculty_id = $faculty_id";
+        //sorting
+        $sql = $sql . " ORDER BY t.id ASC";
+        //constraints
+        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $list = array();
+        while ($row = $result->fetch_assoc()) {
+            array_push($list, $row);
+        }
+ 
+        return $list;
+    }
+
     public function get($id)
     {
         $sql = "SELECT id, short_title, title FROM " . TEACHER_TABLE; 

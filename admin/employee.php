@@ -7,16 +7,26 @@
             <li class="breadcrumb-item active">Employee</li>
         </ol>
         <div class="mb-4">
-        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Employee
-        </button>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="faculties">Faculty</label>
+                    <select class="form-select float-start" id="faculties" aria-label="Select Faculty">
+                    </select>
+                </div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
+                    Add New Employee
+                    </button>
+                </div>
+            </div>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Designation</th>
-                        <th scope="col">Faculty</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
                         <th scope="col">Action</th>
@@ -38,7 +48,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-name">Name</label>
                             <input type="text" class="form-control" id="data-add-item-name"/>
@@ -49,8 +59,7 @@
                         </div>
                         <div class="form-group">
                             <label for="data-add-item-faculty">Faculty</label>
-                            <select class="form-select" id="data-add-item-faculty" aria-label="Select Faculty">
-                                <option selected>--Select--</option>
+                            <select class="form-select" id="data-add-item-faculty" aria-label="Select Faculty"> 
                             </select>
                         </div>
                         <div class="form-group">
@@ -85,7 +94,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-edit-modal-error"></p>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-name">Name</label>
@@ -98,7 +107,6 @@
                         <div class="form-group">
                             <label for="data-edit-item-faculty">Faculty</label>
                             <select class="form-select" id="data-edit-item-faculty" aria-label="Select Faculty">
-                                <option selected>--Select--</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -156,20 +164,20 @@
 </main>
 <script>
     var faculties = [];
+    var selectedFaculty;
     $(document).ready(function() {
         loadFaculties();
-        loadEmployees();
     });
 
-    function loadEmployees() {
+    function loadFaculties() {
         $.ajax({
-            url: `${baseUrl}employee.php?call=getAll`,
+            url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
             success:function(response){
-                $('#data-table tbody').empty();
-                var list = JSON.parse(response);
-                for (i = 0; i < list.length; i++) {
-                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
+                faculties = JSON.parse(response);
+                addFacultiesToDropdown(faculties, $('#faculties'));
+                if(faculties && faculties.length > 0) {
+                    $('#faculties').val(faculties[0].id).change();
                 }
             },
             error: function(xhr, status, error) {
@@ -179,12 +187,17 @@
         });
     }
 
-    function loadFaculties() {
+    function loadEmployees(faculty_id) {
         $.ajax({
-            url: `${baseUrl}faculty.php?call=getAll`,
+            url: `${baseUrl}employee.php?call=getAll`,
             type:'get',
+            data: {faculty_id: faculty_id},
             success:function(response){
-                faculties = JSON.parse(response);
+                $('#data-table tbody').empty();
+                var list = JSON.parse(response);
+                for (i = 0; i < list.length; i++) {
+                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
+                }
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -204,7 +217,6 @@
         `<th scope="row">${item.id}</th>` +
         `<td>${item.name}</td>` +
         `<td>${item.designation}</td>` +
-        `<td>${item.short_title}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
         `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete}</td>` +
@@ -233,11 +245,10 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadEmployees();
+                    loadEmployees(selectedFaculty);
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -272,11 +283,10 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadEmployees();
+                    loadEmployees(selectedFaculty);
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -339,6 +349,7 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-add-item-error').html('');
         modal.find('#data-add-item-name').val('');
         modal.find('#data-add-item-designation').val('');
         modal.find('#data-add-item-department').val('');
@@ -346,6 +357,7 @@
         modal.find('#data-add-item-phone').val('');
 
         addFacultiesToDropdown(faculties, $('#data-add-item-faculty'));
+        modal.find('#data-add-item-faculty').val(selectedFaculty).change();
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
@@ -354,6 +366,7 @@
         addFacultiesToDropdown(faculties, $('#data-edit-item-faculty'));
 
         var modal = $(this);
+        modal.find('#data-edit-item-error').html('');
         modal.find('#data-edit-item-id').val(employee.id);
         modal.find('#data-edit-item-name').val(employee.name);
         modal.find('#data-edit-item-designation').val(employee.designation);
@@ -379,12 +392,16 @@
 
     function addFacultiesToDropdown(faculties, dropdown) {
         dropdown.empty();
-        dropdown.append('<option selected value="-1">--Select--</option>');
         for (i = 0; i < faculties.length; i++) {
             var faculty = faculties[i];
             var item = `<option value="${faculty.id}">${faculty.short_title}</option>`;
             dropdown.append(item);
         }
     }
+
+    $('#faculties').change(function() {
+        selectedFaculty = $(this).val();
+        loadEmployees(selectedFaculty);
+    });
 </script>
 <?php include('./footer.php'); ?>

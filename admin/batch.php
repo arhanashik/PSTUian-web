@@ -7,9 +7,20 @@
             <li class="breadcrumb-item active">Batch</li>
         </ol>
         <div class="mb-4">
-        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Batch
-        </button>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="faculties">Faculty</label>
+                    <select class="form-select float-start" id="faculties" aria-label="Select Faculty">
+                    </select>
+                </div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
+                    Add New Batch
+                    </button>
+                </div>
+            </div>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
@@ -17,7 +28,6 @@
                         <th scope="col">Name</th>
                         <th scope="col">Title</th>
                         <th scope="col">Session</th>
-                        <th scope="col">Faculty</th>
                         <th scope="col">Students</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
@@ -40,7 +50,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-name">Name</label>
                             <input type="text" class="form-control" id="data-add-item-name"/>
@@ -56,7 +66,6 @@
                         <div class="form-group">
                             <label for="data-add-item-faculty">Faculty</label>
                             <select class="form-select" id="data-add-item-faculty" aria-label="Select Faculty">
-                                <option selected>--Select--</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -83,7 +92,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-edit-modal-error"></p>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-name">Name</label>
@@ -119,20 +128,20 @@
 </main>
 <script>
     var faculties = [];
+    var selectedFaculty;
     $(document).ready(function() {
         loadFaculties();
-        loadBatches();
     });
 
-    function loadBatches() {
+    function loadFaculties() {
         $.ajax({
-            url: `${baseUrl}batch.php?call=getAll`,
+            url: `${baseUrl}faculty.php?call=getAll`,
             type:'get',
             success:function(response){
-                $('#data-table tbody').empty();
-                var batches = JSON.parse(response);
-                for (i = 0; i < batches.length; i++) {
-                    $('#data-table > tbody:last-child').append(generateTr(batches[i]));
+                faculties = JSON.parse(response);
+                addFacultiesToDropdown(faculties, $('#faculties'));
+                if(faculties && faculties.length > 0) {
+                    $('#faculties').val(faculties[0].id).change();
                 }
             },
             error: function(xhr, status, error) {
@@ -142,12 +151,17 @@
         });
     }
 
-    function loadFaculties() {
+    function loadBatches(faculty_id) {
         $.ajax({
-            url: `${baseUrl}faculty.php?call=getAll`,
+            url: `${baseUrl}batch.php?call=getAll`,
             type:'get',
+            data: {faculty_id: faculty_id},
             success:function(response){
-                faculties = JSON.parse(response);
+                $('#data-table tbody').empty();
+                var batches = JSON.parse(response);
+                for (i = 0; i < batches.length; i++) {
+                    $('#data-table > tbody:last-child').append(generateTr(batches[i]));
+                }
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
@@ -168,7 +182,6 @@
         `<td>${batch.name}</td>` +
         `<td>${batch.title}</td>` +
         `<td>${batch.session}</td>` +
-        `<td>${batch.short_title}</td>` +
         `<td>${batch.total_student}</td>` +
         `<td>${batch.created_at}</td>` +
         `<td>${batch.updated_at}</td>` +
@@ -189,7 +202,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadBatches();
+                    loadBatches(selectedFaculty);
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
@@ -218,7 +231,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadBatches();
+                    loadBatches(selectedFaculty);
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
@@ -285,12 +298,14 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-add-item-error').html('');
         modal.find('#data-add-item-name').val('');
         modal.find('#data-add-item-title').val('');
         modal.find('#data-add-item-session').val('');
         modal.find('#data-add-item-students').val('');
 
         addFacultiesToDropdown(faculties, $('#data-add-item-faculty'));
+        modal.find('#data-add-item-faculty').val(selectedFaculty).change();
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
@@ -299,6 +314,7 @@
         addFacultiesToDropdown(faculties, $('#data-edit-item-faculty'));
 
         var modal = $(this);
+        modal.find('#data-edit-item-error').html('');
         modal.find('#data-edit-item-id').val(batch.id);
         modal.find('#data-edit-item-name').val(batch.name);
         modal.find('#data-edit-item-title').val(batch.title);
@@ -311,12 +327,16 @@
 
     function addFacultiesToDropdown(faculties, dropdown) {
         dropdown.empty();
-        dropdown.append('<option selected value="-1">--Select--</option>');
         for (i = 0; i < faculties.length; i++) {
             var faculty = faculties[i];
             var item = `<option value="${faculty.id}">${faculty.short_title}</option>`;
             dropdown.append(item);
         }
     }
+
+    $('#faculties').change(function() {
+        selectedFaculty = $(this).val();
+        loadBatches(selectedFaculty);
+    });
 </script>
 <?php include('./footer.php'); ?>
