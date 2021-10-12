@@ -87,6 +87,17 @@ class StudentDb
         return $item;
     }
 
+    public function isAlreadyInsered($id)
+    {
+        $sql = "SELECT id FROM " . STUDENT_TABLE . " WHERE id = '$id'";
+        
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $num_rows = $result->num_rows;
+        return $num_rows > 0;
+    }
+
     public function insert($name, $id, $reg, $batch_id, $session, $faculty_id)
     {
         //columns to select

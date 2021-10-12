@@ -41,6 +41,10 @@ if (isset($_GET['call']))
             $batch_id = $_POST['batch_id'];
             $session = $_POST['session'];
             $faculty_id = $_POST['faculty_id'];
+            if($db->isAlreadyInsered($id)) {
+                $response['message'] = 'Account already exists!';
+                break;
+            }
             $result = $db->insert($name, $id, $reg, $batch_id, $session, $faculty_id);
 
             $response['success'] = true;

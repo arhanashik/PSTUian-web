@@ -75,6 +75,17 @@ class CourseDb
         return $faculty;
     }
 
+    public function isAlreadyInsered($course_code)
+    {
+        $sql = "SELECT id FROM " . COURSE_TABLE . " WHERE course_code = '$course_code'";
+        
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $num_rows = $result->num_rows;
+        return $num_rows > 0;
+    }
+
     public function insert($course_code, $course_title, $credit_hour, $faculty_id)
     {
         $sql = "INSERT INTO " . COURSE_TABLE . "(course_code, course_title, credit_hour, faculty_id) 
