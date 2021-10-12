@@ -1,15 +1,11 @@
 <?php
+require_once dirname(__FILE__) . '/db.php';
 
-class StudentDb
+class StudentDb extends Db
 {
-    private $con;
- 
     public function __construct()
     {
-        require_once dirname(__FILE__) . '/db_connect.php';
- 
-        $db = new DbConnect();
-        $this->con = $db->connect();
+        parent::__construct(STUDENT_TABLE);
     }
 
     public function getAll()
@@ -22,18 +18,7 @@ class StudentDb
         LEFT JOIN " . BATCH_TABLE . " b ON s.batch_id = b.id";
         //sorting
         $sql = $sql . " ORDER BY id ASC";
-        //constraints
-        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        $list = array();
-        while ($row = $result->fetch_assoc()) {
-            array_push($list, $row);
-        }
- 
-        return $list;
+        return parent::getAll($sql);
     }
 
     public function getAllByFaculty($faculty_id)
@@ -48,18 +33,7 @@ class StudentDb
         $sql = $sql . " WHERE faculty_id = $faculty_id";
         //sorting
         $sql = $sql . " ORDER BY id ASC";
-        //constraints
-        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        $list = array();
-        while ($row = $result->fetch_assoc()) {
-            array_push($list, $row);
-        }
- 
-        return $list;
+        return parent::getAll($sql);
     }
 
     public function getAllByFacultyAndBatch($faculty_id, $batch_id)
@@ -74,63 +48,7 @@ class StudentDb
         $sql = $sql . " WHERE s.faculty_id = $faculty_id AND s.batch_id = $batch_id";
         //sorting
         $sql = $sql . " ORDER BY s.id ASC";
-        //constraints
-        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        $list = array();
-        while ($row = $result->fetch_assoc()) {
-            array_push($list, $row);
-        }
- 
-        return $list;
-    }
-
-    public function get($id)
-    {
-        //columns to select
-        $columns = "name, reg, phone, linked_in, blood, address, email, batch_id, session, faculty_id, fb_link, image_url, cv_link";
-        //query
-        $sql = "SELECT $columns FROM " . STUDENT_TABLE;
-        //condition
-        $sql = $sql . " WHERE id = $id AND deleted = 0";
-        
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $stmt->bind_result($name, $reg, $phone, $linked_in, $blood, $address, $email, $batch_id, $session, $faculty_id, $fb_link, $image_url, $cv_link);
-
-        $item = array();
-        while ($stmt->fetch()) {
-            $item['name'] = $name;
-            $item['id'] = $id;
-            $item['reg'] = $reg;
-            $item['phone'] = $phone;
-            $item['linked_in'] = $linked_in;
-            $item['blood'] = $blood;
-            $item['address'] = $address;
-            $item['email'] = $email;
-            $item['batch_id'] = $batch_id;
-            $item['session'] = $session;
-            $item['faculty_id'] = $faculty_id;
-            $item['fb_link'] = $fb_link;
-            $item['image_url'] = $image_url;
-            $item['cv_link'] = $cv_link;
-        }
- 
-        return $item;
-    }
-
-    public function isAlreadyInsered($id)
-    {
-        $sql = "SELECT id FROM " . STUDENT_TABLE . " WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $num_rows = $result->num_rows;
-        return $num_rows > 0;
+        return parent::getAll($sql);
     }
 
     public function insert($name, $id, $reg, $batch_id, $session, $faculty_id)
@@ -152,22 +70,6 @@ class StudentDb
         updated_at = NOW() WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function delete($id)
-    {
-        $sql = "UPDATE " . STUDENT_TABLE . " set deleted =  1, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function restore($id)
-    {
-        $sql = "UPDATE " . STUDENT_TABLE . " set deleted = 0, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 }

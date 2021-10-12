@@ -1,39 +1,15 @@
 <?php
+require_once dirname(__FILE__) . '/db.php';
+require_once dirname(__FILE__) . '/../constant.php';
 
-class AuthDb
+class AuthDb extends Db
 {
-    private $con;
- 
     public function __construct()
     {
-        require_once dirname(__FILE__) . '/db_connect.php';
- 
-        $db = new DbConnect();
-        $this->con = $db->connect();
+        parent::__construct(AUTH_TABLE);
     }
 
-    public function getDbConnection() {
-        return $this->con;
-    }
-
-    public function getAll()
-    {
-        $sql = "SELECT * FROM " . AUTH_TABLE;
-        //sorting
-        $sql = $sql . " ORDER BY id DESC";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        $list = array();
-        while ($row = $result->fetch_assoc()) {
-            array_push($list, $row);
-        }
- 
-        return $list;
-    }
-
-    public function get($user_id, $user_type)
+    public function getByUserIdAndType($user_id, $user_type)
     {
         $sql = "SELECT * FROM " . AUTH_TABLE . " WHERE user_id = '$user_id' AND user_type = '$user_type'";
         
@@ -75,7 +51,7 @@ class AuthDb
         WHERE user_id = '$user_id' AND user_type = '$user_type'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
     public function invalidateAuth($user_id, $user_type)
@@ -84,30 +60,6 @@ class AuthDb
         WHERE user_id = '$user_id' AND user_type = '$user_type'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function delete($id)
-    {
-        $sql = "UPDATE " . AUTH_TABLE . " set deleted = 1, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function deletePermanent($id)
-    {
-        $sql = "DELETE FROM " . AUTH_TABLE . " WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function restore($id)
-    {
-        $sql = "UPDATE " . AUTH_TABLE . " set deleted = 0, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 }

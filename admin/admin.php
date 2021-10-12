@@ -51,7 +51,7 @@
                             <label for="data-add-item-role">Role</label>
                             <select class="form-select" id="data-add-item-role" aria-label="Select Role">
                                 <option selected value="admin">Admin</option>
-                                <option value="super_admin">Super Admin</option>
+                                <?php if ($role == 'super_admin') echo '<option value="super_admin">Super Admin</option>';?>
                             </select>
                         </div>
                     </form>
@@ -101,7 +101,7 @@
         </div>
     </div>
 </main>
-<script>
+<script type="text/javascript">
     $(document).ready(function() {
         loadAdmins();
     });
@@ -119,8 +119,11 @@
                     $('#toast').toast('show');
                     return;
                 }
+                var currUserRole = <?php echo json_encode($role); ?>;
                 for (i = 0; i < list.length; i++) {
-                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
+                    var admin = list[i];
+                    if(currUserRole == 'admin' && admin['role'] == 'super_admin') continue;
+                    $('#data-table > tbody:last-child').append(generateTr(admin));
                 }
             },
             error: function(xhr, status, error) {
@@ -136,14 +139,15 @@
         var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreAdmin(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteAdmin(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
         `<td>${item.email}</td>` +
-        `<td>${item.password}</td>` +
+        `<td class="hidetext">${item.password}</td>` +
         `<td>${item.role}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
-        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
 
@@ -246,6 +250,29 @@
                 if(data['success'] === true) {
                     admin.deleted = 1;
                     $(`table#data-table tr#${admin.id}`).replaceWith(generateTr(admin));
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
+    function deletePermanent(item) {
+        if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
+            return false;
+        }
+        $.ajax({
+            url: `${baseUrl}admin.php?call=deletePermanent`,
+            type:'post',
+            data: { id: item.id},
+            success:function(response){
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadAdmins();
                 } else {
                     console.log(data['message']);
                 }

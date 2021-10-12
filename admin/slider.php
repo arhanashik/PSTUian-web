@@ -102,7 +102,7 @@
 
     function loadSliders() {
         $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=getAll',
+            url: `${baseUrl}slider.php?call=getAll`,
             type:'get',
             success:function(response){
                 $('#data-table tbody').empty();
@@ -124,13 +124,14 @@
         var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreSlider(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteSlider(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
         `<td>${item.title}</td>` +
         `<td>${item.image_url}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
-        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
 
@@ -143,7 +144,7 @@
         formData.append('title', title);
         formData.append('image', image);
         $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=add',
+            url: `${baseUrl}slider.php?call=add`,
             type:'post',
             data: formData,
             // tell jQuery not to process the data
@@ -177,7 +178,7 @@
             image_url: image
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=update',
+            url: `${baseUrl}slider.php?call=update`,
             type:'post',
             data: data,
             success:function(response){
@@ -202,7 +203,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=restore',
+            url: `${baseUrl}slider.php?call=restore`,
             type:'post',
             data: { id: slider.id},
             success:function(response){
@@ -226,7 +227,7 @@
             return false;
         }
         $.ajax({
-            url:'/PSTUian-web/admin/api/slider.php?call=delete',
+            url: `${baseUrl}slider.php?call=delete`,
             type:'post',
             data: { id: slider.id},
             success:function(response){
@@ -234,6 +235,29 @@
                 if(data['success'] === true) {
                     slider.deleted = 1;
                     $(`table#data-table tr#${slider.id}`).replaceWith(generateTr(slider));
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
+    function deletePermanent(item) {
+        if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
+            return false;
+        }
+        $.ajax({
+            url: `${baseUrl}slider.php?call=deletePermanent`,
+            type:'post',
+            data: { id: item.id},
+            success:function(response){
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadSliders();
                 } else {
                     console.log(data['message']);
                 }

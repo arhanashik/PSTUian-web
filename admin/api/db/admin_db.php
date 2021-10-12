@@ -1,42 +1,18 @@
 <?php
+require_once dirname(__FILE__) . '/db.php';
 
-class AdminDb
+class AdminDb extends Db
 {
-    private $con;
- 
     public function __construct()
     {
-        require_once dirname(__FILE__) . '/db_connect.php';
- 
-        $db = new DbConnect();
-        $this->con = $db->connect();
-    }
-
-    public function getDbConnection() {
-        return $this->con;
-    }
-
-    public function getAll()
-    {
-        $sql = "SELECT * FROM " . ADMIN_TABLE;
-        //sorting
-        $sql = $sql . " ORDER BY id";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        $list = array();
-        while ($row = $result->fetch_assoc()) {
-            array_push($list, $row);
-        }
- 
-        return $list;
+        parent::__construct(ADMIN_TABLE);
     }
 
     public function validate($email, $password)
     {
 
-        $sql = "SELECT id, role FROM " . ADMIN_TABLE . " WHERE email = '$email' AND password = '$password'";
+        $sql = "SELECT id, role FROM " . ADMIN_TABLE;
+        $sql = $sql . " WHERE (email = '$email' AND password = '$password') AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
@@ -69,7 +45,7 @@ class AdminDb
         password = '$password', role = '$role', updated_at = NOW() WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
     public function updatePassword($id, $old_password, $new_password)
@@ -86,30 +62,6 @@ class AdminDb
         $sql = "UPDATE " . ADMIN_TABLE . " set role = '$role', updated_at = NOW() WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function delete($id)
-    {
-        $sql = "UPDATE " . ADMIN_TABLE . " set deleted = 1, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function deletePermanent($id)
-    {
-        $sql = "DELETE FROM " . ADMIN_TABLE . " WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function restore($id)
-    {
-        $sql = "UPDATE " . ADMIN_TABLE . " set deleted = 0, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 }

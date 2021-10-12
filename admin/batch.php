@@ -157,6 +157,7 @@
             type:'get',
             data: {faculty_id: faculty_id},
             success:function(response){
+                console.log(response);
                 $('#data-table tbody').empty();
                 var batches = JSON.parse(response);
                 for (i = 0; i < batches.length; i++) {
@@ -177,6 +178,7 @@
         var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreBatch(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteBatch(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${batch.id}">` + 
         `<th scope="row">${batch.id}</th>` +
         `<td>${batch.name}</td>` +
@@ -185,7 +187,7 @@
         `<td>${batch.total_student}</td>` +
         `<td>${batch.created_at}</td>` +
         `<td>${batch.updated_at}</td>` +
-        `<td id="td-action-${batch.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${batch.id}">${btnEdit} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
 
@@ -283,6 +285,30 @@
                 if(data['success'] === true) {
                     batch.deleted = 1;
                     $(`table#data-table tr#${batch.id}`).replaceWith(generateTr(batch));
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
+    function deletePermanent(item) {
+        if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
+            return false;
+        }
+        $.ajax({
+            url: `${baseUrl}batch.php?call=deletePermanent`,
+            type:'post',
+            data: { id: item.id},
+            success:function(response){
+                console.log(response);
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadBatches(selectedFaculty);
                 } else {
                     console.log(data['message']);
                 }

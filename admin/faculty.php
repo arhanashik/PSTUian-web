@@ -124,19 +124,19 @@
     }
 
     function generateTr(faculty) {
-        // console.log(JSON.stringify(faculty));
         var param = JSON.stringify(faculty);
         var deleted = faculty.deleted !== 0;
         var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id="${faculty.id}" data-short-title="${faculty.short_title}" data-title="${faculty.title}"><i class="far fa-edit"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreFaculty(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteFaculty(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${faculty.id}">` + 
         `<th scope="row">${faculty.id}</th>` +
         `<td>${faculty.short_title}</td>` +
         `<td>${faculty.title}</td>` +
         `<td>${faculty.created_at}</td>` +
         `<td>${faculty.updated_at}</td>` +
-        `<td id="td-action-${faculty.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${faculty.id}">${btnEdit} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
 
@@ -234,6 +234,29 @@
                     // $(`#td-deleted-${id}`).html('true');
                     faculty.deleted = 1;
                     $(`table#data-table tr#${faculty.id}`).replaceWith(generateTr(faculty));
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
+    function deletePermanent(item) {
+        if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
+            return false;
+        }
+        $.ajax({
+            url: `${baseUrl}faculty.php?call=deletePermanent`,
+            type:'post',
+            data: { id: item.id},
+            success:function(response){
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadFaculties();
                 } else {
                     console.log(data['message']);
                 }
