@@ -58,7 +58,7 @@ class Db {
 
     public function isAlreadyInsered($id)
     {
-        $sql = "SELECT id FROM $table WHERE id = '$id'";
+        $sql = "SELECT id FROM $this->table WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();

@@ -11,7 +11,9 @@ class StudentDb extends Db
     public function getAll()
     {
         //columns to select
-        $columns = "s.*, f.short_title AS faculty, b.name AS batch";
+        $columns = "s.name, s.id, s.reg, s.phone, s.linked_in, s.blood, s.address, s.email, 
+        s.batch_id, s.session, s.faculty_id, s.fb_link, s.image_url, s.cv_link, s.deleted, 
+        s.created_at, s.updated_at, f.short_title AS faculty, b.name AS batch";
         //query
         $sql = "SELECT $columns FROM " . STUDENT_TABLE . " s 
         LEFT JOIN " . FACULTY_TABLE . " f ON s.faculty_id = f.id 
@@ -24,7 +26,9 @@ class StudentDb extends Db
     public function getAllByFaculty($faculty_id)
     {
         //columns to select
-        $columns = "s.*, f.short_title AS faculty, b.name AS batch";
+        $columns = "s.name, s.id, s.reg, s.phone, s.linked_in, s.blood, s.address, s.email, 
+        s.batch_id, s.session, s.faculty_id, s.fb_link, s.image_url, s.cv_link, s.deleted, 
+        s.created_at, s.updated_at, f.short_title AS faculty, b.name AS batch";
         //query
         $sql = "SELECT $columns FROM " . STUDENT_TABLE . " s 
         LEFT JOIN " . FACULTY_TABLE . " f ON s.faculty_id = f.id 
@@ -39,7 +43,9 @@ class StudentDb extends Db
     public function getAllByFacultyAndBatch($faculty_id, $batch_id)
     {
         //columns to select
-        $columns = "s.*, f.short_title AS faculty, b.name AS batch";
+        $columns = "s.name, s.id, s.reg, s.phone, s.linked_in, s.blood, s.address, s.email, 
+        s.batch_id, s.session, s.faculty_id, s.fb_link, s.image_url, s.cv_link, s.deleted, 
+        s.created_at, s.updated_at, f.short_title AS faculty, b.name AS batch";
         //query
         $sql = "SELECT $columns FROM " . STUDENT_TABLE . " s 
         LEFT JOIN " . FACULTY_TABLE . " f ON s.faculty_id = f.id 
@@ -51,12 +57,12 @@ class StudentDb extends Db
         return parent::getAll($sql);
     }
 
-    public function insert($name, $id, $reg, $batch_id, $session, $faculty_id)
+    public function insert($name, $id, $reg, $email, $batch_id, $session, $faculty_id, $password)
     {
         //columns to select
-        $columns = "name, id, reg, batch_id, session, faculty_id";
+        $columns = "name, id, reg, email, batch_id, session, faculty_id, password";
         $sql = "INSERT INTO " . STUDENT_TABLE . "($columns) 
-        VALUES ('$name', '$id','$reg', '$batch_id', '$session', '$faculty_id')";
+        VALUES ('$name', '$id','$reg', '$email', '$batch_id', '$session', '$faculty_id', '$password')";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();

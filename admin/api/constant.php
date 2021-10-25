@@ -18,6 +18,8 @@ define('DONATION_TABLE', 'donation');
 define('INFO_TABLE', 'info');
 define('ADMIN_TABLE', 'admin');
 define('AUTH_TABLE', 'auth');
+define('CONFIG_TABLE', 'config');
+define('USER_QUERY_TABLE', 'user_query');
 
 define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
 

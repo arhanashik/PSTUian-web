@@ -26,6 +26,24 @@ if (isset($_GET['call']))
                 $response['data'] = $data;
             }
             break;
+
+        case 'get':
+            if($_GET['id'] === null || strlen($_GET['id']) <= 0) break;
+
+            $id = $_GET['id'];
+            $db = new BatchDb();
+            $data = $db->get($id);
+            if($data === null || empty($data)) 
+            {
+                $response['message'] = 'No data found!';
+            }
+            else
+            {
+                $response['success'] = true;
+                $response['message'] = 'Data found';
+                $response['data'] = $data;
+            }
+            break;
 		
         default:
             break;

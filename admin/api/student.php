@@ -55,7 +55,10 @@ switch ($_GET['call'])
             $response['message'] = 'Account already exists!';
             break;
         }
-        $result = $db->insert($name, $id, $reg, $batch_id, $session, $faculty_id);
+        //default email and password
+        $email = $id;
+        $password = md5($reg);
+        $result = $db->insert($name, $id, $reg, $email, $batch_id, $session, $faculty_id, $password);
 
         $response['success'] = true;
         $response['message'] = 'Inserted Successfully';

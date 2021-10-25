@@ -44,7 +44,7 @@ switch ($call)
         $upload_result = $util->uploadSlider($image, $target_file_name, $extension);
         //upload failed
         if($upload_result !== '') {
-            $response = $upload_result;
+            $response['message'] = $upload_result;
             break;
         }
         //insert to db

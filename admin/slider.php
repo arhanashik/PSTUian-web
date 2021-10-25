@@ -7,9 +7,9 @@
             <li class="breadcrumb-item active">Slider</li>
         </ol>
         <div class="mb-4">
-        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Slider
-        </button>
+            <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
+            Add New Slider
+            </button>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
@@ -155,13 +155,16 @@
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
                     loadSliders();
+                    $('#data-add-btn').html('Done');
                     $('#data-add-modal').modal('hide');
                 } else {
+                    $('#data-add-btn').html('Add');
                     $('#data-add-modal-error').text(data['message']);
                 }
             },
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
+                $('#data-add-btn').html('Add');
                 $('#data-add-modal-error').text(err.Message);
                 console.log(err);
             }
