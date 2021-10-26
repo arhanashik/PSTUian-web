@@ -9,7 +9,7 @@ deployment:
     - /bin/cp -R css $DEPLOYPATH
     - /bin/cp -R images $DEPLOYPATH
     - /bin/cp -R js $DEPLOYPATH
-    - /bin/cp index.php $DEPLOYPATH
+    - /bin/cp -R *.php $DEPLOYPATH
 
     # Sync repository files to the deploy target path, excluding .git folder.
     # --delete-after will remove deleted files and folders after syncing.
