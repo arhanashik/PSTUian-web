@@ -18,12 +18,15 @@ define('DONATION_TABLE', 'donation');
 define('INFO_TABLE', 'info');
 define('ADMIN_TABLE', 'admin');
 define('AUTH_TABLE', 'auth');
+define('CONFIG_TABLE', 'config');
+define('USER_QUERY_TABLE', 'user_query');
+define('USER_QUERY_REPLY_TABLE', 'user_query_reply');
 
 define('BASE_URL', 'https://admin.pstuian.com/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
-define('ROOT_DIR', dirname(__FILE__, 4));
+define('ROOT_DIR', dirname(__FILE__, 3));
 define('UPLOAD_PATH', 'uploads/');
 define('FILE_PATH',  UPLOAD_PATH . 'files/');
 define('SLIDER_PATH', UPLOAD_PATH . 'slider/');
@@ -31,7 +34,7 @@ define('AVATAR_PATH',  UPLOAD_PATH . 'avatar/');
 
 define('PAGE_LIMIT',  20);
 
-define('ALLOWED_EXTENTION',  array("png","jpg","jpeg"));
+define('ALLOWED_EXTENTION',  array("png", "jpg", "jpeg"));
 define('ALLOWED_ANIM_EXTENTION',  array("json"));
 define('MAX_SIZE',  2000000);
 

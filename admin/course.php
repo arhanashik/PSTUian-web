@@ -7,9 +7,20 @@
             <li class="breadcrumb-item active">Course</li>
         </ol>
         <div class="mb-4">
-        <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Course
-        </button>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="faculties">Faculty</label>
+                    <select class="form-select float-start" id="faculties" aria-label="Select Faculty">
+                    </select>
+                </div>
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
+                    Add New Course
+                    </button>
+                </div>
+            </div>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
@@ -17,7 +28,6 @@
                         <th scope="col">Code</th>
                         <th scope="col">Title</th>
                         <th scope="col">Credit</th>
-                        <th scope="col">Faculty</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
                         <th scope="col">Action</th>
@@ -39,7 +49,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-code">Course Code</label>
                             <input type="text" class="form-control" id="data-add-item-code"/>
@@ -55,7 +65,6 @@
                         <div class="form-group">
                             <label for="data-add-item-faculty">Faculty</label>
                             <select class="form-select" id="data-add-item-faculty" aria-label="Select Faculty">
-                                <option selected>--Select--</option>
                             </select>
                         </div>
                     </form>
@@ -78,7 +87,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-edit-modal-error"></p>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-code">Course Code</label>
@@ -95,7 +104,6 @@
                         <div class="form-group">
                             <label for="data-edit-item-faculty">Faculty</label>
                             <select class="form-select" id="data-edit-item-faculty" aria-label="Select Faculty">
-                                <option selected>--Select--</option>
                             </select>
                         </div>
                     </form>
@@ -110,15 +118,34 @@
 </main>
 <script>
     var faculties = [];
+    var selectedFaculty;
     $(document).ready(function() {
         loadFaculties();
-        loadCourses();
     });
 
-    function loadCourses() {
+    function loadFaculties() {
+        $.ajax({
+            url: `${baseUrl}faculty.php?call=getAll`,
+            type:'get',
+            success:function(response){
+                faculties = JSON.parse(response);
+                addFacultiesToDropdown(faculties, $('#faculties'));
+                if(faculties && faculties.length > 0) {
+                    $('#faculties').val(faculties[0].id).change();
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
+    function loadCourses(faculty_id) {
         $.ajax({
             url: `${baseUrl}course.php?call=getAll`,
             type:'get',
+            data: {faculty_id: faculty_id},
             success:function(response){
                 $('#data-table tbody').empty();
                 var list = JSON.parse(response);
@@ -133,35 +160,21 @@
         });
     }
 
-    function loadFaculties() {
-        $.ajax({
-            url: `${baseUrl}faculty.php?call=getAll`,
-            type:'get',
-            success:function(response){
-                faculties = JSON.parse(response);
-            },
-            error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                console.log(err);
-            }
-        });
-    }
-
     function generateTr(item) {
         var param = JSON.stringify(item);
         var deleted = item.deleted !== 0;
         var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreCourse(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteCourse(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
         `<td>${item.course_code}</td>` +
         `<td>${item.course_title}</td>` +
         `<td>${item.credit_hour}</td>` +
-        `<td>${item.short_title}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
-        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
 
@@ -183,11 +196,10 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadCourses();
+                    loadCourses(selectedFaculty);
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -218,11 +230,10 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadCourses();
+                    loadCourses(selectedFaculty);
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -281,15 +292,40 @@
         });
     }
 
+    function deletePermanent(item) {
+        if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
+            return false;
+        }
+        $.ajax({
+            url: `${baseUrl}course.php?call=deletePermanent`,
+            type:'post',
+            data: { id: item.id},
+            success:function(response){
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadCourses(selectedFaculty);
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
     $('#data-add-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-add-item-error').html('');
         modal.find('#data-add-item-code').val('');
         modal.find('#data-add-item-title').val('');
         modal.find('#data-add-item-credit-hr').val('');
 
         addFacultiesToDropdown(faculties, $('#data-add-item-faculty'));
+        modal.find('#data-add-item-faculty').val(selectedFaculty).change();
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
@@ -298,6 +334,7 @@
         addFacultiesToDropdown(faculties, $('#data-edit-item-faculty'));
 
         var modal = $(this);
+        modal.find('#data-edit-item-error').html('');
         modal.find('#data-edit-item-id').val(course.id);
         modal.find('#data-edit-item-code').val(course.course_code);
         modal.find('#data-edit-item-title').val(course.course_title);
@@ -307,12 +344,16 @@
 
     function addFacultiesToDropdown(faculties, dropdown) {
         dropdown.empty();
-        dropdown.append('<option selected value="-1">--Select--</option>');
         for (i = 0; i < faculties.length; i++) {
             var faculty = faculties[i];
             var item = `<option value="${faculty.id}">${faculty.short_title}</option>`;
             dropdown.append(item);
         }
     }
+
+    $('#faculties').change(function() {
+        selectedFaculty = $(this).val();
+        loadCourses(selectedFaculty);
+    });
 </script>
 <?php include('./footer.php'); ?>

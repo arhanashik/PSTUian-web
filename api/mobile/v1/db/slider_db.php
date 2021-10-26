@@ -18,7 +18,7 @@ class SliderDb
         //condition
         $sql = $sql . " WHERE deleted = 0";
         //sorting
-        $sql = $sql . " ORDER BY created_at ASC";
+        $sql = $sql . " ORDER BY id ASC";
         //constraints
         // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
         $stmt = $this->con->prepare($sql);

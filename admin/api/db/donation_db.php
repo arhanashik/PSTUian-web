@@ -1,52 +1,11 @@
 <?php
+require_once dirname(__FILE__) . '/db.php';
 
-class DonationDb
+class DonationDb extends Db
 {
-    private $con;
- 
     public function __construct()
     {
-        require_once dirname(__FILE__) . '/db_connect.php';
- 
-        $db = new DbConnect();
-        $this->con = $db->connect();
-    }
-
-    public function getAll()
-    {
-        $sql = "SELECT * FROM " . DONATION_TABLE;
-        //sorting
-        $sql = $sql . " ORDER BY id DESC";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        $list = array();
-        while ($row = $result->fetch_assoc()) {
-            array_push($list, $row);
-        }
- 
-        return $list;
-    }
-
-    public function get($id)
-    {
-        $sql = "SELECT id, short_title, title FROM " . DONATION_TABLE; 
-        //condition
-        $sql = $sql . " WHERE id = '$id' AND deleted = 0";
-        
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $stmt->bind_result($id, $short_title, $title);
-
-        $faculty = array();
-        while ($stmt->fetch()) {
-            $faculty['id'] = $id;
-            $faculty['short_title'] = $short_title;
-            $faculty['title'] = $title;
-        }
- 
-        return $faculty;
+        parent::__construct(DONATION_TABLE);
     }
 
     public function insert($name, $info, $email, $reference)
@@ -65,7 +24,7 @@ class DonationDb
         email = '$email', reference = '$reference', updated_at = NOW() WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
     public function updateConfirmation($id, $confirmed)
@@ -74,22 +33,6 @@ class DonationDb
         WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function delete($id)
-    {
-        $sql = "UPDATE " . DONATION_TABLE . " set deleted = 1, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function restore($id)
-    {
-        $sql = "UPDATE " . DONATION_TABLE . " set deleted = 0, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 }
