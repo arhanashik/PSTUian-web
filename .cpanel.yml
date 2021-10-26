@@ -1,7 +1,7 @@
 ---
 deployment:
   tasks:
-    - export REPOPATH=/home/pstuianc/repositories/pstuian/*
+    - export REPOPATH=/home/pstuianc/repositories/pstuian/
     - export DEPLOYPATH=/home/pstuianc/public_html/dev/
     - /bin/rsync -rav --exclude '.git' --exclude '.gitignore' --exclude '.cpanel.yml' --exclude 'mr_template.md' --exclude 'README.md' --exclude 'info.txt' --del $REPOPATH $DEPLOYPATH
     # - /bin/cp -R admin $DEPLOYPATH
