@@ -1,54 +1,34 @@
 <?php
+require_once dirname(__FILE__) . '/db.php';
 
-class TeacherDb
+class TeacherDb extends Db
 {
-    private $con;
- 
     public function __construct()
     {
-        require_once dirname(__FILE__) . '/db_connect.php';
- 
-        $db = new DbConnect();
-        $this->con = $db->connect();
+        parent::__construct(TEACHER_TABLE);
     }
 
     public function getAll()
     {
         $sql = "SELECT t.*, f.short_title FROM " . TEACHER_TABLE . " AS t LEFT JOIN " . FACULTY_TABLE . " AS f 
         ON t.faculty_id = f.id";
-        // $sql = "SELECT * FROM " . BATCH_TABLE;
         //sorting
         $sql = $sql . " ORDER BY f.short_title";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        $list = array();
-        while ($row = $result->fetch_assoc()) {
-            array_push($list, $row);
-        }
- 
-        return $list;
+        return parent::getAll($sql);
     }
 
-    public function get($id)
+    public function getAllByFaculty($faculty_id)
     {
-        $sql = "SELECT id, short_title, title FROM " . TEACHER_TABLE; 
+        //columns to select
+        $columns = "t.*, f.short_title AS faculty";
+        //query
+        $sql = "SELECT $columns FROM " . TEACHER_TABLE . " t 
+        LEFT JOIN " . FACULTY_TABLE . " f ON t.faculty_id = f.id";
         //condition
-        $sql = $sql . " WHERE id = '$id' AND deleted = 0";
-        
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $stmt->bind_result($id, $short_title, $title);
-
-        $faculty = array();
-        while ($stmt->fetch()) {
-            $faculty['id'] = $id;
-            $faculty['short_title'] = $short_title;
-            $faculty['title'] = $title;
-        }
- 
-        return $faculty;
+        $sql = $sql . " WHERE t.faculty_id = $faculty_id";
+        //sorting
+        $sql = $sql . " ORDER BY t.id ASC";
+        return parent::getAll($sql);
     }
 
     public function insert($name, $designation, $faculty_id, $department, $address, $phone, $email)
@@ -68,22 +48,6 @@ class TeacherDb
         email = '$email', updated_at = NOW() WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function delete($id)
-    {
-        $sql = "UPDATE " . TEACHER_TABLE . " set deleted = 1, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
-    }
-
-    public function restore($id)
-    {
-        $sql = "UPDATE " . TEACHER_TABLE . " set deleted = 0, updated_at = NOW() WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute();
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 }

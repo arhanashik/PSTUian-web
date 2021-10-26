@@ -44,7 +44,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-short-title">Short Title</label>
                             <input type="text" class="form-control" id="data-add-item-short-title"/>
@@ -73,7 +73,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-edit-modal-error"></p>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-short-title">Short Title</label>
@@ -124,19 +124,19 @@
     }
 
     function generateTr(faculty) {
-        // console.log(JSON.stringify(faculty));
         var param = JSON.stringify(faculty);
         var deleted = faculty.deleted !== 0;
         var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id="${faculty.id}" data-short-title="${faculty.short_title}" data-title="${faculty.title}"><i class="far fa-edit"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreFaculty(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteFaculty(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${faculty.id}">` + 
         `<th scope="row">${faculty.id}</th>` +
         `<td>${faculty.short_title}</td>` +
         `<td>${faculty.title}</td>` +
         `<td>${faculty.created_at}</td>` +
         `<td>${faculty.updated_at}</td>` +
-        `<td id="td-action-${faculty.id}">${btnEdit} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${faculty.id}">${btnEdit} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
 
@@ -245,10 +245,34 @@
         });
     }
 
+    function deletePermanent(item) {
+        if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
+            return false;
+        }
+        $.ajax({
+            url: `${baseUrl}faculty.php?call=deletePermanent`,
+            type:'post',
+            data: { id: item.id},
+            success:function(response){
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadFaculties();
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
     $('#data-add-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-add-item-error').html('');
         modal.find('#data-add-item-short-title').val('');
         modal.find('#data-add-item-title').val('');
     });
@@ -260,6 +284,7 @@
         var title = button.data('title');
 
         var modal = $(this);
+        modal.find('#data-edit-item-error').html('');
         modal.find('#data-edit-item-id').val(id);
         modal.find('#data-edit-item-short-title').val(shortTitle);
         modal.find('#data-edit-item-title').val(title);
