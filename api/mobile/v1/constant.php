@@ -2,9 +2,9 @@
 
 // ----------- v1 ----------//
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', 'root');
-define('DB_NAME', 'pstuian_dev.db');
+define('DB_USER', 'pstuianc_dev');
+define('DB_PASS', 'qGPKUPvsCabp');
+define('DB_NAME', 'pstuianc_dev.db');
 
 // ----------- main tables -----------//
 define('SLIDER_TABLE', 'slider');
@@ -20,7 +20,7 @@ define('AUTH_TABLE', 'auth');
 define('CONFIG_TABLE', 'config');
 define('USER_QUERY_TABLE', 'user_query');
 
-define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
+define('BASE_URL', 'https://dev.pstuian.com/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
