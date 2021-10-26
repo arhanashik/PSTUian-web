@@ -49,7 +49,7 @@ if (isset($_GET['call'])) {
                 } else {
                     $time_now = date('Y-m-d H:i:s');
                     $auth_token = $util->getHash($email.$user_type, $time_now);
-                    $old_auth = $db->get($user['id'], $user_type);
+                    $old_auth = $db->getByUserIdAndType($user['id'], $user_type);
                     if(empty($old_auth)) {
                         $result = $db->insert($user['id'], $user_type, $auth_token);
                     } else {
@@ -75,24 +75,25 @@ if (isset($_GET['call'])) {
         case 'signOut':
             if (isset($_GET['user_type']) && strlen($_GET['user_type']) > 0)
             {
+                session_destroy(); 
                 $user_type = $_GET['user_type'];
                 $user = $_SESSION[$user_type];
                 $invalidateAuth = $db->invalidateAuth($user['id'], $user_type);
                 if($invalidateAuth) {
-                    session_destroy(); 
                     $response['success'] = true;
                     $response['code'] = SUCCESS;
                     $response['message'] = 'Signed out successfullly';
-                    header('Location: ../login.php');
                 } else {
                     $response['code'] = ERROR_FAILED_TO_AUTHENTICATE;
                     $response['message'] = 'Failed to signed out!';
                 }
+                header('Location: ../login.php');
             }
     
             break;
 
         case 'delete':
+            if(!isset($_POST['id']) || empty($_POST['id'])) break;
             $id = $_POST['id'];
             $result = $db->delete($id);
 
@@ -102,11 +103,22 @@ if (isset($_GET['call'])) {
             break;
 
         case 'restore':
+            if(!isset($_POST['id']) || empty($_POST['id'])) break;
             $id = $_POST['id'];
             $result = $db->restore($id);
 
             $response['success'] = true;
             $response['message'] = 'Restored Successfully';
+            $response['data'] = $result;
+            break;
+
+        case 'deletePermanent':
+            if(!isset($_POST['id']) || empty($_POST['id'])) break;
+            $id = $_POST['id'];
+            $result = $db->deletePermanent($id);
+
+            $response['success'] = true;
+            $response['message'] = 'Deleted Successfully';
             $response['data'] = $result;
             break;
     }

@@ -16,8 +16,11 @@ define('EMPLOYEE_TABLE', 'employee');
 define('STUDENT_TABLE', 'student');
 define('DONATION_TABLE', 'donation');
 define('INFO_TABLE', 'info');
+define('AUTH_TABLE', 'auth');
+define('CONFIG_TABLE', 'config');
+define('USER_QUERY_TABLE', 'user_query');
 
-define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/api/');
+define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
@@ -26,6 +29,8 @@ define('UPLOAD_PATH', 'uploads/');
 define('FILE_PATH',  UPLOAD_PATH . 'files/');
 define('SLIDER_PATH', UPLOAD_PATH . 'slider/');
 define('AVATAR_PATH',  UPLOAD_PATH . 'avatar/');
+define('STUDENT_IMAGE_PATH',  UPLOAD_PATH . 'student/');
+define('CV_PATH',  UPLOAD_PATH . 'cv/');
 
 define('PAGE_LIMIT',  20);
 

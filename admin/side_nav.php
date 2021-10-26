@@ -33,8 +33,12 @@
                     Admin
                 </a>
                 <a class="nav-link" href="auth.php">
-                    <div class="sb-nav-link-icon"><i class="fas fa-unlock-alt"></i></i></div>
+                    <div class="sb-nav-link-icon"><i class="fas fa-unlock-alt"></i></div>
                     Authentication
+                </a>
+                <a class="nav-link" href="user_inquiry.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-question-circle"></i></div>
+                    User Inquiry
                 </a>
                 <a class="nav-link" href="settings.php">
                     <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>

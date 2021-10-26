@@ -1,5 +1,6 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/pstuianc/public_html/dev
-    - /bin/cp -R * $DEPLOYPATH
+    - export DEPLOYPATH=/home/pstuianc/public_html/dev/
+    - /bin/cp -R admin $DEPLOYPATH
+    - /bin/cp -R api $DEPLOYPATH

@@ -11,13 +11,11 @@
                 <div class="col-md-4">
                     <label for="faculties">Faculty</label>
                     <select class="form-select float-start" id="faculties" aria-label="Select Faculty">
-                        <option selected>--Select--</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label for="batches">Batch</label>
                     <select class="form-select float-start" id="batches" aria-label="Select Batch">
-                        <option selected>--Select--</option>
                     </select>
                 </div>
                 <div class="col-md-4">
@@ -54,7 +52,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-add-modal-error"></p>
+                        <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
                             <label for="data-add-item-id">ID</label>
                             <input type="text" class="form-control" id="data-add-item-id"/>
@@ -70,13 +68,11 @@
                         <div class="form-group">
                             <label for="data-add-item-faculty">Faculty</label>
                             <select class="form-select" id="data-add-item-faculty" aria-label="Select Faculty" disabled>
-                                <option selected>--Select--</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="data-add-item-batch">Batch</label>
                             <select class="form-select" id="data-add-item-batch" aria-label="Select Batch">
-                                <option selected>--Select--</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -103,7 +99,7 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <p id="data-edit-modal-error"></p>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
                         <div class="form-group">
                             <label for="data-edit-item-id">ID</label>
                             <input type="text" class="form-control" id="data-edit-item-id" disabled/>
@@ -224,9 +220,7 @@
                 batches = JSON.parse(response);
                 addBatchesToDropdown(batches, $('#batches'));
                 if(batches && batches.length > 0) {
-                    if($('#batches').val() == -1) {
-                        $('#batches').val(batches[0].id).change();
-                    }
+                    $('#batches').val(batches[0].id).change();
                 }
             },
             error: function(xhr, status, error) {
@@ -262,6 +256,7 @@
         var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-json='${param}'><i class="far fa-file-alt"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreStudent(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteStudent(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
         `<td>${item.name}</td>` +
@@ -269,7 +264,7 @@
         `<td>${item.session}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
-        `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete}</td>` +
+        `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
 
@@ -299,7 +294,6 @@
                     $('#data-add-modal').modal('hide');
                 } else {
                     $('#data-add-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -336,7 +330,6 @@
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
-                    console.log(data['message']);
                 }
             },
             error: function(xhr, status, error) {
@@ -395,10 +388,34 @@
         });
     }
 
+    function deletePermanent(item) {
+        if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
+            return false;
+        }
+        $.ajax({
+            url: `${baseUrl}student.php?call=deletePermanent`,
+            type:'post',
+            data: { id: item.id},
+            success:function(response){
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadStudents(selectedFaculty, selectedBatch);
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
     $('#data-add-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
 
         var modal = $(this);
+        modal.find('#data-add-item-error').html('');
         modal.find('#data-add-item-id').val('');
         modal.find('#data-add-item-name').val('');
         modal.find('#data-add-item-reg').val('');
@@ -417,6 +434,7 @@
         addBatchesToDropdown(batches, $('#data-edit-item-batch'));
 
         var modal = $(this);
+        modal.find('#data-edit-item-error').html('');
         modal.find('#data-edit-item-id').val(item.id);
         modal.find('#data-edit-item-name').val(item.name);
         modal.find('#data-edit-item-reg').val(item.reg);
@@ -458,7 +476,6 @@
 
     function addBatchesToDropdown(batches, dropdown) {
         dropdown.empty();
-        dropdown.append('<option selected value="-1">--Select--</option>');
         for (i = 0; i < batches.length; i++) {
             var batch = batches[i];
             var item = `<option value="${batch.id}">${batch.name}</option>`;
