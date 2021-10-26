@@ -186,6 +186,7 @@
 <script>
     var faculties = [];
     var batches = [];
+    var students = [];
     var selectedFaculty;
     var selectedBatch;
     $(document).ready(function() {
@@ -237,9 +238,9 @@
             data: { faculty_id: faculty_id, batch_id: batch_id },
             success:function(response) {
                 $('#data-table tbody').empty();
-                var list = JSON.parse(response);
-                for (i = 0; i < list.length; i++) {
-                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
+                students = JSON.parse(response);
+                for (i = 0; i < students.length; i++) {
+                    $('#data-table > tbody:last-child').append(generateTr(students[i]));
                 }
             },
             error: function(xhr, status, error) {
@@ -250,10 +251,10 @@
     }
 
     function generateTr(item) {
-        var param = JSON.stringify(item);
+        var param = item.id;
         var deleted = item.deleted !== 0;
-        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
-        var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-json='${param}'><i class="far fa-file-alt"></i></button>`;
+        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id='${param}'><i class="far fa-edit"></i></button>`;
+        var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-id='${param}'><i class="far fa-file-alt"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreStudent(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteStudent(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
         var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
@@ -340,19 +341,18 @@
         });
     }
 
-    function restoreStudent(student) {
+    function restoreStudent(id) {
         if(!confirm("Are you sure you want to restore this?")){
             return false;
         }
         $.ajax({
             url: `${baseUrl}student.php?call=restore`,
             type:'post',
-            data: { id: student.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    student.deleted = 0;
-                    $(`table#data-table tr#${student.id}`).replaceWith(generateTr(student));
+                    loadStudents(selectedFaculty, selectedBatch);
                 } else {
                     console.log(data['message']);
                 }
@@ -364,19 +364,18 @@
         });
     }
 
-    function deleteStudent(student) {
+    function deleteStudent(id) {
         if(!confirm("Are you sure you want to delete this?")){
             return false;
         }
         $.ajax({
             url: `${baseUrl}student.php?call=delete`,
             type:'post',
-            data: { id: student.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    student.deleted = 1;
-                    $(`table#data-table tr#${student.id}`).replaceWith(generateTr(student));
+                    loadStudents(selectedFaculty, selectedBatch);
                 } else {
                     console.log(data['message']);
                 }
@@ -388,14 +387,14 @@
         });
     }
 
-    function deletePermanent(item) {
+    function deletePermanent(id) {
         if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
             return false;
         }
         $.ajax({
             url: `${baseUrl}student.php?call=deletePermanent`,
             type:'post',
-            data: { id: item.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
@@ -429,7 +428,8 @@
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var item = button.data('json');
+        var id = button.data('id');
+        var item = getStudent(id);
         addFacultiesToDropdown(faculties, $('#data-edit-item-faculty'));
         addBatchesToDropdown(batches, $('#data-edit-item-batch'));
 
@@ -446,7 +446,8 @@
 
     $('#data-details-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var item = button.data('json');
+        var id = button.data('id');
+        var item = getStudent(id);
 
         var modal = $(this);
         modal.find('#data-item-id').text(item.id);
@@ -492,5 +493,9 @@
         selectedBatch = $(this).val();
         loadStudents(selectedFaculty, selectedBatch);
     });
+
+    function getStudent(id) {
+        return students.find(student => student.id == id);
+    }
 </script>
 <?php include('./footer.php'); ?>

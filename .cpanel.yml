@@ -3,12 +3,14 @@ deployment:
   tasks:
     - export REPOPATH=/home/pstuianc/repositories/pstuian/
     - export DEPLOYPATH=/home/pstuianc/public_html/dev/
-    # - /bin/cp -R admin $DEPLOYPATH
-    # - /bin/cp -R api $DEPLOYPATH
-    # Sync repository files to the deploy target path, excluding .git folder.
-    # --delete-after will remove deleted files and folders after syncing.
-    - /bin/rsync -aP --exclude '.git' --exclude '.gitignore' --exclude '.cpanel.yml' --exclude 'mr_template.md' --exclude 'README.md' --exclude 'info.txt' ${REPOPATH}/ ${DEPLOYPATH} --delete-after
+    - /bin/cp -R admin $DEPLOYPATH
+    - /bin/cp -R api $DEPLOYPATH
+    - /bin/cp -R css $DEPLOYPATH
+    - /bin/cp -R fonts $DEPLOYPATH
+    - /bin/cp -R images $DEPLOYPATH
+    - /bin/cp -R js $DEPLOYPATH
+    - /bin/cp -R *.php $DEPLOYPATH
     # Set correct permissions.
-    - /bin/chmod 755 ${DEPLOYPATH}
-    - /bin/find ${DEPLOYPATH} -type d -exec /bin/chmod 755 '{}' \;
-    - /bin/find ${DEPLOYPATH} -type f -exec /bin/chmod 644 '{}' \;
+    - /bin/chmod 755 $DEPLOYPATH
+    - /bin/find $DEPLOYPATH -type d -exec /bin/chmod 755 '{}' \;
+    - /bin/find $DEPLOYPATH -type f -exec /bin/chmod 644 '{}' \;

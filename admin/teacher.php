@@ -178,6 +178,7 @@
 </main>
 <script>
     var faculties = [];
+    var teachers = [];
     var selectedFaculty;
     $(document).ready(function() {
         loadFaculties();
@@ -208,9 +209,9 @@
             data: {faculty_id: faculty_id},
             success:function(response){
                 $('#data-table tbody').empty();
-                var list = JSON.parse(response);
-                for (i = 0; i < list.length; i++) {
-                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
+                teachers = JSON.parse(response);
+                for (i = 0; i < teachers.length; i++) {
+                    $('#data-table > tbody:last-child').append(generateTr(teachers[i]));
                 }
             },
             error: function(xhr, status, error) {
@@ -221,10 +222,10 @@
     }
 
     function generateTr(item) {
-        var param = JSON.stringify(item);
+        var param = item.id;
         var deleted = item.deleted !== 0;
-        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
-        var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-json='${param}'><i class="far fa-file-alt"></i></button>`;
+        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id='${param}'><i class="far fa-edit"></i></button>`;
+        var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-id='${param}'><i class="far fa-file-alt"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreTeacher(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteTeacher(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
         var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
@@ -316,19 +317,18 @@
         });
     }
 
-    function restoreTeacher(teacher) {
+    function restoreTeacher(id) {
         if(!confirm("Are you sure you want to restore this?")){
             return false;
         }
         $.ajax({
             url: `${baseUrl}teacher.php?call=restore`,
             type:'post',
-            data: { id: teacher.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    teacher.deleted = 0;
-                    $(`table#data-table tr#${teacher.id}`).replaceWith(generateTr(teacher));
+                    loadTeachers(selectedFaculty);
                 } else {
                     console.log(data['message']);
                 }
@@ -340,19 +340,18 @@
         });
     }
 
-    function deleteTeacher(teacher) {
+    function deleteTeacher(id) {
         if(!confirm("Are you sure you want to delete this?")){
             return false;
         }
         $.ajax({
             url: `${baseUrl}teacher.php?call=delete`,
             type:'post',
-            data: { id: teacher.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    teacher.deleted = 1;
-                    $(`table#data-table tr#${teacher.id}`).replaceWith(generateTr(teacher));
+                    loadTeachers(selectedFaculty);
                 } else {
                     console.log(data['message']);
                 }
@@ -364,14 +363,14 @@
         });
     }
 
-    function deletePermanent(item) {
+    function deletePermanent(id) {
         if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
             return false;
         }
         $.ajax({
             url: `${baseUrl}teacher.php?call=deletePermanent`,
             type:'post',
-            data: { id: item.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
@@ -405,7 +404,8 @@
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var teacher = button.data('json');
+        var id = button.data('id');
+        var teacher = getTeacher(id);
         addFacultiesToDropdown(faculties, $('#data-edit-item-faculty'));
 
         var modal = $(this);
@@ -422,7 +422,8 @@
 
     $('#data-details-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var teacher = button.data('json');
+        var id = button.data('id');
+        var teacher = getTeacher(id);
 
         var modal = $(this);
         modal.find('#data-item-name').text(teacher.name);
@@ -450,5 +451,9 @@
         selectedFaculty = $(this).val();
         loadTeachers(selectedFaculty);
     });
+
+    function getTeacher(id) {
+        return teachers.find(teacher => teacher.id == id);
+    }
 </script>
 <?php include('./footer.php'); ?>
