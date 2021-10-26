@@ -69,7 +69,6 @@
         type:'post',
         data: { name: name, email: email, type: 'query', query: message },
         success:function(response) {
-          console.log(response);
           var data = JSON.parse(response);
           if(data['success'] === true) {
             $('#details-dialog-title').text('Success');

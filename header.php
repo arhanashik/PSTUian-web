@@ -87,6 +87,7 @@
                               <li><a href="students.php" class="nav-link text-left">Students</a></li>
                               <li><a href="teachers.php" class="nav-link text-left">Teachers</a></li>
                               <li><a href="employees.php" class="nav-link text-left">Employees</a></li>
+                              <li><a href="donation.php" class="nav-link text-left">Donation</a></li>
                               <li><a href="contact.php" class="nav-link text-left">Contact</a></li>
                             </ul>                                                                                                                                                                                                                                                                                         
                         </nav>

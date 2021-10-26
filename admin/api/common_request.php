@@ -14,8 +14,15 @@ class CommonRequest {
                 }
                 return $db->getAll();
 
+            case 'get':
+                if(!isset($_GET['id']) || strlen($_GET['id']) <= 0) {
+                    return $response;
+                }
+                $id = $_GET['id'];
+                return $db->get($id);
+
             case 'delete':
-                if(!isset($_POST['id']) || empty($_POST['id'])) {
+                if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) {
                     return $response;
                 }
                 $id = $_POST['id'];
@@ -27,7 +34,7 @@ class CommonRequest {
                 return $response;
     
             case 'restore':
-                if(!isset($_POST['id']) || empty($_POST['id'])) {
+                if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) {
                     return $response;
                 }
                 $id = $_POST['id'];
@@ -39,7 +46,7 @@ class CommonRequest {
                 return $response;
     
             case 'deletePermanent':
-                if(!isset($_POST['id']) || empty($_POST['id'])) {
+                if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) {
                     return $response;
                 }
                 $id = $_POST['id'];

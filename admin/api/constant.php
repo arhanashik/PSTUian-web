@@ -20,6 +20,7 @@ define('ADMIN_TABLE', 'admin');
 define('AUTH_TABLE', 'auth');
 define('CONFIG_TABLE', 'config');
 define('USER_QUERY_TABLE', 'user_query');
+define('USER_QUERY_REPLY_TABLE', 'user_query_reply');
 
 define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
 

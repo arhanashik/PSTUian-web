@@ -1,6 +1,7 @@
 <?php
 require_once './auth_validation.php';
 require_once './db/user_query_db.php';
+require_once './db/user_query_reply_db.php';
 require_once './common_request.php';
  
 $response = array();
@@ -14,7 +15,8 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 
 $call = $_GET['call'];
 $common_request = new CommonRequest();
-$db = new UserQueryDb();
+$queryDb = new UserQueryDb();
+$db = new UserQueryReplyDb();
 $result = $common_request->handle($call, $db, $response);
 if($result) {
     echo json_encode($result);
@@ -23,17 +25,24 @@ if($result) {
 
 switch ($call) 
 {
-    case 'add':
-        if($_POST['name'] === null || strlen($_POST['name']) <= 0
-        || $_POST['email'] === null ||  strlen($_POST['email']) <= 0 
-        || $_POST['type'] === null ||  strlen($_POST['type']) <= 0 
-        || $_POST['query'] === null ||  strlen($_POST['query']) <= 0) break;
+    case 'getAll':
+        if(!isset($_GET['query_id']) || strlen($_GET['query_id']) <= 0) {
+            break;
+        }
+        $query_id = $_GET['query_id'];
 
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $type = $_POST['type'];
-        $query = $_POST['query'];
-        $inserted = $db->insert($name, $email, $type, $query);
+        $response = $db->getAllByQueryId($query_id);
+        break;
+
+    case 'add':
+        if($_POST['query_id'] === null || strlen($_POST['query_id']) <= 0 
+        || $_POST['admin_id'] === null ||  strlen($_POST['admin_id']) <= 0 
+        || $_POST['reply'] === null ||  strlen($_POST['reply']) <= 0) break;
+
+        $query_id = $_POST['query_id'];
+        $admin_id = $_POST['admin_id'];
+        $reply = $_POST['reply'];
+        $inserted = $db->insert($query_id, $admin_id, $reply);
         if($inserted === null || !$inserted) 
         {
             $response['message'] = 'Sorry, failed to complete your request. Please try again.';
@@ -41,7 +50,7 @@ switch ($call)
         else
         {
             $response['success'] = true;
-            $response['message'] = 'Thanks, your request is completed successfully and is our top priority. We will get back to you as soon as possible!';
+            $response['message'] = 'Reply added successfullly!';
         }
         break;
     
