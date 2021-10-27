@@ -72,9 +72,29 @@ switch ($call)
         }
         break;
 
+    case 'updateBio':
+        require_once './auth_validation.php';
+        if($_POST['id'] === null || strlen($_POST['id']) <= 0 
+        || $_POST['bio'] === null ||  strlen($_POST['bio']) <= 0) break;
+
+        $id = $_POST['id'];
+        $bio = $_POST['bio'];
+        $data = $db->update_bio($id, $bio);
+        if(!$data || $data == 0) 
+        {
+            $response['message'] = 'Update failed!';
+        }
+        else
+        {
+            $response['success'] = true;
+            $response['message'] = 'Name changed successfullly!';
+        }
+        break;
+
     case 'updateAcademicInfo':
         require_once './auth_validation.php';
-        if($_POST['old_id'] === null || strlen($_POST['old_id']) <= 0 
+        if($_POST['name'] === null || strlen($_POST['name']) <= 0 
+        || $_POST['old_id'] === null || strlen($_POST['old_id']) <= 0 
         || $_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['reg'] === null || strlen($_POST['reg']) <= 0 
         || $_POST['blood'] === null
@@ -82,6 +102,7 @@ switch ($call)
         || $_POST['session'] === null || strlen($_POST['session']) <= 0 
         || $_POST['batch_id'] === null ||  strlen($_POST['batch_id']) <= 0) break;
 
+        $name = $_POST['name'];
         $old_id = $_POST['old_id'];
         $id = $_POST['id'];
         $reg = $_POST['reg'];
@@ -96,7 +117,7 @@ switch ($call)
             break;
         }
         
-        $data = $db->update_academic_info($old_id, $id, $reg, $blood, $faculty_id, $session, $batch_id);
+        $data = $db->update_academic_info($name, $old_id, $id, $reg, $blood, $faculty_id, $session, $batch_id);
         if(!$data || $data == 0) 
         {
             $response['message'] = 'Update failed!';
