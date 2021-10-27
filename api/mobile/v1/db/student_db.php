@@ -44,8 +44,8 @@ class StudentDb extends Db
     {
 
         //columns to select
-        $columns = "name, id, reg, phone, linked_in, blood, address, email, session, batch_id, faculty_id, fb_link, image_url, cv_link";
-        $sql = "SELECT $columns FROM " . STUDENT_TABLE;
+        // $columns = "name, id, reg, phone, linked_in, blood, address, email, session, batch_id, faculty_id, fb_link, image_url, cv_link, bio";
+        $sql = "SELECT id FROM " . STUDENT_TABLE;
         $sql = $sql . " WHERE (email = '$email' AND password = '$password') AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
@@ -55,7 +55,7 @@ class StudentDb extends Db
         if($result->num_rows <= 0) return false;
     
         while ($row = $result->fetch_assoc()) {
-            return $row;
+            return $row['id'];
         }
     }
 
@@ -86,9 +86,17 @@ class StudentDb extends Db
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_academic_info($old_id, $id, $reg, $blood, $faculty_id, $session, $batch_id)
+    public function update_bio($id, $bio)
     {
-        $sql = "UPDATE " . STUDENT_TABLE . " set id = '$id', reg = '$reg', blood = '$blood', 
+        $sql = "UPDATE " . STUDENT_TABLE . " set bio = '$bio', updated_at = NOW() WHERE id = '$id'";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function update_academic_info($name, $old_id, $id, $reg, $blood, $faculty_id, $session, $batch_id)
+    {
+        $sql = "UPDATE " . STUDENT_TABLE . " set name = '$name', id = '$id', reg = '$reg', blood = '$blood', 
         faculty_id = '$faculty_id', session = '$session', batch_id = '$batch_id', 
         updated_at = NOW() WHERE id = '$old_id'";
         
