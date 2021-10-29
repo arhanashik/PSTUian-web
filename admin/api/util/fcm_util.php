@@ -4,6 +4,7 @@ require_once dirname(__FILE__) . '/../constant.php';
 class FcmUtil {
     public function createPushNotification($title, $body, $clickAction) {
         // return array(
+        //     'android_channel_id => $channelId,
         //     'message' 	    => $body,
         //     'title'		    => $title,
         //     'subtitle'	    => '',
@@ -17,7 +18,7 @@ class FcmUtil {
         return array (
             "title"                 => $title,
             "body"                  => $body,
-            // "android_channel_id" => $channelId,
+            'sound'		            => 1,
             "click_action"          => $clickAction
         );
     }
