@@ -17,12 +17,14 @@ if (isset($_GET['call'])) {
         case 'signIn':
             if (!isset($_POST['email']) || strlen($_POST['email']) <= 0 
                 || !isset($_POST['password']) || strlen($_POST['password']) <= 0
-                || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0) {
+                || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
+                || !isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0) {
                     break;
                 }
             $email = $_POST['email'];
             $password = $_POST['password'];
             $user_type = $_POST['user_type'];
+            $device_id = $_POST['device_id'];
 
             if($user_type !== 'student' || !($id = $studentDb->validate($email, md5($password)))) {
                 $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
@@ -42,9 +44,9 @@ if (isset($_GET['call'])) {
             $auth_token = $util->getHash($email.$user_type, $time_now);
             $old_auth = $db->getByUserIdAndType($user['id'], $user_type);
             if(empty($old_auth)) {
-                $result = $db->insert($user['id'], $user_type, $auth_token);
+                $result = $db->insert($user['id'], $user_type, $auth_token, $device_id);
             } else {
-                $result = $db->update($user['id'], $user_type, $auth_token);
+                $result = $db->update($user['id'], $user_type, $auth_token, $device_id);
             }
             if($result) {
                 $response['success'] = true;
@@ -65,7 +67,8 @@ if (isset($_GET['call'])) {
             || !isset($_POST['reg']) || empty($_POST['reg'])
             || !isset($_POST['batch_id']) || empty($_POST['batch_id'])
             || !isset($_POST['session']) || empty($_POST['session'])
-            || !isset($_POST['faculty_id']) || empty($_POST['faculty_id'])) {
+            || !isset($_POST['faculty_id']) || empty($_POST['faculty_id'])
+            || !isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0) {
                 break;
             }
             $name = $_POST['name'];
@@ -74,6 +77,7 @@ if (isset($_GET['call'])) {
             $batch_id = $_POST['batch_id'];
             $session = $_POST['session'];
             $faculty_id = $_POST['faculty_id'];
+            $device_id = $_POST['device_id'];
             $user_type = 'student';
             if($studentDb->isAlreadyInsered($id)) {
                 $response['message'] = 'Account already exists!';
@@ -90,7 +94,7 @@ if (isset($_GET['call'])) {
             } 
             $time_now = date('Y-m-d H:i:s');
             $auth_token = $util->getHash($email.$user_type, $time_now);
-            $result = $db->insert($id, $user_type, $auth_token);
+            $result = $db->insert($id, $user_type, $auth_token, $device_id);
             $user = $studentDb->get($id);
             unset($user['password']);
             

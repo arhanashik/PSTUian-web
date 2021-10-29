@@ -35,19 +35,19 @@ class AuthDb extends Db
         return $num_rows > 0;
     }
 
-    public function insert($user_id, $user_type, $auth_token)
+    public function insert($user_id, $user_type, $auth_token, $device_id)
     {
-        $sql = "INSERT INTO " . AUTH_TABLE . "(user_id, user_type, auth_token) 
-        VALUES ('$user_id', '$user_type', '$auth_token')";
+        $sql = "INSERT INTO " . AUTH_TABLE . "(user_id, device_id, user_type, auth_token) 
+        VALUES ('$user_id', '$device_id', '$user_type', '$auth_token')";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
         return $this->con->insert_id;
     }
 
-    public function update($user_id, $user_type, $auth_token)
+    public function update($user_id, $user_type, $auth_token, $device_id)
     {
-        $sql = "UPDATE " . AUTH_TABLE . " SET auth_token = '$auth_token', deleted = 0, updated_at = NOW() 
+        $sql = "UPDATE " . AUTH_TABLE . " SET device_id = '$device_id', auth_token = '$auth_token', deleted = 0, updated_at = NOW() 
         WHERE user_id = '$user_id' AND user_type = '$user_type'";
         
         $stmt = $this->con->prepare($sql);

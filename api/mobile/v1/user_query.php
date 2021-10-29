@@ -16,10 +16,10 @@ $db = new UserQueryDb();
 switch ($call) 
 {
     case 'add':
-        if($_POST['name'] === null || strlen($_POST['name'] <= 0) 
-        || $_POST['email'] === null ||  strlen($_POST['email'] <= 0) 
-        || $_POST['type'] === null ||  strlen($_POST['type'] <= 0) 
-        || $_POST['query'] === null ||  strlen($_POST['query']) <= 0) break;
+        if($_POST['name'] === null || strlen($_POST['name']) <= 0
+        || $_POST['email'] === null || strlen($_POST['email']) <= 0 
+        || $_POST['type'] === null || strlen($_POST['type']) <= 0 
+        || $_POST['query'] === null || strlen($_POST['query']) <= 0) break;
 
         $name = $_POST['name'];
         $email = $_POST['email'];

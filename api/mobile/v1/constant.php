@@ -19,6 +19,8 @@ define('INFO_TABLE', 'info');
 define('AUTH_TABLE', 'auth');
 define('CONFIG_TABLE', 'config');
 define('USER_QUERY_TABLE', 'user_query');
+define('USER_QUERY_REPLY_TABLE', 'user_query_reply');
+define('DEVICE_TABLE', 'device');
 
 define('BASE_URL', 'https://pstuian.com/');
 
