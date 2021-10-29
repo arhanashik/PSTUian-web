@@ -34,7 +34,7 @@ class CommonRequest {
                     return $response;
                 }
     
-                $logDb->insert($id, 'admin', 'delete', $id);
+                // $logDb->insert($id, 'admin', 'delete', $id);
                 $response['success'] = true;
                 $response['message'] = 'Deleted Successfully';
                 $response['data'] = $result;

@@ -8,6 +8,41 @@ class DeviceDb extends Db
         parent::__construct(DEVICE_TABLE);
     }
 
+    public function getAllTokens() {
+        $sql = "SELECT fcm_token FROM " . DEVICE_TABLE;
+        //condition
+        $sql = $sql . " WHERE deleted = 0";
+ 
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if($result->num_rows <= 0) return false;
+
+        $list = array();
+        while ($row = $result->fetch_assoc()) {
+            array_push($list, $row['fcm_token']);
+        }
+ 
+        return $list;
+    }
+
+    public function getToken($device_id) {
+        $sql = "SELECT fcm_token FROM " . DEVICE_TABLE;
+        //condition
+        $sql = $sql . " WHERE id = '$device_id' AND deleted = 0";
+ 
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row['fcm_token'];
+        }
+    }
+
     public function update(
         $id,
         $fcm_token, 

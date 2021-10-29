@@ -2,9 +2,9 @@
 
 // ----------- v1 ----------//
 define('DB_HOST', 'localhost');
-define('DB_USER', 'pstuianc_prod');
-define('DB_PASS', 'XUShN4]rID(.');
-define('DB_NAME', 'pstuianc_db');
+define('DB_USER', 'root');
+define('DB_PASS', 'root');
+define('DB_NAME', 'pstuian_dev.db');
 
 // ----------- main tables -----------//
 define('SLIDER_TABLE', 'slider');
@@ -21,6 +21,8 @@ define('CONFIG_TABLE', 'config');
 define('USER_QUERY_TABLE', 'user_query');
 define('USER_QUERY_REPLY_TABLE', 'user_query_reply');
 define('DEVICE_TABLE', 'device');
+define('LOG_TABLE', 'log');
+define('NOTIFICATION_TABLE', 'notification');
 
 define('BASE_URL', 'https://pstuian.com/');
 

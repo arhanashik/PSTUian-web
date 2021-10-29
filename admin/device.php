@@ -32,6 +32,47 @@
         </div>
     </div>
 
+    <!-- Data Send Notification Modal -->
+    <div class="modal fade" id="data-add-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Send Notification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <p class="text-danger" id="data-add-modal-error"></p>
+                        <input type="text" class="form-control" id="data-add-item-device-id" hidden/>
+                        <div class="form-group">
+                            <label for="data-add-item-type">Type</label>
+                            <select class="form-select" id="data-add-item-type" aria-label="Select Type">
+                                <option selected value="default">Default</option>
+                                <option value="blood_donation">Blood Donation</option>
+                                <option value="news">News</option>
+                                <option value="help">Help</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-title">Title</label>
+                            <input type="text" class="form-control" id="data-add-item-title"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-message">Message</label>
+                            <textarea type="text" rows="3" class="form-control" id="data-add-item-message"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="data-add-btn" onclick="sendNotification()">
+                    Send
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Data Edit Modal -->
     <div class="modal fade" id="data-edit-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -166,7 +207,9 @@
 
     function generateTr(item) {
         var param = JSON.stringify(item.id);
+        var fcmToken = (item.fcm_token.length < 20)? item.fcm_token : `${item.fcm_token.substring(0, 19)}...`;
         var deleted = item.deleted !== 0;
+        var btnSend = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-add-modal" data-id='${item.id}'><i class="far fa-paper-plane"></i></button>`;
         var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id='${item.id}'><i class="far fa-edit"></i></button>`;
         var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-id='${item.id}'><i class="far fa-file-alt"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreDevice(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
@@ -174,7 +217,7 @@
         var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
-        `<td>${item.fcm_token}</td>` +
+        `<td>${fcmToken}</td>` +
         // `<td>${item.model}</td>` +
         // `<td>${item.android_version}</td>` +
         // `<td>${item.ios_version}</td>` +
@@ -186,8 +229,43 @@
         // `<td>${item.locale}</td>` +
         // `<td>${item.created_at}</td>` +
         // `<td>${item.updated_at}</td>` +
-        `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
+        `<td id="td-action-${item.id}">${btnSend} ${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
+    }
+
+    function sendNotification() {
+        var device_id = $('#data-add-item-device-id').val();
+        var type = $('#data-add-item-type').val();
+        var title = $('#data-add-item-title').val();
+        var message = $('#data-add-item-message').val();
+        var data = { 
+            device_id: device_id,
+            type: type, 
+            title: title,
+            message: message
+        }
+        $.ajax({
+            url:`${baseUrl}notification.php?call=send`,
+            type:'post',
+            data: data,
+            success:function(response) {
+                console.log(response);
+                var data = JSON.parse(response);
+                if(data['success'] !== true) {
+                    $('#data-add-modal-error').text(data['message']);
+                    return;
+                }
+                $('#data-add-modal').modal('hide');
+                $('#toast-title').text('Success');
+                $('#toast-message').text(data['message']);
+                $('#toast').toast('show');
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                $('#data-add-modal-error').text(err.Message);
+                console.log(err);
+            }
+        });
     }
 
     function updateData() {
@@ -293,7 +371,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadStudents(selectedFaculty, selectedBatch);
+                    loadDevices();
                 } else {
                     console.log(data['message']);
                 }
@@ -304,6 +382,18 @@
             }
         });
     }
+
+    $('#data-add-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+
+        var modal = $(this);
+        modal.find('#data-add-modal-error').html('');
+        modal.find('#data-add-item-device-id').val(id);
+        modal.find('#data-add-item-type').val('default');
+        modal.find('#data-add-item-title').val('');
+        modal.find('#data-add-item-message').val('');
+    });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
