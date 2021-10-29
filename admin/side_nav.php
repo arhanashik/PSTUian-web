@@ -32,6 +32,10 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-user-cog"></i></div>
                     Admin
                 </a>
+                <a class="nav-link" href="device.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-mobile-alt"></i></div>
+                    Device
+                </a>
                 <a class="nav-link" href="auth.php">
                     <div class="sb-nav-link-icon"><i class="fas fa-unlock-alt"></i></div>
                     Authentication
