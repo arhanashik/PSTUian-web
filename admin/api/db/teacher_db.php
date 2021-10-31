@@ -31,10 +31,10 @@ class TeacherDb extends Db
         return parent::getAll($sql);
     }
 
-    public function insert($name, $designation, $faculty_id, $department, $address, $phone, $email)
+    public function insert($name, $designation, $faculty_id, $department, $address, $phone, $email, $password)
     {
-        $sql = "INSERT INTO " . TEACHER_TABLE . "(name, designation, faculty_id, department, address, phone, email) 
-        VALUES ('$name', '$designation', '$faculty_id', '$department', '$address', '$phone', '$email')";
+        $sql = "INSERT INTO " . TEACHER_TABLE . "(name, designation, faculty_id, department, address, phone, email, password) 
+        VALUES ('$name', '$designation', '$faculty_id', '$department', '$address', '$phone', '$email', '$password')";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();

@@ -31,8 +31,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Reg</th>
                         <th scope="col">Session</th>
-                        <th scope="col">Created At</th>
-                        <th scope="col">Updated At</th>
+                        <th scope="col">Email</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -79,6 +78,10 @@
                             <label for="data-add-item-session">Session</label>
                             <input type="text" class="form-control" id="data-add-item-session"/>
                         </div>
+                        <div class="form-group">
+                            <label for="data-add-item-email">Email</label>
+                            <input type="text" class="form-control" id="data-add-item-email"/>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -100,9 +103,10 @@
                 <div class="modal-body">
                     <form>
                         <p class="text-danger" id="data-edit-modal-error"></p>
+                        <input type="text" class="form-control" id="data-edit-item-old-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-id">ID</label>
-                            <input type="text" class="form-control" id="data-edit-item-id" disabled/>
+                            <input type="text" class="form-control" id="data-edit-item-id"/>
                         </div>
                         <div class="form-group">
                             <label for="data-edit-item-name">Name</label>
@@ -127,6 +131,11 @@
                         <div class="form-group">
                             <label for="data-edit-item-session">Session</label>
                             <input type="text" class="form-control" id="data-edit-item-session"/>
+                        </div>
+                        <input type="text" class="form-control" id="data-edit-item-old-email" hidden/>
+                        <div class="form-group">
+                            <label for="data-edit-item-email">Email</label>
+                            <input type="text" class="form-control" id="data-edit-item-email"/>
                         </div>
                     </form>
                 </div>
@@ -175,6 +184,10 @@
                     <p type="text" class="form-control" id="data-item-linkedin"></p>
                     <label for="data-item-facebook">Facebook</label>
                     <p type="text" class="form-control" id="data-item-facebook"></p>
+                    <label for="data-item-created">Created At</label>
+                    <p type="text" class="form-control" id="data-item-created"></p>
+                    <label for="data-item-updated">Updated At</label>
+                    <p type="text" class="form-control" id="data-item-updated"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -263,8 +276,7 @@
         `<td>${item.name}</td>` +
         `<td>${item.reg}</td>` +
         `<td>${item.session}</td>` +
-        `<td>${item.created_at}</td>` +
-        `<td>${item.updated_at}</td>` +
+        `<td>${item.email}</td>` +
         `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
@@ -276,13 +288,15 @@
         var faculty_id = $('#data-add-item-faculty').val();
         var batch_id = $('#data-add-item-batch').val();
         var session = $('#data-add-item-session').val();
+        var email = $('#data-add-item-email').val();
         var data = { 
             id: id,
             name: name, 
             reg: reg, 
             faculty_id: faculty_id, 
             batch_id: batch_id, 
-            session: session
+            session: session,
+            email: email,
         }
         $.ajax({
             url: `${baseUrl}student.php?call=add`,
@@ -306,19 +320,25 @@
     }
 
     function updateData() {
+        var old_id = $('#data-edit-item-old-id').val();
         var id = $('#data-edit-item-id').val();
         var name = $('#data-edit-item-name').val();
         var reg = $('#data-edit-item-reg').val();
         var faculty_id = $('#data-edit-item-faculty').val();
         var batch_id = $('#data-edit-item-batch').val();
         var session = $('#data-edit-item-session').val();
+        var old_email = $('#data-edit-item-old-email').val();
+        var email = $('#data-edit-item-email').val();
         var data = { 
+            old_id: old_id,
             id: id,
             name: name, 
             reg: reg, 
             faculty_id: faculty_id, 
             batch_id: batch_id, 
-            session: session
+            session: session,
+            old_email: old_email,
+            email: email,
         }
         $.ajax({
             url: `${baseUrl}student.php?call=update`,
@@ -414,11 +434,12 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
-        modal.find('#data-add-item-error').html('');
+        modal.find('#data-add-modal-error').html('');
         modal.find('#data-add-item-id').val('');
         modal.find('#data-add-item-name').val('');
         modal.find('#data-add-item-reg').val('');
         modal.find('#data-add-item-session').val('');
+        modal.find('#data-add-item-email').val('');
 
         addFacultiesToDropdown(faculties, $('#data-add-item-faculty'));
         addBatchesToDropdown(batches, $('#data-add-item-batch'));
@@ -434,7 +455,8 @@
         addBatchesToDropdown(batches, $('#data-edit-item-batch'));
 
         var modal = $(this);
-        modal.find('#data-edit-item-error').html('');
+        modal.find('#data-edit-modal-error').html('');
+        modal.find('#data-edit-item-old-id').val(item.id);
         modal.find('#data-edit-item-id').val(item.id);
         modal.find('#data-edit-item-name').val(item.name);
         modal.find('#data-edit-item-reg').val(item.reg);
@@ -442,6 +464,8 @@
         modal.find('#data-edit-item-batch').val(item.batch_id).change();
         modal.find('#data-edit-item-batch').val(item.batch_id);
         modal.find('#data-edit-item-session').val(item.session);
+        modal.find('#data-edit-item-old-email').val(item.email);
+        modal.find('#data-edit-item-email').val(item.email);
     });
 
     $('#data-details-modal').on('show.bs.modal', function (event) {

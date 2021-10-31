@@ -57,6 +57,22 @@ class StudentDb extends Db
         return parent::getAll($sql);
     }
 
+    public function getByEmail($email)
+    {
+        $sql = "SELECT * FROM " . STUDENT_TABLE;
+        //condition
+        $sql = $sql . " WHERE email = '$email' AND deleted = 0";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row;
+        }
+    }
+
     public function insert($name, $id, $reg, $email, $batch_id, $session, $faculty_id, $password)
     {
         //columns to select
@@ -69,11 +85,11 @@ class StudentDb extends Db
         return $this->con->insert_id;
     }
 
-    public function update($name, $id, $reg, $batch_id, $session, $faculty_id)
+    public function update($name, $old_id, $id, $reg, $email, $batch_id, $session, $faculty_id)
     {
-        $sql = "UPDATE " . STUDENT_TABLE . " set name = '$name', reg = '$reg', 
-        batch_id = '$batch_id', session = '$session', faculty_id = '$faculty_id', 
-        updated_at = NOW() WHERE id = '$id'";
+        $sql = "UPDATE " . STUDENT_TABLE . " set id='$id', name = '$name', reg = '$reg', 
+        email = '$email', batch_id = '$batch_id', session = '$session', 
+        faculty_id = '$faculty_id', updated_at = NOW() WHERE id = '$old_id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;

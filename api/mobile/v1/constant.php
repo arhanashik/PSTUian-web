@@ -24,7 +24,7 @@ define('DEVICE_TABLE', 'device');
 define('LOG_TABLE', 'log');
 define('NOTIFICATION_TABLE', 'notification');
 
-define('BASE_URL', 'https://pstuian.com/');
+define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
@@ -34,6 +34,7 @@ define('FILE_PATH',  UPLOAD_PATH . 'files/');
 define('SLIDER_PATH', UPLOAD_PATH . 'slider/');
 define('AVATAR_PATH',  UPLOAD_PATH . 'avatar/');
 define('STUDENT_IMAGE_PATH',  UPLOAD_PATH . 'student/');
+define('TEACHER_IMAGE_PATH',  UPLOAD_PATH . 'teacher/');
 define('CV_PATH',  UPLOAD_PATH . 'cv/');
 
 define('PAGE_LIMIT',  20);
