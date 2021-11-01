@@ -34,7 +34,7 @@ if (isset($_GET['call'])) {
                 && isset($_POST['user_type']) && strlen($_POST['user_type']) > 0)
             {
                 $email = $_POST['email'];
-                $password = $_POST['password'];
+                $password = md5($_POST['password']);
                 $user_type = $_POST['user_type'];
 
                 if($user_type === 'admin') {
