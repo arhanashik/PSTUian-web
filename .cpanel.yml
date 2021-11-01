@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export REPOPATH=/home/pstuianc/repositories/pstuian/
-    - export DEPLOYPATH=/home/pstuianc/public_html/
+    - export DEPLOYPATH=/home/pstuianc/public_html/dev/
     - /bin/cp -R admin $DEPLOYPATH
     - /bin/cp -R api $DEPLOYPATH
     - /bin/cp -R css $DEPLOYPATH

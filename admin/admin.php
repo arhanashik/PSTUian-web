@@ -15,7 +15,6 @@
                     <tr>
                         <th scope="col">Id</th>
                         <th scope="col">Email</th>
-                        <th scope="col">Password</th>
                         <th scope="col">Role</th>
                         <th scope="col">Created At</th>
                         <th scope="col">Updated At</th>
@@ -75,7 +74,7 @@
                 <div class="modal-body">
                     <form>
                         <p class="text-danger" id="data-edit-modal-error"></p>
-                        <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
+                        <input type="text" class="form-control" id="data-edit-item-id" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-email">Email</label>
                             <input type="text" class="form-control" id="data-edit-item-email"/>
@@ -88,7 +87,7 @@
                             <label for="data-edit-item-role">Role</label>
                             <select class="form-select" id="data-edit-item-role" aria-label="Select Role">
                                 <option selected value="admin">Admin</option>
-                                <option value="super_admin">Super Admin</option>
+                                <?php if ($role == 'super_admin') echo '<option value="super_admin">Super Admin</option>';?>
                             </select>
                         </div>
                     </form>
@@ -143,7 +142,6 @@
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
         `<td>${item.email}</td>` +
-        `<td class="hidetext">${item.password}</td>` +
         `<td>${item.role}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
@@ -302,7 +300,7 @@
         modal.find('#data-edit-modal-error').html('');
         modal.find('#data-edit-item-id').val(item.id);
         modal.find('#data-edit-item-email').val(item.email);
-        modal.find('#data-edit-item-password').val(item.password);
+        modal.find('#data-edit-item-password').val('');
         modal.find('#data-edit-item-role').val(item.role);
     });
 </script>

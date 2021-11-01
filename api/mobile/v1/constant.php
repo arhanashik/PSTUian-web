@@ -2,9 +2,9 @@
 
 // ----------- v1 ----------//
 define('DB_HOST', 'localhost');
-define('DB_USER', 'pstuianc_prod');
-define('DB_PASS', 'XUShN4]rID(.');
-define('DB_NAME', 'pstuianc_db');
+define('DB_USER', 'pstuianc_dev');
+define('DB_PASS', 'qGPKUPvsCabp');
+define('DB_NAME', 'pstuianc_dev.db');
 
 // ----------- main tables -----------//
 define('SLIDER_TABLE', 'slider');
@@ -21,8 +21,11 @@ define('CONFIG_TABLE', 'config');
 define('USER_QUERY_TABLE', 'user_query');
 define('USER_QUERY_REPLY_TABLE', 'user_query_reply');
 define('DEVICE_TABLE', 'device');
+define('LOG_TABLE', 'log');
+define('NOTIFICATION_TABLE', 'notification');
+define('PASSWORD_RESET_TABLE', 'password_reset');
 
-define('BASE_URL', 'https://pstuian.com/');
+define('BASE_URL', 'https://dev.pstuian.com/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
@@ -32,6 +35,7 @@ define('FILE_PATH',  UPLOAD_PATH . 'files/');
 define('SLIDER_PATH', UPLOAD_PATH . 'slider/');
 define('AVATAR_PATH',  UPLOAD_PATH . 'avatar/');
 define('STUDENT_IMAGE_PATH',  UPLOAD_PATH . 'student/');
+define('TEACHER_IMAGE_PATH',  UPLOAD_PATH . 'teacher/');
 define('CV_PATH',  UPLOAD_PATH . 'cv/');
 
 define('PAGE_LIMIT',  20);

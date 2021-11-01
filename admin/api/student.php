@@ -37,12 +37,13 @@ switch ($_GET['call'])
         break;
 
     case 'add':
-        if(!isset($_POST['name']) || empty($_POST['name'])
-        || !isset($_POST['id']) || empty($_POST['id'])
-        || !isset($_POST['reg']) || empty($_POST['reg'])
-        || !isset($_POST['batch_id']) || empty($_POST['batch_id'])
-        || !isset($_POST['session']) || empty($_POST['session'])
-        || !isset($_POST['faculty_id']) || empty($_POST['faculty_id'])) {
+        if(!isset($_POST['name']) || strlen($_POST['name']) <= 0
+        || !isset($_POST['id']) || strlen($_POST['id']) <= 0
+        || !isset($_POST['reg']) || strlen($_POST['reg']) <= 0
+        || !isset($_POST['batch_id']) || strlen($_POST['batch_id']) <= 0
+        || !isset($_POST['session']) || strlen($_POST['session']) <= 0
+        || !isset($_POST['email']) || strlen($_POST['email']) <= 0
+        || !isset($_POST['faculty_id']) || strlen($_POST['faculty_id']) <= 0) {
             break;
         }
         $name = $_POST['name'];
@@ -50,14 +51,18 @@ switch ($_GET['call'])
         $reg = $_POST['reg'];
         $batch_id = $_POST['batch_id'];
         $session = $_POST['session'];
+        $email = $_POST['email'];
         $faculty_id = $_POST['faculty_id'];
         if($db->isAlreadyInsered($id)) {
             $response['message'] = 'Account already exists!';
             break;
         }
-        //default email and password
-        $email = $id;
-        $password = md5($reg);
+        if($db->getByEmail($email)) {
+            $response['message'] = 'Ops, Account already exists for this email';
+            break;
+        }
+        //default password
+        $password = md5($id);
         $result = $db->insert($name, $id, $reg, $email, $batch_id, $session, $faculty_id, $password);
 
         $response['success'] = true;
@@ -66,21 +71,35 @@ switch ($_GET['call'])
         break;
 
     case 'update':
-        if(!isset($_POST['name']) || empty($_POST['name'])
-        || !isset($_POST['id']) || empty($_POST['id'])
-        || !isset($_POST['reg']) || empty($_POST['reg'])
-        || !isset($_POST['batch_id']) || empty($_POST['batch_id'])
-        || !isset($_POST['session']) || empty($_POST['session'])
-        || !isset($_POST['faculty_id']) || empty($_POST['faculty_id'])) {
+        if(!isset($_POST['name']) || strlen($_POST['name']) <= 0
+        || !isset($_POST['old_id']) || strlen($_POST['old_id']) <= 0
+        || !isset($_POST['id']) || strlen($_POST['id']) <= 0
+        || !isset($_POST['reg']) || strlen($_POST['reg']) <= 0
+        || !isset($_POST['batch_id']) || strlen($_POST['batch_id']) <= 0
+        || !isset($_POST['session']) || strlen($_POST['session']) <= 0
+        || !isset($_POST['old_email']) || strlen($_POST['old_email']) <= 0
+        || !isset($_POST['email']) || strlen($_POST['email']) <= 0
+        || !isset($_POST['faculty_id']) || strlen($_POST['faculty_id']) <= 0) {
             break;
         }
         $name = $_POST['name'];
+        $old_id = $_POST['old_id'];
         $id = $_POST['id'];
         $reg = $_POST['reg'];
         $batch_id = $_POST['batch_id'];
         $session = $_POST['session'];
+        $old_email = $_POST['old_email'];
+        $email = $_POST['email'];
         $faculty_id = $_POST['faculty_id'];
-        $result = $db->update($name, $id, $reg, $batch_id, $session, $faculty_id);
+        if($old_id !== $id && $db->get($id)) {
+            $response['message'] = 'Ops, Account already exists for this id';
+            break;
+        }
+        if($old_email !== $email && $db->getByEmail($email)) {
+            $response['message'] = 'Ops, Account already exists for this email';
+            break;
+        }
+        $result = $db->update($name, $old_id, $id, $reg, $email, $batch_id, $session, $faculty_id);
 
         $response['success'] = true;
         $response['message'] = 'Updated Successfully';

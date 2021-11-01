@@ -3,6 +3,7 @@ session_start();
 require_once './constant.php';
 require_once './db/auth_db.php';
 require_once './db/admin_db.php';
+require_once './db/log_db.php';
 require_once './util/util.php';
  
 $response = array();
@@ -13,6 +14,7 @@ $response['message'] = 'Required parameters are missing';
 if (isset($_GET['call'])) {
     $db = new AuthDb();
     $adminDb = new AdminDb();
+    $logDb = new LogDb();
     $util = new Util();
     switch ($_GET['call']) {
         case 'getAll':
@@ -32,7 +34,7 @@ if (isset($_GET['call'])) {
                 && isset($_POST['user_type']) && strlen($_POST['user_type']) > 0)
             {
                 $email = $_POST['email'];
-                $password = $_POST['password'];
+                $password = md5($_POST['password']);
                 $user_type = $_POST['user_type'];
 
                 if($user_type === 'admin') {

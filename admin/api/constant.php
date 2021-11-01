@@ -2,9 +2,9 @@
 
 // ----------- v1 ----------//
 define('DB_HOST', 'localhost');
-define('DB_USER', 'pstuianc_prod');
-define('DB_PASS', 'XUShN4]rID(.');
-define('DB_NAME', 'pstuianc_db');
+define('DB_USER', 'pstuianc_dev');
+define('DB_PASS', 'qGPKUPvsCabp');
+define('DB_NAME', 'pstuianc_dev.db');
 
 // ----------- main tables -----------//
 define('SLIDER_TABLE', 'slider');
@@ -22,8 +22,11 @@ define('CONFIG_TABLE', 'config');
 define('USER_QUERY_TABLE', 'user_query');
 define('USER_QUERY_REPLY_TABLE', 'user_query_reply');
 define('DEVICE_TABLE', 'device');
+define('LOG_TABLE', 'log');
+define('NOTIFICATION_TABLE', 'notification');
+define('PASSWORD_RESET_TABLE', 'password_reset');
 
-define('BASE_URL', 'https://admin.pstuian.com/');
+define('BASE_URL', 'https://dev.pstuian.com/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
@@ -40,12 +43,11 @@ define('ALLOWED_ANIM_EXTENTION',  array("json"));
 define('MAX_SIZE',  2000000);
 
 define('FCM_PUSH_URL',  'https://fcm.googleapis.com/fcm/send');
-define('FCM_SERVER_KEY', 'FCM-SERVER-KEY');
+define('FCM_SERVER_KEY', 'AAAA4YeC81c:APA91bG2Q427M3TltRfUIesa8tlBUdROrvTKIbOHSFRTx5dVdBzUz8BZ2XQ9GZQQVrTy-501fua81i2_S_nRS8APXNAevdwFzQDtsHy-km4UscozSgNV3zYHxeroyOcKalCi2ajLfOKd');
 
 define('FCM_CLICK_ACTION', array(
     "open_chat" => "com.workfort.pstuian.action.OPEN_CHAT",
     "open_post" => "com.workfort.pstuian.action.OPEN_POST",
-    "open_friend_request" => "com.workfort.pstuian.action.OPEN_FRIEND_REQUEST",
     "open_notifications" => "com.workfort.pstuian.action.OPEN_NOTIFICATIONS",
 ));
 
