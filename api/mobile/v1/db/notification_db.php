@@ -8,6 +8,24 @@ class NotificationDb extends Db {
         parent::__construct(NOTIFICATION_TABLE);
     }
 
+    public function getAll($device_id)
+    {
+        //query
+        $sql = "SELECT * FROM " . NOTIFICATION_TABLE;
+        //condition
+        // if($device_id === -1) {
+        //     $sql = $sql . " WHERE device_id = 'all'";
+        // } else {
+        //     $sql = $sql . " WHERE (device_id = 'all' OR device_id = '$device_id')";
+        // }
+        $sql = $sql . " WHERE (device_id = 'all' OR device_id = '$device_id') AND deleted = 0";
+        //sorting
+        $sql = $sql . " ORDER BY id DESC";
+        //constraints
+        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
+        return parent::getAll($sql);
+    }
+
     public function insert($device_id, $type, $title, $message)
     {
         $sql = "INSERT INTO " . NOTIFICATION_TABLE . "(device_id, type, title, message) 
