@@ -36,11 +36,10 @@ class Util
 	}
 
 	// receivers should be an  array of email addresses
-	public function sendPasswordResetEmail($receiver) {
+	public function sendPasswordResetEmail($receiver, $reset_link) {
 		$to = $receiver;
 		$subject = "PSTUian | Reset password";
 
-		$reset_link = BASE_URL . "reset_password.php";
 		$reset_link_anchor = "<a href='$reset_link'>$reset_link</a>";
 
 		$message = "
@@ -49,7 +48,7 @@ class Util
 		<title>PSTUian | Reset password</title>
 		</head>
 		<body>
-		<p>Please reset your password from following link</p>
+		<p>Please reset your password from following link. The link is valid for next 1 day.</p>
 		$reset_link_anchor
 		</body>
 		</html>

@@ -78,7 +78,7 @@ class TeacherDb extends Db
             $item['image_url'] = $image_url;
         }
  
-        return $item;
+        return empty($item)? false : $item;
     }
 
     public function isAlreadyInseredByEmail($email)
@@ -186,6 +186,15 @@ class TeacherDb extends Db
     {
         $sql = "UPDATE " . TEACHER_TABLE . " set password = '$new_password', updated_at = NOW() 
         WHERE (id = '$id' AND password = '$old_password') AND deleted = 0";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function reset_password($id, $password)
+    {
+        $sql = "UPDATE " . TEACHER_TABLE . " set password = '$password', updated_at = NOW() 
+        WHERE id = '$id' AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;

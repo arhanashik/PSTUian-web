@@ -3,6 +3,7 @@ require_once './constant.php';
 require_once './db/auth_db.php';
 require_once './db/student_db.php';
 require_once './db/teacher_db.php';
+require_once './db/password_reset_db.php';
 require_once './util/util.php';
  
 $response = array();
@@ -19,6 +20,7 @@ $call = $_GET['call'];
 $db = new AuthDb();
 $studentDb = new StudentDb();
 $teacherDb = new TeacherDb();
+$passwordResetDb = new PasswordResetDb();
 $util = new Util();
 
 switch ($_GET['call']) {
@@ -236,16 +238,26 @@ switch ($_GET['call']) {
         break;
 
     case 'forgotPassword':
-        if(!isset($_POST['email']) ||  strlen($_POST['email']) <= 0)
-        {
+        if(!isset($_POST['user_type']) ||  strlen($_POST['user_type']) <= 0
+        || !isset($_POST['email']) ||  strlen($_POST['email']) <= 0) break;
+
+        $user_type = $_POST['user_type'];
+        $email = $_POST['email'];
+
+        if(!($user_type === 'student' || $user_type === 'teacher')) {
+            $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
+            $response['message'] = 'Invaild User Type!';
             break;
         }
-        $email = $_POST['email'];
-        $student = $studentDb->getByEmail($email);
-        if($student == null || !$student) {
+
+        $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
+
+        $user = $user_db->getByEmail($email);
+        if($user == null || !$user) {
             $response['message'] = 'Ops, no account for this email';
             break;
         }
+
         if(!$util->isValidEmail($email)) {
             $response['message'] = 'Ops, your email is not valid. So password reset by email 
             is not possible. Please contant with admin for password reset from help/support
@@ -253,7 +265,15 @@ switch ($_GET['call']) {
             break;
         }
 
-        if(!$util->sendPasswordResetEmail($email)) {
+        $time_now = date('Y-m-d H:i:s');
+        $auth_token = $util->getHash($email.$user_type, $time_now);
+        if($passwordResetDb->getByUserIdAndType($user['id'], $user_type)) {
+            $result = $passwordResetDb->update($user['id'], $user_type, $email, $auth_token);
+        } else {
+            $result = $passwordResetDb->insert($user['id'], $user_type, $email, $auth_token);
+        }
+        $reset_link = BASE_URL . "reset_password.php?ui=" . $user['id'] . "&ut=" . $user_type . "&at=" . $auth_token;
+        if(!$util->sendPasswordResetEmail($email, $reset_link)) {
             $response['message'] = 'Sorry, failed to send password reset email. Please try again.';
             break;
         }
@@ -261,6 +281,56 @@ switch ($_GET['call']) {
         $response['code'] = SUCCESS;
         $response['message'] = 'Password reset email sent successfullly. 
         Please check spam folder if you cannot find it.';
+
+        break;
+
+    case 'resetPassword':
+        if(!isset($_POST['user_id']) ||  strlen($_POST['user_id']) <= 0 
+        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
+        || !isset($_POST['password']) || strlen($_POST['password']) <= 0) break;
+
+        $id = $_POST['user_id'];
+        $user_type = $_POST['user_type'];
+        $password = md5($_POST['password']);
+        $auth_token = $_SERVER['HTTP_X_AUTH_TOKEN'];
+
+        if(!($user_type === 'student' || $user_type === 'teacher')) {
+            $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
+            $response['message'] = 'Invaild User Type!';
+            break;
+        }
+
+        $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
+        if(!$user_db->get($id)) {    
+            $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
+            $response['message'] = 'Account not found!';
+            break;
+        }
+
+        if(!$passwordResetDb->isValidToken($id, $user_type, $auth_token)) {   
+            $response['code'] = ERROR_FAILED_TO_AUTHENTICATE; 
+            $response['message'] = 'Invalid Request!';
+            break;
+        }
+
+        if(!$user_db->reset_password($id, $password)) {
+            $response['code'] = ERROR_FAILED_TO_UPDATE;
+            $response['message'] = 'Password reset failed. Please try again.';
+            break;
+        }
+
+        //invalidate password reset token
+        $passwordResetDb->invalidateToken($id, $user_type);
+        //update auth token
+        $time_now = date('Y-m-d H:i:s');
+        $auth_token = $util->getHash($password.$user_type, $time_now);
+        // remove device id. new login will update the device again.
+        $device_id = -1;
+        $db->update($id, $user_type, $auth_token, $device_id);
+        $response['success'] = true;
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Password reset successfullly';
+        $response['auth_token'] = $auth_token;
 
         break;
 }

@@ -149,4 +149,13 @@ class StudentDb extends Db
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
+
+    public function reset_password($id, $password)
+    {
+        $sql = "UPDATE " . STUDENT_TABLE . " set password = '$password', updated_at = NOW() 
+        WHERE id = '$id' AND deleted = 0";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
 }

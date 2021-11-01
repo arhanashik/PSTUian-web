@@ -23,6 +23,7 @@ define('USER_QUERY_REPLY_TABLE', 'user_query_reply');
 define('DEVICE_TABLE', 'device');
 define('LOG_TABLE', 'log');
 define('NOTIFICATION_TABLE', 'notification');
+define('PASSWORD_RESET_TABLE', 'password_reset');
 
 define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
 
