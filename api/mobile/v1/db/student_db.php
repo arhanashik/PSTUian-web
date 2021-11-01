@@ -59,6 +59,25 @@ class StudentDb extends Db
         }
     }
 
+    public function validateByIdAndPassword($id, $password)
+    {
+
+        //columns to select
+        // $columns = "name, id, reg, phone, linked_in, blood, address, email, session, batch_id, faculty_id, fb_link, image_url, cv_link, bio";
+        $sql = "SELECT id FROM " . STUDENT_TABLE;
+        $sql = $sql . " WHERE (id = '$id' AND password = '$password') AND deleted = 0";
+        
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row['id'];
+        }
+    }
+
     public function insert($name, $id, $reg, $email, $batch_id, $session, $faculty_id, $password)
     {
         //columns to select
@@ -117,6 +136,24 @@ class StudentDb extends Db
     public function update_cv($id, $cv_link)
     {
         $sql = "UPDATE " . STUDENT_TABLE . " set cv_link = '$cv_link', updated_at = NOW() WHERE id = '$id'";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function update_password($id, $old_password, $new_password)
+    {
+        $sql = "UPDATE " . STUDENT_TABLE . " set password = '$new_password', updated_at = NOW() 
+        WHERE (id = '$id' AND password = '$old_password') AND deleted = 0";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function reset_password($id, $password)
+    {
+        $sql = "UPDATE " . STUDENT_TABLE . " set password = '$password', updated_at = NOW() 
+        WHERE id = '$id' AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;

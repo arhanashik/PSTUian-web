@@ -2,9 +2,9 @@
 
 // ----------- v1 ----------//
 define('DB_HOST', 'localhost');
-define('DB_USER', 'pstuianc_dev');
-define('DB_PASS', 'qGPKUPvsCabp');
-define('DB_NAME', 'pstuianc_dev.db');
+define('DB_USER', 'root');
+define('DB_PASS', 'root');
+define('DB_NAME', 'pstuian_dev.db');
 
 // ----------- main tables -----------//
 define('SLIDER_TABLE', 'slider');
@@ -16,14 +16,16 @@ define('EMPLOYEE_TABLE', 'employee');
 define('STUDENT_TABLE', 'student');
 define('DONATION_TABLE', 'donation');
 define('INFO_TABLE', 'info');
-define('ADMIN_TABLE', 'admin');
 define('AUTH_TABLE', 'auth');
 define('CONFIG_TABLE', 'config');
 define('USER_QUERY_TABLE', 'user_query');
 define('USER_QUERY_REPLY_TABLE', 'user_query_reply');
 define('DEVICE_TABLE', 'device');
+define('LOG_TABLE', 'log');
+define('NOTIFICATION_TABLE', 'notification');
+define('PASSWORD_RESET_TABLE', 'password_reset');
 
-define('BASE_URL', 'https://dev.pstuian.com/');
+define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
@@ -33,6 +35,7 @@ define('FILE_PATH',  UPLOAD_PATH . 'files/');
 define('SLIDER_PATH', UPLOAD_PATH . 'slider/');
 define('AVATAR_PATH',  UPLOAD_PATH . 'avatar/');
 define('STUDENT_IMAGE_PATH',  UPLOAD_PATH . 'student/');
+define('TEACHER_IMAGE_PATH',  UPLOAD_PATH . 'teacher/');
 define('CV_PATH',  UPLOAD_PATH . 'cv/');
 
 define('PAGE_LIMIT',  20);

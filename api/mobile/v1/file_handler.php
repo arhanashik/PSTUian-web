@@ -18,13 +18,21 @@ switch ($call)
 {
     case 'uploadImage':
         require_once './auth_validation.php';
-        if(!isset($_POST['name']) || !isset($_FILES['file'])) {
+        if(!isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
+        || !isset($_POST['name']) || strlen($_POST['name']) <= 0
+        || !isset($_FILES['file'])) {
             break;
         }
+        $user_type = $_POST['user_type'];
         $name = $_POST['name'];
         $file = $_FILES['file'];
         $extension = "jpeg";
-        $target_file = ROOT_DIR . '/' . STUDENT_IMAGE_PATH . $name;
+        if($user_type !== 'student' && $user_type !== 'teacher') {
+            $response['message'] = 'Invalid user!';
+            break;
+        }
+        $sub_dir = ($user_type === 'student')? STUDENT_IMAGE_PATH : TEACHER_IMAGE_PATH;
+        $target_file = ROOT_DIR . '/' . $sub_dir . $name;
         //upload
         $upload_result = $util->uploadImage($file, $target_file, $extension);
         //upload failed
@@ -32,7 +40,7 @@ switch ($call)
             $response['message'] = $upload_result;
             break;
         }
-        $url = BASE_URL . STUDENT_IMAGE_PATH . $name;
+        $url = BASE_URL . $sub_dir . $name;
 
         $response['success'] = true;
         $response['message'] = 'File Uploaded Successfully';

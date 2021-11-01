@@ -1,10 +1,12 @@
 <?php
+require_once './db/log_db.php';
 
 class CommonRequest {
     
     // returns response if the request is handled.
     // returns false if the request is not handled.
     function handle($call, $db, $response) {
+        $logDb = new LogDb();
         switch ($call) {
             case 'getAll':
                 //if there is any query parameters except call,
@@ -27,7 +29,12 @@ class CommonRequest {
                 }
                 $id = $_POST['id'];
                 $result = $db->delete($id);
+                if($result == null || !$result) {
+                    $response['message'] = 'Operation failed!';
+                    return $response;
+                }
     
+                // $logDb->insert($id, 'admin', 'delete', $id);
                 $response['success'] = true;
                 $response['message'] = 'Deleted Successfully';
                 $response['data'] = $result;
@@ -39,6 +46,10 @@ class CommonRequest {
                 }
                 $id = $_POST['id'];
                 $result = $db->restore($id);
+                if($result == null || !$result) {
+                    $response['message'] = 'Operation failed!';
+                    return $response;
+                }
     
                 $response['success'] = true;
                 $response['message'] = 'Restored Successfully';
@@ -51,6 +62,10 @@ class CommonRequest {
                 }
                 $id = $_POST['id'];
                 $result = $db->deletePermanent($id);
+                if($result == null || !$result) {
+                    $response['message'] = 'Operation failed!';
+                    return $response;
+                }
     
                 $response['success'] = true;
                 $response['message'] = 'Deleted Successfully';

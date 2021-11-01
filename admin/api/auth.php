@@ -3,6 +3,7 @@ session_start();
 require_once './constant.php';
 require_once './db/auth_db.php';
 require_once './db/admin_db.php';
+require_once './db/log_db.php';
 require_once './util/util.php';
  
 $response = array();
@@ -13,6 +14,7 @@ $response['message'] = 'Required parameters are missing';
 if (isset($_GET['call'])) {
     $db = new AuthDb();
     $adminDb = new AdminDb();
+    $logDb = new LogDb();
     $util = new Util();
     switch ($_GET['call']) {
         case 'getAll':

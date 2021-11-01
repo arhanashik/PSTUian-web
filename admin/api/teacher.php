@@ -31,12 +31,12 @@ switch ($_GET['call'])
         break;
 
     case 'add':
-        if(!isset($_POST['name']) || empty($_POST['name'])
-        || !isset($_POST['designation']) || empty($_POST['designation'])
-        || !isset($_POST['faculty_id']) || empty($_POST['faculty_id'])
-        || !isset($_POST['department']) || empty($_POST['department'])
+        if(!isset($_POST['name']) || strlen($_POST['name']) <= 0
+        || !isset($_POST['designation']) || strlen($_POST['designation']) <= 0
+        || !isset($_POST['faculty_id']) || strlen($_POST['faculty_id']) <= 0
+        || !isset($_POST['department']) || strlen($_POST['department']) <= 0
         || !isset($_POST['address']) || !isset($_POST['phone'])
-        || !isset($_POST['email'])) {
+        || !isset($_POST['email']) || strlen($_POST['email']) <= 0) {
             break;
         }
         $name = $_POST['name'];
@@ -46,7 +46,9 @@ switch ($_GET['call'])
         $address = $_POST['address'];
         $phone = $_POST['phone'];
         $email = $_POST['email'];
-        $result = $db->insert($name, $designation, $faculty_id, $department, $address, $phone, $email);
+        //default password
+        $password = md5($email);
+        $result = $db->insert($name, $designation, $faculty_id, $department, $address, $phone, $email, $password);
 
         $response['success'] = true;
         $response['message'] = 'Inserted Successfully';

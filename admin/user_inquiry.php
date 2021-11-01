@@ -134,7 +134,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadAuths();
+                    loadUserQueries();
                 } else {
                     console.log(data['message']);
                 }
