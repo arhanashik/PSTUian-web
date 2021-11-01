@@ -36,7 +36,7 @@ switch ($_GET['call'])
             $response['message'] = 'Minmun password length is 6';
             break;
         }
-        $result = $db->insert($email, $password, $role);
+        $result = $db->insert($email, md5($password), $role);
 
         $response['success'] = true;
         $response['message'] = 'Inserted Successfully';
@@ -58,7 +58,7 @@ switch ($_GET['call'])
             $response['message'] = 'Minmun password length is 6';
             break;
         }
-        $result = $db->update($id, $email, $password, $role);
+        $result = $db->update($id, $email, md5($password), $role);
 
         $response['success'] = true;
         $response['message'] = 'Updated Successfully';
@@ -78,7 +78,7 @@ switch ($_GET['call'])
             $response['message'] = 'Minmun password length is 6';
             break;
         }
-        $result = $db->updatePassword($id, $old_password, $new_password);
+        $result = $db->updatePassword($id, md5($old_password), md5($new_password));
 
         if(!$result) {
             $response['message'] = 'Failed! Please check if old password is correct.';
