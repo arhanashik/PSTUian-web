@@ -23,3 +23,8 @@ BASE URL ADMIN
 local: define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/admin/');
 dev: define('BASE_URL', 'https://admin-dev.pstuian.com/');
 prod: define('BASE_URL', 'https://admin.pstuian.com/');
+
+BASE URL Website
+local: define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
+dev: define('BASE_URL', 'https://dev.pstuian.com/');
+prod: define('BASE_URL', 'https://pstuian.com/');
