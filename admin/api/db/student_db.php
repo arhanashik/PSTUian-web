@@ -61,7 +61,7 @@ class StudentDb extends Db
     {
         $sql = "SELECT * FROM " . STUDENT_TABLE;
         //condition
-        $sql = $sql . " WHERE email = '$email' AND deleted = 0";
+        $sql = $sql . " WHERE email = '$email'";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();

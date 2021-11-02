@@ -117,12 +117,12 @@
                             <input type="text" class="form-control" id="data-add-item-ios"/>
                         </div>
                         <div class="form-group">
-                            <label for="data-add-item-data-refresh">Data Refresh Version</label>
-                            <input type="text" class="form-control" id="data-add-item-data-refresh"/>
-                        </div>
-                        <div class="form-group">
                             <label for="data-add-item-api">Api Version</label>
                             <input type="text" class="form-control" id="data-add-item-api"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-data-refresh">Data Refresh Version</label>
+                            <input type="text" class="form-control" id="data-add-item-data-refresh"/>
                         </div>
                         <div class="form-group">
                             <label for="data-add-item-admin-api">Admin Api Version</label>
