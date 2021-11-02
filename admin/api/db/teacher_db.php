@@ -31,10 +31,26 @@ class TeacherDb extends Db
         return parent::getAll($sql);
     }
 
-    public function insert($name, $designation, $faculty_id, $department, $address, $phone, $email, $password)
+    public function getByEmail($email)
     {
-        $sql = "INSERT INTO " . TEACHER_TABLE . "(name, designation, faculty_id, department, address, phone, email, password) 
-        VALUES ('$name', '$designation', '$faculty_id', '$department', '$address', '$phone', '$email', '$password')";
+        $sql = "SELECT * FROM " . TEACHER_TABLE;
+        //condition
+        $sql = $sql . " WHERE email = '$email'";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row;
+        }
+    }
+
+    public function insert($name, $designation, $faculty_id, $department, $email, $password)
+    {
+        $sql = "INSERT INTO " . TEACHER_TABLE . "(name, designation, faculty_id, department, email, password) 
+        VALUES ('$name', '$designation', '$faculty_id', '$department', '$email', '$password')";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();

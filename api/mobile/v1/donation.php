@@ -26,9 +26,10 @@ if (isset($_GET['call']))
             break;
 
 		case 'save':
-			if(empty($_POST['name']) || empty($_POST['info']) 
-				|| empty($_POST['email']) || empty($_POST['reference'])) 
-			{
+            if($_POST['name'] === null || strlen($_POST['name']) <= 0
+            || $_POST['email'] === null || strlen($_POST['email']) <= 0
+            || $_POST['reference'] === null || strlen($_POST['reference']) <= 0
+            || $_POST['info'] === null || strlen($_POST['info']) <= 0) {
 				break;
 			}
 			$name = $_POST['name'];
@@ -37,9 +38,9 @@ if (isset($_GET['call']))
 			$reference = $_POST['reference'];
 
 			$db = new DonationDb();
-			$data = $db->insert($name, $info, $email, $reference);
+			$result = $db->insert($name, $info, $email, $reference);
 			
-			if($data == null || $data == '') 
+			if($result === null || !$result) 
 			{
 				$response['message'] = "Ops, couldn't save donation info. Please try again.";
 			}
@@ -47,7 +48,7 @@ if (isset($_GET['call']))
 			{
 				$response['success'] = true;
 				$response['message'] = 'Donation is under review! Thanks for your help.';
-				$response['data'] = $data;
+				$response['data'] = $result;
 			}
 			
 			break;

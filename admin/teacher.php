@@ -27,8 +27,7 @@
                         <th scope="col">Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Designation</th>
-                        <th scope="col">Created At</th>
-                        <th scope="col">Updated At</th>
+                        <th scope="col">Department</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -65,14 +64,6 @@
                         <div class="form-group">
                             <label for="data-add-item-department">Department</label>
                             <input type="text" class="form-control" id="data-add-item-department"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-add-item-address">Address</label>
-                            <input type="text" class="form-control" id="data-add-item-address"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-add-item-phone">Phone</label>
-                            <input type="text" class="form-control" id="data-add-item-phone"/>
                         </div>
                         <div class="form-group">
                             <label for="data-add-item-email">Email</label>
@@ -125,6 +116,7 @@
                             <label for="data-edit-item-phone">Phone</label>
                             <input type="text" class="form-control" id="data-edit-item-phone"/>
                         </div>
+                        <input type="text" class="form-control" id="data-edit-item-old-email" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-email">Email</label>
                             <input type="text" class="form-control" id="data-edit-item-email"/>
@@ -168,6 +160,10 @@
                     <p type="text" class="form-control" id="data-item-linkedin"></p>
                     <label for="data-item-facebook">Facebook</label>
                     <p type="text" class="form-control" id="data-item-facebook"></p>
+                    <label for="data-item-created">Created At</label>
+                    <p type="text" class="form-control" id="data-item-created"></p>
+                    <label for="data-item-updated">Updated At</label>
+                    <p type="text" class="form-control" id="data-item-updated"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -233,8 +229,7 @@
         `<th scope="row">${item.id}</th>` +
         `<td>${item.name}</td>` +
         `<td>${item.designation}</td>` +
-        `<td>${item.created_at}</td>` +
-        `<td>${item.updated_at}</td>` +
+        `<td>${item.department}</td>` +
         `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
@@ -244,16 +239,12 @@
         var designation = $('#data-add-item-designation').val();
         var faculty_id = $('#data-add-item-faculty').val();
         var department = $('#data-add-item-department').val();
-        var address = $('#data-add-item-address').val();
-        var phone = $('#data-add-item-phone').val();
         var email = $('#data-add-item-email').val();
         var data = { 
             name: name, 
             designation: designation, 
             faculty_id: faculty_id, 
-            department: department, 
-            address: address,
-            phone: phone,
+            department: department,
             email: email
         }
         $.ajax({
@@ -285,6 +276,7 @@
         var department = $('#data-edit-item-department').val();
         var address = $('#data-edit-item-address').val();
         var phone = $('#data-edit-item-phone').val();
+        var old_email = $('#data-edit-item-old-email').val();
         var email = $('#data-edit-item-email').val();
         var data = { 
             id: id,
@@ -294,6 +286,7 @@
             department: department, 
             address: address,
             phone: phone,
+            old_email: old_email,
             email: email
         }
         $.ajax({
@@ -394,8 +387,6 @@
         modal.find('#data-add-item-name').val('');
         modal.find('#data-add-item-designation').val('');
         modal.find('#data-add-item-department').val('');
-        modal.find('#data-add-item-address').val('');
-        modal.find('#data-add-item-phone').val('');
         modal.find('#data-add-item-email').val('');
 
         addFacultiesToDropdown(faculties, $('#data-add-item-faculty'));
@@ -417,6 +408,7 @@
         modal.find('#data-edit-item-department').val(teacher.department);
         modal.find('#data-edit-item-address').val(teacher.address);
         modal.find('#data-edit-item-phone').val(teacher.phone);
+        modal.find('#data-edit-item-old-email').val(teacher.email);
         modal.find('#data-edit-item-email').val(teacher.email);
     });
 
@@ -428,7 +420,7 @@
         var modal = $(this);
         modal.find('#data-item-name').text(teacher.name);
         modal.find('#data-item-designation').text(teacher.designation);
-        modal.find('#data-item-faculty').text(teacher.short_title)
+        modal.find('#data-item-faculty').text(teacher.faculty)
         modal.find('#data-item-department').text(teacher.department);
         modal.find('#data-item-address').text(teacher.address);
         modal.find('#data-item-phone').text(teacher.phone);
@@ -436,6 +428,8 @@
         modal.find('#data-item-image-url').text(teacher.image_url);
         modal.find('#data-item-linkedin').text(teacher.linked_in);
         modal.find('#data-item-facebook').text(teacher.fb_link);
+        modal.find('#data-item-created').text(teacher.created_at);
+        modal.find('#data-item-updated').text(teacher.updated_at);
     });
 
     function addFacultiesToDropdown(faculties, dropdown) {

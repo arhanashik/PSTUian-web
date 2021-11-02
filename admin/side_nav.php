@@ -25,6 +25,7 @@
                         <a class="nav-link" href="course.php">Course</a>
                         <a class="nav-link" href="employee.php">Employee</a>
                         <a class="nav-link" href="donation.php">Donation</a>
+                        <a class="nav-link" href="info.php">Info</a>
                     </nav>
                 </div>
                 <div class="sb-sidenav-menu-heading">Action</div>
