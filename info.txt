@@ -1,0 +1,30 @@
+DB Credentials
+|           | define('DB_HOST', 'localhost');
+|   local   | define('DB_USER', 'root');
+|           | define('DB_PASS', 'root');
+|           | define('DB_NAME', 'pstuian_dev.db');
+--------------------------------------------------
+|           | define('DB_HOST', 'localhost');
+|    dev    | define('DB_USER', 'pstuianc_dev');
+|           | define('DB_PASS', 'qGPKUPvsCabp');
+|           | define('DB_NAME', 'pstuianc_dev.db');
+--------------------------------------------------
+|           | define('DB_HOST', 'localhost');
+|   prod    | define('DB_USER', 'pstuianc_prod');
+|           | define('DB_PASS', "XUShN4]rID(.'");
+|           | define('DB_NAME', 'pstuianc_db');
+--------------------------------------------------
+BASE URL API
+local: define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/api/');
+dev: define('BASE_URL', 'https://api-dev.pstuian.com/');
+prod: define('BASE_URL', 'https://api.pstuian.com/');
+
+BASE URL ADMIN
+local: define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/admin/');
+dev: define('BASE_URL', 'https://admin-dev.pstuian.com/');
+prod: define('BASE_URL', 'https://admin.pstuian.com/');
+
+BASE URL Website
+local: define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
+dev: define('BASE_URL', 'https://dev.pstuian.com/');
+prod: define('BASE_URL', 'https://pstuian.com/');

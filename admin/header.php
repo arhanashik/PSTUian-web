@@ -1,80 +1,49 @@
+<?php
+session_start();
+if(!isset($_SESSION['admin']) && !isset($_SESSION['auth_token'])) {
+   header('Location: login.php');
+   return;
+}
 
-<html>
-
+$admin = $_SESSION['admin'];
+$role = $admin['role'];
+$auth_token = $_SESSION['auth_token'];
+?>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>PSTUian - Admin</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>PSTUian</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+        <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/custom.css" rel="stylesheet" />
+        
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+        <!-- JQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            // Base api url
+            var baseUrl = 'api/';
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+            //adding headers to ajax
+            $.ajaxSetup({
+                headers: { 'x-auth-token': '<?php echo $auth_token; ?>' }
+            });
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+            $(function() { // do things when the document is ready
+                
+            });
+        </script>
     </head>
-
-    <body>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-        <section>
-            <!--Navigation bar-->
-            <div class="navbar-full">
-                <!--<div class="container">-->
-                <nav class="navbar navbar-default">
-                    <div class="container">
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span> 
-                            </button>
-
-                        </div>
-                        <div class="collapse navbar-collapse" id="myNavbar">
-                            <ul class="nav navbar-nav">
-                                <li class=""><a href="insert_student.php">Student Insert</a></li>
-                                <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Details<span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                        <li class=""><a href="details_student.php">Details Student</a></li>
-                                        <li class=""><a href="details_teacher.php">Details Teacher</a></li>
-                                        <li class=""><a href="details_employee.php">Details Employee</a></li>
-                                        <li class=""><a href="details_information.php">Details Information</a></li>
-                                        <li class=""><a href="details_batch.php">Details Batch</a></li>
-                                        <li class=""><a href="details_course_schedule.php">Details Course Schedule</a></li>
-                                        <li class=""><a href="details_slider.php">Details Slider</a></li>
-                                        <li class=""><a href="details_faculty.php">Details Faculty</a></li>
-                                        <li class=""><a href="unconfirm_donation.php">Unconfirm Donation List</a></li>
-
-                                    </ul>
-                                </li>  
-                                <li class=""><a href="confirm_donation.php">Confirm Donation</a></li>
-
-                                  <li><a href="insert_teacher.php">Teacher Insert</a></li>
-                                     <li><a href="insert_employee.php">Emloyee Insert</a></li>
-
-                                 <li><a href="insert_batch.php">Batch insert</a></li>
-                               
-                                
-                                <li><a href="insert_faculty.php">Faculty Insert</a></li>
-                                <li><a href="insert_slider.php">Slider Insert</a></li>
-                                <li><a href="insert_course_schedule.php">Course Material</a></li>
-
-                                <a class="btn btn-info" href="logout.php">Logout</a><hr/>   
-
-
-                            </ul>
-
-                        </div>
-                    </div>
-                </nav>
-
-                <!--</div>-->
-            </div>
-            <!--Navigation bar-->
-        </section>   
-
-
-        <section>
-            <div class="container">
-
-
-
-
-
+    <body class="sb-nav-fixed">
+        <?php include('./top_nav.php'); ?>
+        <div id="layoutSidenav">
+            <?php include('./side_nav.php'); ?>
+            <div id="layoutSidenav_content">

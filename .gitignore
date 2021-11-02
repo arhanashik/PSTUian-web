@@ -1,0 +1,6 @@
+uploads/*
+!uploads/index.php
+!uploads/cv/index.php
+!uploads/slider/index.php
+!uploads/student/index.php
+!uploads/teacher/index.php
