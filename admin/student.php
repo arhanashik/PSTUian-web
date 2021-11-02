@@ -488,6 +488,8 @@
         modal.find('#data-item-cv').text(item.cv_link);
         modal.find('#data-item-linkedin').text(item.linked_in);
         modal.find('#data-item-facebook').text(item.fb_link);
+        modal.find('#data-item-created').text(item.created_at);
+        modal.find('#data-item-updated').text(item.updated_at);
     });
 
     function addFacultiesToDropdown(faculties, dropdown) {

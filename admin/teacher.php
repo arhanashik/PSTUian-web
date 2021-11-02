@@ -27,8 +27,7 @@
                         <th scope="col">Id</th>
                         <th scope="col">Name</th>
                         <th scope="col">Designation</th>
-                        <th scope="col">Created At</th>
-                        <th scope="col">Updated At</th>
+                        <th scope="col">Department</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -168,6 +167,10 @@
                     <p type="text" class="form-control" id="data-item-linkedin"></p>
                     <label for="data-item-facebook">Facebook</label>
                     <p type="text" class="form-control" id="data-item-facebook"></p>
+                    <label for="data-item-created">Created At</label>
+                    <p type="text" class="form-control" id="data-item-created"></p>
+                    <label for="data-item-updated">Updated At</label>
+                    <p type="text" class="form-control" id="data-item-updated"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -233,8 +236,7 @@
         `<th scope="row">${item.id}</th>` +
         `<td>${item.name}</td>` +
         `<td>${item.designation}</td>` +
-        `<td>${item.created_at}</td>` +
-        `<td>${item.updated_at}</td>` +
+        `<td>${item.department}</td>` +
         `<td id="td-action-${item.id}">${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
@@ -428,7 +430,7 @@
         var modal = $(this);
         modal.find('#data-item-name').text(teacher.name);
         modal.find('#data-item-designation').text(teacher.designation);
-        modal.find('#data-item-faculty').text(teacher.short_title)
+        modal.find('#data-item-faculty').text(teacher.faculty)
         modal.find('#data-item-department').text(teacher.department);
         modal.find('#data-item-address').text(teacher.address);
         modal.find('#data-item-phone').text(teacher.phone);
@@ -436,6 +438,8 @@
         modal.find('#data-item-image-url').text(teacher.image_url);
         modal.find('#data-item-linkedin').text(teacher.linked_in);
         modal.find('#data-item-facebook').text(teacher.fb_link);
+        modal.find('#data-item-created').text(teacher.created_at);
+        modal.find('#data-item-updated').text(teacher.updated_at);
     });
 
     function addFacultiesToDropdown(faculties, dropdown) {

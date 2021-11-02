@@ -36,11 +36,11 @@ switch ($call)
         break;
 
     case 'add':
-        if(!isset($_POST['android_version']) || empty($_POST['android_version']) 
-        || !isset($_POST['ios_version']) || empty($_POST['ios_version']) 
-        || !isset($_POST['data_refresh_version']) || empty($_POST['data_refresh_version']) 
-        || !isset($_POST['api_version']) || empty($_POST['api_version']) 
-        || !isset($_POST['admin_api_version']) || empty($_POST['admin_api_version']) 
+        if(!isset($_POST['android_version']) || strlen($_POST['android_version']) <= 0
+        || !isset($_POST['ios_version']) || strlen($_POST['ios_version']) <= 0
+        || !isset($_POST['data_refresh_version']) || strlen($_POST['data_refresh_version']) <= 0
+        || !isset($_POST['api_version']) || strlen($_POST['api_version']) <= 0
+        || !isset($_POST['admin_api_version']) || strlen($_POST['admin_api_version']) <= 0
         || !isset($_POST['force_refresh']) || strlen($_POST['force_refresh']) <= 0 
         || !isset($_POST['force_update']) || strlen($_POST['force_update']) <= 0) {
             break;
@@ -48,7 +48,6 @@ switch ($call)
         $android_version = $_POST['android_version'];
         $ios_version = $_POST['ios_version'];
         $api_version = $_POST['api_version'];
-        $ios_version = $_POST['ios_version'];
         $data_refresh_version = $_POST['data_refresh_version'];
         $admin_api_version = $_POST['admin_api_version'];
         $force_refresh = $_POST['force_refresh'];

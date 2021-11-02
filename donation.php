@@ -5,10 +5,13 @@
       <div class="col-lg-6">
         <div class="post-entry-1">
           <h2 style="color:black;">How to donate</h2>
-          <p id="donation-opiton">
-            We are greateful for your support. No matter how small it is, for us it is 
-            an inspiration to continue our work.</br></br>
+          <p>
             You can send a donation to the following accounts.
+          </p>
+          <p>
+            After sending the donation please use "Save donation" form to save the info.
+            When your donation is approved by our admins, you will find your donation info 
+            in the bellow list.
           </p>
           <div class="card" style="width: 18rem;">
             <div class="card-header">
@@ -17,10 +20,13 @@
             <ul id="donation-options" class="list-group list-group-flush">
             </ul>
           </div>
-          <p id="donation-opiton">
-            After sending the donation please use "Save donation" form to save the info.
-            When your donation is approved by our admins, you will find your donation info 
-            in the bellow list.
+          <p>
+            Our dev team works without hoping for any benefit. But, we still
+            need some maintenance(e.g. domain, hosting, PlayStore Account, testing etc) cost. It might
+            also help us to expand our dimension and inspire us to do more. A cup of coffee is well
+            appreciated. Because, programmers transform the coffee into code(:p). Your small donation
+            is a great sign that you appreciate our work. Show us your noble heart. Thanks a lot in
+            advance.
           </p>
         </div>
       </div>
@@ -64,23 +70,29 @@
 <div class="site-section">
   <div class="container">
     <div class="row">
-      <div class="section-title mb-3">
-        <h2>Donation</h2>
+      <div class="col-12">
+        <div class="section-title mb-3">
+          <h2>Donation</h2>
+        </div>
       </div>
-      <div class="mb-4">
-        <table class="table table-bordered table-hover" id="data-table">
-            <thead>
-                <tr>
-                    <th scope="col">Sl</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Reference</th>
-                    <th scope="col">Message</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="mb-4">
+          <table class="table table-bordered table-hover" id="data-table">
+              <thead>
+                  <tr>
+                      <th scope="col">Sl</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Reference</th>
+                      <th scope="col">Message</th>
+                  </tr>
+              </thead>
+              <tbody>
+              </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
