@@ -66,14 +66,6 @@
                             <input type="text" class="form-control" id="data-add-item-department"/>
                         </div>
                         <div class="form-group">
-                            <label for="data-add-item-address">Address</label>
-                            <input type="text" class="form-control" id="data-add-item-address"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-add-item-phone">Phone</label>
-                            <input type="text" class="form-control" id="data-add-item-phone"/>
-                        </div>
-                        <div class="form-group">
                             <label for="data-add-item-email">Email</label>
                             <input type="text" class="form-control" id="data-add-item-email"/>
                         </div>
@@ -124,6 +116,7 @@
                             <label for="data-edit-item-phone">Phone</label>
                             <input type="text" class="form-control" id="data-edit-item-phone"/>
                         </div>
+                        <input type="text" class="form-control" id="data-edit-item-old-email" hidden/>
                         <div class="form-group">
                             <label for="data-edit-item-email">Email</label>
                             <input type="text" class="form-control" id="data-edit-item-email"/>
@@ -246,16 +239,12 @@
         var designation = $('#data-add-item-designation').val();
         var faculty_id = $('#data-add-item-faculty').val();
         var department = $('#data-add-item-department').val();
-        var address = $('#data-add-item-address').val();
-        var phone = $('#data-add-item-phone').val();
         var email = $('#data-add-item-email').val();
         var data = { 
             name: name, 
             designation: designation, 
             faculty_id: faculty_id, 
-            department: department, 
-            address: address,
-            phone: phone,
+            department: department,
             email: email
         }
         $.ajax({
@@ -287,6 +276,7 @@
         var department = $('#data-edit-item-department').val();
         var address = $('#data-edit-item-address').val();
         var phone = $('#data-edit-item-phone').val();
+        var old_email = $('#data-edit-item-old-email').val();
         var email = $('#data-edit-item-email').val();
         var data = { 
             id: id,
@@ -296,6 +286,7 @@
             department: department, 
             address: address,
             phone: phone,
+            old_email: old_email,
             email: email
         }
         $.ajax({
@@ -396,8 +387,6 @@
         modal.find('#data-add-item-name').val('');
         modal.find('#data-add-item-designation').val('');
         modal.find('#data-add-item-department').val('');
-        modal.find('#data-add-item-address').val('');
-        modal.find('#data-add-item-phone').val('');
         modal.find('#data-add-item-email').val('');
 
         addFacultiesToDropdown(faculties, $('#data-add-item-faculty'));
@@ -419,6 +408,7 @@
         modal.find('#data-edit-item-department').val(teacher.department);
         modal.find('#data-edit-item-address').val(teacher.address);
         modal.find('#data-edit-item-phone').val(teacher.phone);
+        modal.find('#data-edit-item-old-email').val(teacher.email);
         modal.find('#data-edit-item-email').val(teacher.email);
     });
 
