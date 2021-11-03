@@ -1,6 +1,7 @@
 <?php
 require_once './auth_validation.php';
 require_once './db/teacher_db.php';
+require_once './db/log_db.php';
 require_once './common_request.php';
  
 $response = array();
@@ -15,6 +16,7 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 $call = $_GET['call'];
 $common_request = new CommonRequest();
 $db = new TeacherDb();
+$logDb = new LogDb();
 $result = $common_request->handle($call, $db, $response);
 if($result) {
     echo json_encode($result);
@@ -54,6 +56,12 @@ switch ($_GET['call'])
         $response['success'] = true;
         $response['message'] = 'Inserted Successfully';
         $response['data'] = $result;
+        // add log
+        $log_data = json_encode($db->getSingle($result));
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'add', $log_data);
+        }
         break;
 
     case 'update':
@@ -85,6 +93,12 @@ switch ($_GET['call'])
         $response['success'] = true;
         $response['message'] = 'Updated Successfully';
         $response['data'] = $result;
+        // add log
+        $log_data = json_encode($db->getSingle($id));
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'update', $log_data);
+        }
         break;
     
     default:

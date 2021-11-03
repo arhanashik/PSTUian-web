@@ -56,6 +56,23 @@ class Db {
         }
     }
 
+    //returns the data even if it is marked as deleted
+    public function getSingle($id)
+    {
+        $sql = "SELECT * FROM $this->table";
+        //condition
+        $sql = $sql . " WHERE id = '$id'";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row;
+        }
+    }
+
     public function isAlreadyInsered($id)
     {
         $sql = "SELECT id FROM $this->table WHERE id = '$id'";
