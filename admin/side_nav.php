@@ -49,6 +49,10 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-bell"></i></div>
                     Notification
                 </a>
+                <a class="nav-link" href="log.php">
+                    <div class="sb-nav-link-icon"><i class="fas fa-clipboard-list"></i></div>
+                    Log
+                </a>
                 <a class="nav-link" href="settings.php">
                     <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
                     Settings
