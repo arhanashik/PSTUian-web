@@ -34,6 +34,22 @@ switch ($call)
         }
         break;
 
+    case 'get':
+        if($_GET['id'] === null || strlen($_GET['id']) <= 0) break;
+
+        $id = $_GET['id'];
+        $data = $db->get($id);
+        if($data === null || empty($data)) 
+        {
+            $response['message'] = 'No data found!';
+            break;
+        }
+        unset($data['password']);
+        $response['success'] = true;
+        $response['message'] = 'Data found';
+        $response['data'] = $data;
+        break;    
+
     case 'updateImageUrl':
         require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
