@@ -116,6 +116,8 @@ $id = $_GET['id'];
             success:function(response) {
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
+                    $('#message').val('');
+                    loadUserQuery(query_id);
                     loadUserQueryReplies(query_id);
                     $('#toast-title').text('Success');
                 } else {

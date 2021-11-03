@@ -30,6 +30,8 @@ class UserQueryReplyDb extends Db
         VALUES ('$query_id', '$admin_id', '$reply')";
         
         $stmt = $this->con->prepare($sql);
-        return $stmt->execute() && $stmt->affected_rows > 0;
+        if($stmt->execute() && $stmt->affected_rows > 0) {
+            return $this->con->insert_id;
+        } else return false;
     }
 }

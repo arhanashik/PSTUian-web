@@ -28,16 +28,20 @@ class CommonRequest {
                     return $response;
                 }
                 $id = $_POST['id'];
+                $log_data = json_encode($db->getSingle($id));
                 $result = $db->delete($id);
                 if($result == null || !$result) {
                     $response['message'] = 'Operation failed!';
                     return $response;
                 }
-    
-                // $logDb->insert($id, 'admin', 'delete', $id);
                 $response['success'] = true;
                 $response['message'] = 'Deleted Successfully';
                 $response['data'] = $result;
+                // add log
+                if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+                    $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+                    $logDb->insert($admin_id, 'admin', 'delete', $log_data);
+                }
                 return $response;
     
             case 'restore':
@@ -50,10 +54,15 @@ class CommonRequest {
                     $response['message'] = 'Operation failed!';
                     return $response;
                 }
-    
                 $response['success'] = true;
                 $response['message'] = 'Restored Successfully';
                 $response['data'] = $result;
+                // add log
+                $log_data = json_encode($db->getSingle($id));
+                if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+                    $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+                    $logDb->insert($admin_id, 'admin', 'restore', $log_data);
+                }
                 return $response;
     
             case 'deletePermanent':
@@ -61,15 +70,20 @@ class CommonRequest {
                     return $response;
                 }
                 $id = $_POST['id'];
+                $log_data = json_encode($db->getSingle($id));
                 $result = $db->deletePermanent($id);
                 if($result == null || !$result) {
                     $response['message'] = 'Operation failed!';
                     return $response;
                 }
-    
                 $response['success'] = true;
                 $response['message'] = 'Deleted Successfully';
                 $response['data'] = $result;
+                // add log
+                if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+                    $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+                    $logDb->insert($admin_id, 'admin', 'delete_permanent', $log_data);
+                }
                 return $response;
                 
             default:

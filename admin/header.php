@@ -34,7 +34,10 @@ $auth_token = $_SESSION['auth_token'];
 
             //adding headers to ajax
             $.ajaxSetup({
-                headers: { 'x-auth-token': '<?php echo $auth_token; ?>' }
+                headers: { 
+                    'x-auth-token': '<?php echo $auth_token; ?>',
+                    'x-admin-id' : '<?php echo $admin['id']; ?>',
+                }
             });
 
             $(function() { // do things when the document is ready

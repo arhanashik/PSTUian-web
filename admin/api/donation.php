@@ -1,6 +1,7 @@
 <?php
 require_once './auth_validation.php';
 require_once './db/donation_db.php';
+require_once './db/log_db.php';
 require_once './common_request.php';
  
 $response = array();
@@ -14,6 +15,7 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 
 $call = $_GET['call'];
 $db = new DonationDb();
+$logDb = new LogDb();
 $common_request = new CommonRequest();
 $result = $common_request->handle($call, $db, $response);
 if($result) {
@@ -39,6 +41,12 @@ switch ($_GET['call'])
         $response['success'] = true;
         $response['message'] = 'Inserted Successfully';
         $response['data'] = $result;
+        // add log
+        $log_data = json_encode($db->getSingle($result));
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'add', $log_data);
+        }
         break;
 
     case 'update':
@@ -59,6 +67,12 @@ switch ($_GET['call'])
         $response['success'] = true;
         $response['message'] = 'Updated Successfully';
         $response['data'] = $result;
+        // add log
+        $log_data = json_encode($db->getSingle($id));
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'update', $log_data);
+        }
         break;
 
     case 'confirm':
@@ -71,6 +85,12 @@ switch ($_GET['call'])
         $response['success'] = true;
         $response['message'] = 'Updated Successfully';
         $response['data'] = $result;
+        // add log
+        $log_data = json_encode($db->getSingle($id));
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'confirm', $log_data);
+        }
         break;
 
     case 'unconfirm':
@@ -83,6 +103,12 @@ switch ($_GET['call'])
         $response['success'] = true;
         $response['message'] = 'Updated Successfully';
         $response['data'] = $result;
+        // add log
+        $log_data = json_encode($db->getSingle($id));
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'unconfirm', $log_data);
+        }
         break;
     
     default:

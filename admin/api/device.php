@@ -1,6 +1,7 @@
 <?php
 require_once './auth_validation.php';
 require_once './db/device_db.php';
+require_once './db/log_db.php';
 require_once './common_request.php';
  
 $response = array();
@@ -15,6 +16,7 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 $call = $_GET['call'];
 $common_request = new CommonRequest();
 $db = new DeviceDb();
+$logDb = new LogDb();
 $result = $common_request->handle($call, $db, $response);
 if($result) {
     echo json_encode($result);
@@ -64,6 +66,12 @@ switch ($call)
         $response['success'] = true;
         $response['message'] = "Device updated successfullly!";
         $response['data'] = $db->get($id);
+        // add log
+        $log_data = json_encode($db->getSingle($id));
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'update', $log_data);
+        }
         break;
     
     default:

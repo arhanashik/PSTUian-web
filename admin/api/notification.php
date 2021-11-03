@@ -2,6 +2,7 @@
 require_once './auth_validation.php';
 require_once './db/notification_db.php';
 require_once './db/device_db.php';
+require_once './db/log_db.php';
 require_once './common_request.php';
 require_once './util/fcm_util.php';
  
@@ -19,6 +20,7 @@ $common_request = new CommonRequest();
 $db = new NotificationDb();
 $device_db = new DeviceDb();
 $fcm_util = new FcmUtil();
+$logDb = new LogDb();
 $result = $common_request->handle($call, $db, $response);
 if($result) {
     echo json_encode($result);
@@ -79,14 +81,17 @@ switch ($call)
         // insert notification result into database
         $data = "Target device: " . count($tokens) . " - Successful: " . $success;
         $inserted = $db->insert($device_id, $type, $title, $message, $data);
-        if($inserted === null || !$inserted) 
-        {
+        if($inserted === null || !$inserted) {
             $response['message'] = 'Sorry, operation failed. Please try again.';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Notifcation sent to ' . $success . ' device(s)';
+        $response['success'] = true;
+        $response['message'] = 'Notifcation sent to ' . $success . ' device(s)';
+        // add log
+        $log_data = json_encode($db->getSingle($inserted));
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'send', $log_data);
         }
         break;
     
