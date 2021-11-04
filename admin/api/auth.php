@@ -83,11 +83,11 @@ switch ($_GET['call']) {
     case 'signOut':
         if (isset($_GET['user_type']) && strlen($_GET['user_type']) > 0)
         {
-            session_destroy(); 
             $user_type = $_GET['user_type'];
             $user = $_SESSION[$user_type];
             $invalidateAuth = $db->invalidateAuth($user['id'], $user_type);
             if($invalidateAuth) {
+                session_destroy(); 
                 $response['success'] = true;
                 $response['code'] = SUCCESS;
                 $response['message'] = 'Signed out successfullly';
@@ -95,7 +95,6 @@ switch ($_GET['call']) {
                 $response['code'] = ERROR_FAILED_TO_AUTHENTICATE;
                 $response['message'] = 'Failed to signed out!';
             }
-            header('Location: ../login.php');
         }
 
         break;
