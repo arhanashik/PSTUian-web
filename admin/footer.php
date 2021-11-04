@@ -27,7 +27,7 @@
             $('#topnavAccordion').removeClass('navbar-dark bg-dark');
             $('#topnavAccordion').addClass(navbartheme == 'light'? 'navbar-light bg-light' : 'navbar-dark bg-dark');
 
-            //set nav bar expansion state
+            // set nav bar expansion state
             var navbarTablesExpaned = localStorage.getItem("nav_bar_tables_expanded");
             if(navbarTablesExpaned == null || navbarTablesExpaned == '') {
                 navbarTablesExpaned = 'expanded';
@@ -39,12 +39,38 @@
                 $('#nav-link-tables').removeClass('collapsed');
                 $('#collapseTables').addClass('show');
             }
-            //store nav bar collapse state
+            // store nav bar collapse state
             $( "#nav-link-tables" ).click(function() {
                 var isCollapsed = $('#nav-link-tables').hasClass('collapsed');
                 var collapsed = isCollapsed? 'collapsed' : 'expanded';
                 localStorage.setItem("nav_bar_tables_expanded", collapsed);
             });
+
+            // sign out
+            function signOut() {
+                $.ajax({
+                    url: `${baseUrl}auth.php?call=signOut`,
+                    type:'get',
+                    data:{ user_type: 'admin' },
+                    success:function(response){
+                        var data = JSON.parse(response);
+                        if(data['code'] == 200){
+                            sessionStorage.clear();
+                            window.location = "login.php";
+                        } else{
+                            $('#toast-title').text('Error');
+                            $('#toast-message').text(data['message']);
+                            $('#toast').toast('show');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        var err = JSON.parse(xhr.responseText);
+                        $('#toast-title').text('Error');
+                        $('#toast-message').text("Failed to sign out");
+                        $('#toast').toast('show');
+                    }
+                });
+            }
         </script>
     </body>
 </html>
