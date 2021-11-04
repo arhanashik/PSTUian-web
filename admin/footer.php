@@ -13,6 +13,7 @@
                 </footer>
             </div>
         </div>
+        <script src="js/scripts.js"></script>
         <script>
             // setup theme value
             var navbartheme = localStorage.getItem("nav_theme");
