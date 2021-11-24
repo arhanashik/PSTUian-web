@@ -11,18 +11,18 @@
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">FCM Token</th>
-                        <!-- <th scope="col">Model</th>
-                        <th scope="col">Android</th>
+                        <!-- <th scope="col">FCM Token</th> -->
+                        <th scope="col">Model</th>
+                        <!-- <th scope="col">Android</th>
                         <th scope="col">iOS</th> -->
-                        <th scope="col">Version Code</th>
+                        <!-- <th scope="col">Version Code</th> -->
                         <th scope="col">Version Name</th>
                         <!-- <th scope="col">IP Address</th> -->
                         <!-- <th scope="col">Lat</th>
                         <th scope="col">Lng</th> -->
                         <!-- <th scope="col">Locale</th> -->
-                        <!-- <th scope="col">Created At</th>
-                        <th scope="col">Updated At</th> -->
+                        <!-- <th scope="col">Created At</th> -->
+                        <th scope="col">Updated At</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -217,18 +217,18 @@
         var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
-        `<td>${fcmToken}</td>` +
-        // `<td>${item.model}</td>` +
+        // `<td>${fcmToken}</td>` +
+        `<td>${item.model}</td>` +
         // `<td>${item.android_version}</td>` +
         // `<td>${item.ios_version}</td>` +
-        `<td>${item.app_version_code}</td>` +
+        // `<td>${item.app_version_code}</td>` +
         `<td>${item.app_version_name}</td>` +
         // `<td>${item.ip_address}</td>` +
         // `<td>${item.lat}</td>` +
         // `<td>${item.lng}</td>` +
         // `<td>${item.locale}</td>` +
         // `<td>${item.created_at}</td>` +
-        // `<td>${item.updated_at}</td>` +
+        `<td>${item.updated_at}</td>` +
         `<td id="td-action-${item.id}">${btnSend} ${btnEdit} ${btnDetails} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
