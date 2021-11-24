@@ -34,6 +34,7 @@ define('ROOT_DIR', dirname(__FILE__, 3));
 define('UPLOAD_PATH', 'uploads/');
 define('FILE_PATH',  UPLOAD_PATH . 'files/');
 define('SLIDER_PATH', UPLOAD_PATH . 'slider/');
+define('FACULTY_ICON_PATH', UPLOAD_PATH . 'faculty_icon/');
 define('AVATAR_PATH',  UPLOAD_PATH . 'avatar/');
 
 define('PAGE_LIMIT',  20);
