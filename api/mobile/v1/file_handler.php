@@ -63,7 +63,7 @@ switch ($call)
             $response['message'] = $upload_result;
             break;
         }
-        $url = BASE_URL . CV_PATH . $name;
+        $url = BASE_CV_URL . $name;
 
         $response['success'] = true;
         $response['message'] = 'File Uploaded Successfully';
