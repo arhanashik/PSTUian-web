@@ -14,7 +14,7 @@ class FacultyDb
 
     public function getAll()
     {
-        $sql = "SELECT id, short_title, title FROM " . FACULTY_TABLE;
+        $sql = "SELECT id, short_title, title, icon FROM " . FACULTY_TABLE;
         //condition
         $sql = $sql . " WHERE deleted = 0";
         //sorting
@@ -23,7 +23,7 @@ class FacultyDb
         // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->bind_result($id, $short_title, $title);
+        $stmt->bind_result($id, $short_title, $title, $icon);
     
         $faculties = array();
         
@@ -32,6 +32,7 @@ class FacultyDb
             $faculty['id'] = $id;
             $faculty['short_title'] = $short_title;
             $faculty['title'] = $title;
+            $faculty['icon'] = BASE_URL . FACULTY_ICON_PATH . $icon;
           
             array_push($faculties, $faculty);
         }

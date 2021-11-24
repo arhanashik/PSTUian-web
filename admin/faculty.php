@@ -53,6 +53,10 @@
                             <label for="data-add-item-title">Title</label>
                             <input type="text" class="form-control" id="data-add-item-title"/>
                         </div>
+                        <label for="data-add-item-icon">Icon</label>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" id="data-add-item-icon" accept=".jpg,.jpeg,.png">
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -82,6 +86,10 @@
                         <div class="form-group">
                             <label for="data-edit-item-title">Title</label>
                             <input type="text" class="form-control" id="data-edit-item-title"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-icon">Icon(Change it only if you know what you are doing)</label>
+                            <input type="text" class="form-control" id="data-edit-item-icon"/>
                         </div>
                     </form>
                 </div>
@@ -126,7 +134,7 @@
     function generateTr(faculty) {
         var param = JSON.stringify(faculty);
         var deleted = faculty.deleted !== 0;
-        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id="${faculty.id}" data-short-title="${faculty.short_title}" data-title="${faculty.title}"><i class="far fa-edit"></i></button>`;
+        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id="${faculty.id}" data-short-title="${faculty.short_title}" data-title="${faculty.title}" data-icon="${faculty.icon}"><i class="far fa-edit"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreFaculty(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteFaculty(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
         var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
@@ -143,11 +151,21 @@
     function addData() {
         var shortTitle = $('#data-add-item-short-title').val();
         var title = $('#data-add-item-title').val();
+        var icon = $('#data-add-item-icon')[0].files[0];
+        var formData = new FormData();
+        formData.append('short_title', shortTitle);
+        formData.append('title', title);
+        formData.append('icon', icon);
         $.ajax({
             url: `${baseUrl}faculty.php?call=add`,
             type:'post',
-            data: { short_title: shortTitle, title: title },
+            data: formData,
+            // tell jQuery not to process the data
+            processData: false,
+            // tell jQuery not to set contentType
+            contentType: false,  
             success:function(response){
+                console.log(response);
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
                     loadFaculties();
@@ -169,10 +187,11 @@
         var id = $('#data-edit-item-id').val();
         var shortTitle = $('#data-edit-item-short-title').val();
         var title = $('#data-edit-item-title').val();
+        var icon = $('#data-edit-item-icon').val();
         $.ajax({
             url: `${baseUrl}faculty.php?call=update`,
             type:'post',
-            data: { id: id, short_title: shortTitle, title: title },
+            data: { id: id, short_title: shortTitle, title: title, icon: icon },
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
@@ -275,6 +294,8 @@
         modal.find('#data-add-item-error').html('');
         modal.find('#data-add-item-short-title').val('');
         modal.find('#data-add-item-title').val('');
+        modal.find('#data-add-item-icon').val('');
+        modal.find('#data-add-btn').html('Add');
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
@@ -282,12 +303,23 @@
         var id = button.data('id');
         var shortTitle = button.data('short-title');
         var title = button.data('title');
+        var icon = button.data('icon');
 
         var modal = $(this);
         modal.find('#data-edit-item-error').html('');
         modal.find('#data-edit-item-id').val(id);
         modal.find('#data-edit-item-short-title').val(shortTitle);
         modal.find('#data-edit-item-title').val(title);
+        modal.find('#data-edit-item-icon').val(icon);
+    });
+
+    //restrict file size
+    const maxAllowedSize = 0.5 * 1024 * 1024;
+    $('#data-add-item-icon').change( function() {
+        if(this.files[0].size > maxAllowedSize){
+            alert("File is too big!");
+            this.value = "";
+        };
     });
 </script>
 <?php include('./footer.php'); ?>
