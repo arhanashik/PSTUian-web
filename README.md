@@ -14,6 +14,10 @@
 - Admin api for Admin panel
 - Mobile Api for website and mobile app
 
+1.1.0 - Faculty Icon
+----------------------
+- Faculty icon can be added from admin panel
+
 ## DEPLOY
 - Change the base url with appropriate environment in root website, admin and api
 - Update db credentials in constant.php file under admin/api and api/movile/v1 directories

@@ -25,7 +25,7 @@ define('LOG_TABLE', 'log');
 define('NOTIFICATION_TABLE', 'notification');
 define('PASSWORD_RESET_TABLE', 'password_reset');
 
-define('BASE_URL', 'http://192.168.1.100:8888/PSTUian-web/');
+define('BASE_URL', 'http://192.168.1.103:8888/PSTUian-web/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
@@ -33,6 +33,7 @@ define('ROOT_DIR', dirname(__FILE__, 4));
 define('UPLOAD_PATH', 'uploads/');
 define('FILE_PATH',  UPLOAD_PATH . 'files/');
 define('SLIDER_PATH', UPLOAD_PATH . 'slider/');
+define('FACULTY_ICON_PATH', UPLOAD_PATH . 'faculty_icon/');
 define('AVATAR_PATH',  UPLOAD_PATH . 'avatar/');
 define('STUDENT_IMAGE_PATH',  UPLOAD_PATH . 'student/');
 define('TEACHER_IMAGE_PATH',  UPLOAD_PATH . 'teacher/');
