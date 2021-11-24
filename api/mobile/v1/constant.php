@@ -26,7 +26,6 @@ define('NOTIFICATION_TABLE', 'notification');
 define('PASSWORD_RESET_TABLE', 'password_reset');
 
 define('BASE_URL', 'https://pstuian.com/');
-define('BASE_CV_URL', 'https://cv.pstuian.com/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
