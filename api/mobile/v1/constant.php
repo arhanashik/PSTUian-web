@@ -2,9 +2,9 @@
 
 // ----------- v1 ----------//
 define('DB_HOST', 'localhost');
-define('DB_USER', 'pstuianc_dev');
-define('DB_PASS', 'qGPKUPvsCabp');
-define('DB_NAME', 'pstuianc_dev.db');
+define('DB_USER', 'pstuianc_prod');
+define('DB_PASS', "XUShN4]rID(.'");
+define('DB_NAME', 'pstuianc_db');
 
 // ----------- main tables -----------//
 define('SLIDER_TABLE', 'slider');
@@ -25,8 +25,8 @@ define('LOG_TABLE', 'log');
 define('NOTIFICATION_TABLE', 'notification');
 define('PASSWORD_RESET_TABLE', 'password_reset');
 
-define('BASE_URL', 'https://dev.pstuian.com/');
-define('BASE_CV_URL', 'https://cv-dev.pstuian.com/');
+define('BASE_URL', 'https://pstuian.com/');
+define('BASE_CV_URL', 'https://cv.pstuian.com/');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
