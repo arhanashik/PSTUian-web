@@ -24,22 +24,65 @@
                         <tbody>
                         </tbody>
                     </table>
+                    <nav aria-label="Data Table Page navigation">
+                        <div class="row">
+                            <div class="col-6">
+                                <span id="page-number">Showing results for Page 1</span>
+                            </div>
+                            <div class="col-6">
+                                <ul class="pagination justify-content-end">
+                                    <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous" onclick="loadPrevious()">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#" onclick="loadPage(1)">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#" onclick="loadPage(2)">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#" onclick="loadPage(3)">3</a></li>
+                                    <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next" onclick="loadNext()">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
 </main>
 <script>
+    var currentPage = 1;
     $(document).ready(function() {
-        loadData();
+        loadData(currentPage);
     });
 
-    function loadData() {
+    function loadPrevious() {
+        if(currentPage > 1) currentPage--;
+        loadData(currentPage);
+    }
+
+    function loadNext() {
+        currentPage++;
+        loadData(currentPage);
+    }
+
+    function loadPage(page) {
+        currentPage = page;
+        loadData(currentPage);
+    }
+
+    function loadData(page) {
         $.ajax({
             url: `${baseUrl}log.php?call=getAll`,
+            data: { page : page },
             type:'get',
             success:function(response) {
-                console.log(response);
+                $('#page-number').html(`Showing results for Page ${page}`);
                 $('#data-table tbody').empty();
                 var list = JSON.parse(response);
                 for (i = 0; i < list.length; i++) {
@@ -79,7 +122,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadData();
+                    loadData(currentPage);
                 } else {
                     console.log(data['message']);
                 }

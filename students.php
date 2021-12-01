@@ -99,12 +99,13 @@
     }
 
     function loadBatches(faculty_id) {
+      $('#list-data').empty();
+      $('#batches').empty();
       $.ajax({
           url: `${baseUrl}batch.php?call=getAll`,
           type:'get',
           data: {faculty_id: faculty_id},
           success:function(response){
-            $('#list-data').empty();
             var json = JSON.parse(response);
             if(json && json['success'] === false) {
               return false;
@@ -123,12 +124,12 @@
     }
 
     function loadStudents(faculty_id, batch_id) {
+        $('#list-data').empty();
         $.ajax({
             url: `${baseUrl}student.php?call=getAll`,
             type:'get',
             data: {faculty_id: faculty_id, batch_id: batch_id},
             success:function(response){
-              $('#list-data').empty();
               var json = JSON.parse(response);
                 if(json && json['success'] === false) {
                   return false;

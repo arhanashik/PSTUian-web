@@ -25,6 +25,16 @@ if($result) {
 
 switch ($call) 
 {
+    case 'getAll':
+        $page = 1;
+        $limit = 20;
+        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+            $page = $_GET['page'];
+        }
+        $response = $db->getAllPaged($page, $limit);
+
+        break;
+        
     case 'update':
         if($_POST['id'] === null || strlen($_POST['id']) <= 0
         || $_POST['fcm_token'] === null || strlen($_POST['fcm_token']) <= 0 

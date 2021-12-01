@@ -5,7 +5,7 @@
     <div class="site-section">
       <div class="container">
         <div class="half-post-entry d-block d-lg-flex bg-light">
-          <div class="img-bg" style="background-image: url('images/pstuian_featured_photo.jpg')"></div>
+          <div class="img-bg" style="background-image: url('images/pstuian_featured_photo.png')"></div>
           <div class="contents">
             <span class="caption">PSTUian</span>
             <h2><a target="_blank" href="<?php echo $play_store_url;?>">Download From Playstore!</a></h2>
@@ -25,7 +25,7 @@
     <div class="site-section">
       <div class="container">
         <div class="half-post-entry d-block d-lg-flex bg-light">
-          <div class="img-bg" style="background-image: url('images/pstuian_featured_photo.jpg')"></div>
+          <div class="img-bg" style="background-image: url('images/pstuian_featured_photo.png')"></div>
           <div class="contents">
             <span class="caption">PSTUian</span>
             <h2><a target="_blank" href="<?php echo $play_store_url;?>">Download From Playstore!</a></h2>
@@ -103,7 +103,7 @@
 <div class="py-0">
   <div class="container">
     <div class="half-post-entry d-block d-lg-flex bg-light">
-      <div class="img-bg" style="background-image: url('images/pstuian_featured_photo.jpg')"></div>
+      <div class="img-bg" style="background-image: url('images/pstuian_featured_photo.png')"></div>
       <div class="contents">
         <span class="caption">PSTUian</span>
         <h2><a target="_blank" href="<?php echo $play_store_url;?>">Download From Playstore!</a></h2>

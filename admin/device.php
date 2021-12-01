@@ -29,6 +29,32 @@
                 <tbody>
                 </tbody>
             </table>
+            <nav aria-label="Data Table Page navigation">
+                <div class="row">
+                    <div class="col-6">
+                        <span id="page-number">Showing results for Page 1</span>
+                    </div>
+                    <div class="col-6">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous" onclick="loadPrevious()">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#" onclick="loadPage(1)">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#" onclick="loadPage(2)">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#" onclick="loadPage(3)">3</a></li>
+                            <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next" onclick="loadNext()">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
         </div>
     </div>
 
@@ -183,15 +209,33 @@
 </main>
 <script>
     var devices = [];
+    var currentPage = 1;
     $(document).ready(function() {
-        loadDevices();
+        loadDevices(currentPage);
     });
 
-    function loadDevices() {
+    function loadPrevious() {
+        if(currentPage > 1) currentPage--;
+        loadDevices(currentPage);
+    }
+
+    function loadNext() {
+        currentPage++;
+        loadDevices(currentPage);
+    }
+
+    function loadPage(page) {
+        currentPage = page;
+        loadDevices(currentPage);
+    }
+
+    function loadDevices(page) {
         $.ajax({
             url: `${baseUrl}device.php?call=getAll`,
+            data: { page : page },
             type:'get',
             success:function(response){
+                $('#page-number').html(`Showing results for Page ${page}`);
                 $('#data-table tbody').empty();
                 devices = JSON.parse(response);
                 for (i = 0; i < devices.length; i++) {
@@ -300,7 +344,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadDevices();
+                    loadDevices(currentPage);
                     $('#data-edit-modal').modal('hide');
                 } else {
                     $('#data-edit-modal-error').text(data['message']);
@@ -325,7 +369,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadDevices();
+                    loadDevices(currentPage);
                 } else {
                     console.log(data['message']);
                 }
@@ -348,7 +392,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadDevices();
+                    loadDevices(currentPage);
                 } else {
                     console.log(data['message']);
                 }
@@ -371,7 +415,7 @@
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    loadDevices();
+                    loadDevices(currentPage);
                 } else {
                     console.log(data['message']);
                 }
