@@ -2,9 +2,9 @@
 
 // ----------- v1 ----------//
 define('DB_HOST', 'localhost');
-define('DB_USER', 'pstuianc_prod');
-define('DB_PASS', 'XUShN4]rID(.');
-define('DB_NAME', 'pstuianc_db');
+define('DB_USER', 'pstuianc_dev');
+define('DB_PASS', 'qGPKUPvsCabp');
+define('DB_NAME', 'pstuianc_dev.db');
 
 // ----------- main tables -----------//
 define('SLIDER_TABLE', 'slider');
