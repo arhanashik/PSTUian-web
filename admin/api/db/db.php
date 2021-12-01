@@ -40,6 +40,28 @@ class Db {
         return $list;
     }
 
+    public function getAllPaged($page, $limit, $sorting_order = 'ASC') {
+        $skip_count = $page === 1? 0 : ($page - 1) * $limit;
+        $sql = "SELECT * FROM $this->table";
+        // condition
+        //$sql = $sql . " WHERE deleted = 0";
+        //sorting
+        $sql = $sql . " ORDER BY id $sorting_order";
+        // limit and skip
+        $sql = $sql . " LIMIT $limit OFFSET $skip_count";
+ 
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $list = array();
+        while ($row = $result->fetch_assoc()) {
+            array_push($list, $row);
+        }
+ 
+        return $list;
+    }
+
     public function get($id)
     {
         $sql = "SELECT * FROM $this->table";

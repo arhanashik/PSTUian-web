@@ -18,6 +18,11 @@
 ----------------------
 - Faculty icon can be added from admin panel
 
+1.2.0 - Pagination
+----------------------
+- Paging added for following tables in Admin panel: Authentication, Device, Donation, Log, Notification, User Inquiry
+- Default banner image updated
+
 ## DEPLOY
 - Change the base url with appropriate environment in root website, admin and api
 - Update db credentials in constant.php file under admin/api and api/movile/v1 directories

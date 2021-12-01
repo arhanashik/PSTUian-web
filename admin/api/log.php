@@ -29,6 +29,16 @@ switch ($call)
     case 'update':
         break;
 
+    case 'getAll':
+        $page = 1;
+        $limit = 20;
+        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+            $page = $_GET['page'];
+        }
+        $response = $db->getAll($page, $limit);
+        
+        break;
+
     case 'removePermanent':
         if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) {
             break;

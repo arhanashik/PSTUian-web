@@ -21,7 +21,7 @@ $db = new AuthDb();
 $adminDb = new AdminDb();
 $logDb = new LogDb();
 $util = new Util();
- 
+
 switch ($_GET['call']) {
     case 'getAll':
         //get the auth token from the request header
@@ -29,7 +29,12 @@ switch ($_GET['call']) {
             $auth_token = $_SERVER['HTTP_X_AUTH_TOKEN'];
             $validate = $db->isValidToken($auth_token);
             if($validate) {
-                $response = $db->getAll();
+                $page = 1;
+                $limit = 20;
+                if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+                    $page = $_GET['page'];
+                }
+                $response = $db->getAllPaged($page, $limit);
             }
         }
         break;
