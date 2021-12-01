@@ -25,6 +25,16 @@ if($result) {
 
 switch ($_GET['call']) 
 {
+    case 'getAll':
+        $page = 1;
+        $limit = 20;
+        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+            $page = $_GET['page'];
+        }
+        $response = $db->getAllPaged($page, $limit);
+
+        break;
+        
     case 'add':
         if(!isset($_POST['name']) || empty($_POST['name'])
         || !isset($_POST['info']) || empty($_POST['info'])

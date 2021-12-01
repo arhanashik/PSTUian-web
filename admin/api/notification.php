@@ -29,6 +29,16 @@ if($result) {
 
 switch ($call) 
 {
+    case 'getAll':
+        $page = 1;
+        $limit = 20;
+        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+            $page = $_GET['page'];
+        }
+        $response = $db->getAllPaged($page, $limit);
+
+        break;
+
     case 'send':
         if($_POST['device_id'] === null || strlen($_POST['device_id']) <= 0
         || $_POST['type'] === null || strlen($_POST['type']) <= 0

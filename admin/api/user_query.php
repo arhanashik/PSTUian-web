@@ -49,6 +49,16 @@ switch ($call)
             $logDb->insert($admin_id, 'admin', 'add', $log_data);
         }
         break;
+
+    case 'getAll':
+        $page = 1;
+        $limit = 20;
+        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+            $page = $_GET['page'];
+        }
+        $response = $db->getAllPaged($page, $limit);
+
+        break;
     
     default:
         break;
