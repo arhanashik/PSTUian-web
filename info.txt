@@ -11,7 +11,7 @@ DB Credentials
 --------------------------------------------------
 |           | define('DB_HOST', 'localhost');
 |   prod    | define('DB_USER', 'pstuianc_prod');
-|           | define('DB_PASS', "XUShN4]rID(.'");
+|           | define('DB_PASS', 'XUShN4]rID(.');
 |           | define('DB_NAME', 'pstuianc_db');
 --------------------------------------------------
 BASE URL API
