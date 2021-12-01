@@ -32,7 +32,7 @@
 <div class="py-0">
   <div class="container">
     <div class="half-post-entry d-block d-lg-flex bg-light">
-      <div class="img-bg" style="background-image: url('images/pstuian_featured_photo.jpg')"></div>
+      <div class="img-bg" style="background-image: url('images/pstuian_featured_photo.png')"></div>
       <div class="contents">
         <span class="caption">Admission Seat Plan</span>
         <h2><a target="_blank" href="https://play.google.com/store/apps/details?id=com.pstu.admissiontest">Download From Playstore!</a></h2>
