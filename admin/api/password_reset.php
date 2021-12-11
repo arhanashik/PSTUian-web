@@ -1,8 +1,9 @@
 <?php
 require_once './auth_validation.php';
-require_once './db/donation_db.php';
+require_once './db/password_reset_db.php';
 require_once './db/log_db.php';
 require_once './common_request.php';
+require_once './util/util.php';
  
 $response = array();
 $response['success'] = false;
@@ -14,8 +15,9 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 }
 
 $call = $_GET['call'];
-$db = new DonationDb();
+$db = new PasswordResetDb();
 $logDb = new LogDb();
+$util = new Util();
 $common_request = new CommonRequest();
 $result = $common_request->handle($call, $db, $response);
 if($result) {
@@ -39,21 +41,21 @@ switch ($_GET['call'])
         break;
         
     case 'add':
-        if(!isset($_POST['name']) || strlen($_POST['name']) <= 0
-        || !isset($_POST['info']) || strlen($_POST['info']) <= 0
+        if(!isset($_POST['user_id']) || strlen($_POST['user_id']) <= 0
+        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
         || !isset($_POST['email']) || strlen($_POST['email']) <= 0
-        || !isset($_POST['reference']) || strlen($_POST['reference']) <= 0) {
+        || !isset($_POST['auth_token'])) {
             break;
         }
-        $name = $_POST['name'];
-        $info = $_POST['info'];
+        $user_id = $_POST['user_id'];
+        $user_type = $_POST['user_type'];
         $email = $_POST['email'];
-        $reference = $_POST['reference'];
-        $result = $db->insert($name, $info, $email, $reference);
-        if(!$result || $result <= 0) {
-            $response['message'] = 'Insertion failed';
-            break;
+        $auth_token = $_POST['auth_token'];
+        if(strlen($auth_token) <= 0 || $auth_token === 'auto') {
+            $time_now = date('Y-m-d H:i:s');
+            $auth_token = $util->getHash($email.$user_type, $time_now);
         }
+        $result = $db->insert($user_id, $user_type, $email, $auth_token);
 
         $response['success'] = true;
         $response['message'] = 'Inserted Successfully';
@@ -68,18 +70,22 @@ switch ($_GET['call'])
 
     case 'update':
         if(!isset($_POST['id']) || strlen($_POST['id']) <= 0
-        || !isset($_POST['name']) || strlen($_POST['name']) <= 0
-        || !isset($_POST['info']) || strlen($_POST['info']) <= 0
+        || !isset($_POST['user_id']) || strlen($_POST['user_id']) <= 0
+        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
         || !isset($_POST['email']) || strlen($_POST['email']) <= 0
-        || !isset($_POST['reference']) || strlen($_POST['reference']) <= 0) {
+        || !isset($_POST['auth_token'])) {
             break;
         }
         $id = $_POST['id'];
-        $name = $_POST['name'];
-        $info = $_POST['info'];
+        $user_id = $_POST['user_id'];
+        $user_type = $_POST['user_type'];
         $email = $_POST['email'];
-        $reference = $_POST['reference'];
-        $result = $db->update($id, $name, $info, $email, $reference);
+        $auth_token = $_POST['auth_token'];
+        if(strlen($auth_token) <= 0 || $auth_token === 'auto') {
+            $time_now = date('Y-m-d H:i:s');
+            $auth_token = $util->getHash($email.$user_type, $time_now);
+        }
+        $result = $db->update($id, $user_id, $user_type, $email, $auth_token);
         if(!$result || $result <= 0) {
             $response['message'] = 'Updated failed';
             break;
@@ -93,42 +99,6 @@ switch ($_GET['call'])
         if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
             $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
             $logDb->insert($admin_id, 'admin', 'update', $log_data);
-        }
-        break;
-
-    case 'confirm':
-        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) {
-            break;
-        }
-        $id = $_POST['id'];
-        $result = $db->updateConfirmation($id, 1);
-
-        $response['success'] = true;
-        $response['message'] = 'Updated Successfully';
-        $response['data'] = $result;
-        // add log
-        $log_data = json_encode($db->getSingle($id));
-        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
-            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
-            $logDb->insert($admin_id, 'admin', 'confirm', $log_data);
-        }
-        break;
-
-    case 'unconfirm':
-        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) {
-            break;
-        }
-        $id = $_POST['id'];
-        $result = $db->updateConfirmation($id, 0);
-
-        $response['success'] = true;
-        $response['message'] = 'Updated Successfully';
-        $response['data'] = $result;
-        // add log
-        $log_data = json_encode($db->getSingle($id));
-        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
-            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
-            $logDb->insert($admin_id, 'admin', 'unconfirm', $log_data);
         }
         break;
     

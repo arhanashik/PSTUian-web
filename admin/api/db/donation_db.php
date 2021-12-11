@@ -26,13 +26,4 @@ class DonationDb extends Db
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
-
-    public function updateConfirmation($id, $confirmed)
-    {
-        $sql = "UPDATE " . DONATION_TABLE . " set confirmed = '$confirmed', updated_at = NOW() 
-        WHERE id = '$id'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute() && $stmt->affected_rows > 0;
-    }
 }

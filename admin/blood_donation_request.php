@@ -1,23 +1,27 @@
 <?php include('./header.php'); ?>
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Donation</h1>
+        <h1 class="mt-4">Blood Donation Requests</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-            <li class="breadcrumb-item active">Donation</li>
+            <li class="breadcrumb-item active">Blood Donation Requests</li>
         </ol>
         <div class="mb-4">
         <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#data-add-modal">
-        Add New Donation
+        Add New
         </button>
             <table class="table table-bordered table-hover" id="data-table">
                 <thead>
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Reference</th>
-                        <th scope="col">Created At</th>
-                        <th scope="col">Updated At</th>
+                        <th scope="col">User</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Group</th>
+                        <th scope="col">Before</th>
+                        <th scope="col">Contact</th>
+                        <th scope="col">Info</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Updated</th>
                         <th scope="col">Confirmation</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -66,20 +70,41 @@
                     <form>
                         <p class="text-danger" id="data-add-modal-error"></p>
                         <div class="form-group">
-                            <label for="data-add-item-name">Name</label>
-                            <input type="text" class="form-control" id="data-add-item-name"/>
+                            <label for="data-add-item-user-id">User Id</label>
+                            <input type="text" class="form-control" id="data-add-item-user-id"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-user-type">User type</label>
+                            <select class="form-select" id="data-add-item-user-type" aria-label="User type">
+                                <option selected value="student">student</option>
+                                <option value="teacher">teacher</option>
+                                <option value="admin">admin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-blood-group">Blood Group</label>
+                            <select class="form-select" id="data-add-item-blood-group" aria-label="Blood Group">
+                                <option selected value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-before-date">Need before</label>
+                            <input type="date" class="form-control" id="data-add-item-before-date"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-add-item-contact">Contact</label>
+                            <input type="text" class="form-control" id="data-add-item-contact"/>
                         </div>
                         <div class="form-group">
                             <label for="data-add-item-info">Info</label>
-                            <input type="textarea" class="form-control" id="data-add-item-info"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-add-item-email">Email</label>
-                            <input type="text" class="form-control" id="data-add-item-email"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-add-item-reference">Referance</label>
-                            <input type="text" class="form-control" id="data-add-item-reference"/>
+                            <textarea type="text" rows="3" class="form-control" id="data-add-item-info"></textarea>
                         </div>
                     </form>
                 </div>
@@ -104,20 +129,41 @@
                         <p class="text-danger" id="data-edit-modal-error"></p>
                         <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
                         <div class="form-group">
-                            <label for="data-edit-item-name">Name</label>
-                            <input type="text" class="form-control" id="data-edit-item-name"/>
+                            <label for="data-edit-item-user-id">User Id</label>
+                            <input type="text" class="form-control" id="data-edit-item-user-id"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-user-type">User type</label>
+                            <select class="form-select" id="data-edit-item-user-type" aria-label="User type">
+                                <option selected value="student">student</option>
+                                <option value="teacher">teacher</option>
+                                <option value="admin">admin</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-blood-group">Blood Group</label>
+                            <select class="form-select" id="data-edit-item-blood-group" aria-label="Blood Group">
+                                <option selected value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-before-date">Need before</label>
+                            <input type="date" class="form-control" id="data-edit-item-before-date"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-contact">Contact</label>
+                            <input type="text" class="form-control" id="data-edit-item-contact"/>
                         </div>
                         <div class="form-group">
                             <label for="data-edit-item-info">Info</label>
-                            <input type="textarea" class="form-control" id="data-edit-item-info"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-edit-item-email">Email</label>
-                            <input type="text" class="form-control" id="data-edit-item-email"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="data-edit-item-reference">Referance</label>
-                            <input type="text" class="form-control" id="data-edit-item-reference"/>
+                            <textarea type="text" rows="3" class="form-control" id="data-edit-item-info"></textarea>
                         </div>
                     </form>
                 </div>
@@ -138,16 +184,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <label for="data-item-name">Name</label>
-                    <p type="text" class="form-control" id="data-item-name"></p>
+                    <label for="data-item-id">Id</label>
+                    <p type="text" class="form-control" id="data-item-id"></p>
+                    <label for="data-item-user-id">User Id</label>
+                    <p type="text" class="form-control" id="data-item-user-id"></p>
+                    <label for="data-item-user-type">User Type</label>
+                    <p type="text" class="form-control" id="data-item-user-type"></p>
+                    <label for="data-item-blood-group">Blood Group</label>
+                    <p type="text" class="form-control" id="data-item-blood-group"></p>
+                    <label for="data-item-before-date">Need before</label>
+                    <p type="text" class="form-control" id="data-item-before-date"></p>
+                    <label for="data-item-contact">Contacts</label>
+                    <p type="text" class="form-control" id="data-item-contact"></p>
                     <label for="data-item-info">Info</label>
                     <p type="text" class="form-control" id="data-item-info"></p>
-                    <label for="data-item-email">Email</label>
-                    <p type="text" class="form-control" id="data-item-email"></p>
-                    <label for="data-item-reference">Referance</label>
-                    <p type="text" class="form-control" id="data-item-reference"></p>
-                    <label for="data-item-confirmed">Confirmed</label>
-                    <p type="text" class="form-control" id="data-item-confirmed"></p>
+                    <label for="data-item-created">Created At</label>
+                    <p type="text" class="form-control" id="data-item-created"></p>
+                    <label for="data-item-updated">Updated At</label>
+                    <p type="text" class="form-control" id="data-item-updated"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -158,6 +212,7 @@
 </main>
 <script>
     var currentPage = 1;
+    var data = [];
     $(document).ready(function() {
         loadData(currentPage);
     });
@@ -179,16 +234,15 @@
 
     function loadData(page) {
         $.ajax({
-            url: `${baseUrl}donation.php?call=getAll`,
-            data: { page : page },
+            url: `${baseUrl}blood_donation_request.php?call=getAll`,
+            data: { page : page, limit : 10 },
             type:'get',
             success:function(response) {
-                console.log(response);
                 $('#page-number').html(`Showing results for Page ${page}`);
                 $('#data-table tbody').empty();
-                var list = JSON.parse(response);
-                for (i = 0; i < list.length; i++) {
-                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
+                data = JSON.parse(response);
+                for (i = 0; i < data.length; i++) {
+                    $('#data-table > tbody:last-child').append(generateTr(data[i]));
                 }
             },
             error: function(xhr, status, error) {
@@ -199,20 +253,24 @@
     }
 
     function generateTr(item) {
-        var param = JSON.stringify(item);
+        var param = item.id;
         var confirmed = item.confirmed !== 0;
         var deleted = item.deleted !== 0;
-        var btnUnConfirm = `<button class="btn btn-success" onclick='unconfirmDonation(` + param + `)'><i class="fas fa-check-circle"></i></button>`;
-        var btnConfirm = `<button class="btn btn-secondary" onclick='confirmDonation(` + param + `)'><i class="far fa-check-circle"></i></button>`;
-        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-json='${param}'><i class="far fa-edit"></i></button>`;
-        var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-json='${param}'><i class="far fa-file-alt"></i></button>`;
-        var btnRestore = `<button class="btn btn-secondary" onclick='restoreDonation(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
-        var btnDelete = `<button class="btn btn-danger" onclick='deleteDonation(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
+        var btnUnConfirm = `<button class="btn btn-success" onclick='unconfirmData(` + param + `)'><i class="fas fa-check-circle"></i></button>`;
+        var btnConfirm = `<button class="btn btn-secondary" onclick='confirmData(` + param + `)'><i class="far fa-check-circle"></i></button>`;
+        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id='${param}'><i class="far fa-edit"></i></button>`;
+        var btnDetails = `<button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#data-details-modal" data-id='${param}'><i class="far fa-file-alt"></i></button>`;
+        var btnRestore = `<button class="btn btn-secondary" onclick='restoreData(` + param + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
+        var btnDelete = `<button class="btn btn-danger" onclick='deleteData(` + param + `)'><i class="far fa-trash-alt"></i></button>`;
         var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + param + `)'><i class="far fa-minus-square"></i></button>`;
         return `<tr id="${item.id}">` + 
         `<th scope="row">${item.id}</th>` +
-        `<td>${item.name}</td>` +
-        `<td>${item.reference}</td>` +
+        `<td>${item.user_id}</td>` +
+        `<td>${item.user_type}</td>` +
+        `<td>${item.blood_group}</td>` +
+        `<td>${item.before_date.split(' ')[0]}</td>` +
+        `<td>${item.contact}</td>` +
+        `<td>${item.info}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
         `<td>${confirmed? btnUnConfirm : btnConfirm}</td>` +
@@ -221,18 +279,22 @@
     }
 
     function addData() {
-        var name = $('#data-add-item-name').val();
+        var user_id = $('#data-add-item-user-id').val();
+        var user_type = $('#data-add-item-user-type').val();
+        var blood_group = $('#data-add-item-blood-group').val();
+        var before_date = $('#data-add-item-before-date').val();
+        var contact = $('#data-add-item-contact').val();
         var info = $('#data-add-item-info').val();
-        var email = $('#data-add-item-email').val();
-        var reference = $('#data-add-item-reference').val();
         var data = { 
-            name: name, 
-            info: info, 
-            email: email, 
-            reference: reference
+            user_id: user_id, 
+            user_type: user_type, 
+            blood_group: blood_group, 
+            before_date: before_date, 
+            contact: contact,
+            info: info,
         }
         $.ajax({
-            url: `${baseUrl}donation.php?call=add`,
+            url: `${baseUrl}blood_donation_request.php?call=add`,
             type:'post',
             data: data,
             success:function(response){
@@ -254,22 +316,27 @@
 
     function updateData() {
         var id = $('#data-edit-item-id').val();
-        var name = $('#data-edit-item-name').val();
+        var user_id = $('#data-edit-item-user-id').val();
+        var user_type = $('#data-edit-item-user-type').val();
+        var blood_group = $('#data-edit-item-blood-group').val();
+        var before_date = $('#data-edit-item-before-date').val();
+        var contact = $('#data-edit-item-contact').val();
         var info = $('#data-edit-item-info').val();
-        var email = $('#data-edit-item-email').val();
-        var reference = $('#data-edit-item-reference').val();
         var data = { 
             id: id,
-            name: name, 
-            info: info, 
-            email: email, 
-            reference: reference
+            user_id: user_id, 
+            user_type: user_type, 
+            blood_group: blood_group, 
+            before_date: before_date, 
+            contact: contact,
+            info: info,
         }
         $.ajax({
-            url: `${baseUrl}donation.php?call=update`,
+            url: `${baseUrl}blood_donation_request.php?call=update`,
             type:'post',
             data: data,
             success:function(response){
+                console.log(response);
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
                     loadData(currentPage);
@@ -286,14 +353,37 @@
         });
     }
 
-    function confirmDonation(donation) {
-        if(!confirm("Are you sure you want to confirm this donation?")){
+    function confirmData(id) {
+        if(!confirm("Are you sure you want to confirm this?")){
             return false;
         }
         $.ajax({
-            url: `${baseUrl}donation.php?call=confirm`,
+            url: `${baseUrl}blood_donation_request.php?call=confirm`,
             type:'post',
-            data: { id: donation.id},
+            data: { id: id},
+            success:function(response) {
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadData(currentPage);
+                } else {
+                    console.log(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                console.log(err);
+            }
+        });
+    }
+
+    function unconfirmData(id) {
+        if(!confirm("Are you sure you want to unconfirm this?")){
+            return false;
+        }
+        $.ajax({
+            url: `${baseUrl}blood_donation_request.php?call=unconfirm`,
+            type:'post',
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
@@ -309,42 +399,18 @@
         });
     }
 
-    function unconfirmDonation(donation) {
-        if(!confirm("Are you sure you want to unconfirm this donation?")){
-            return false;
-        }
-        $.ajax({
-            url: `${baseUrl}donation.php?call=unconfirm`,
-            type:'post',
-            data: { id: donation.id},
-            success:function(response){
-                var data = JSON.parse(response);
-                if(data['success'] === true) {
-                    loadData(currentPage);
-                } else {
-                    console.log(data['message']);
-                }
-            },
-            error: function(xhr, status, error) {
-                var err = JSON.parse(xhr.responseText);
-                console.log(err);
-            }
-        });
-    }
-
-    function restoreDonation(donation) {
+    function restoreData(id) {
         if(!confirm("Are you sure you want to restore this?")){
             return false;
         }
         $.ajax({
-            url: `${baseUrl}donation.php?call=restore`,
+            url: `${baseUrl}blood_donation_request.php?call=restore`,
             type:'post',
-            data: { id: donation.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    donation.deleted = 0;
-                    $(`table#data-table tr#${donation.id}`).replaceWith(generateTr(donation));
+                    loadData(currentPage);
                 } else {
                     console.log(data['message']);
                 }
@@ -356,19 +422,18 @@
         });
     }
 
-    function deleteDonation(donation) {
+    function deleteData(id) {
         if(!confirm("Are you sure you want to delete this?")){
             return false;
         }
         $.ajax({
-            url: `${baseUrl}donation.php?call=delete`,
+            url: `${baseUrl}blood_donation_request.php?call=delete`,
             type:'post',
-            data: { id: donation.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
-                    donation.deleted = 1;
-                    $(`table#data-table tr#${donation.id}`).replaceWith(generateTr(donation));
+                    loadData(currentPage);
                 } else {
                     console.log(data['message']);
                 }
@@ -380,14 +445,14 @@
         });
     }
 
-    function deletePermanent(item) {
+    function deletePermanent(id) {
         if(!confirm("Are you sure you want to delete this PERMANENTLY? It cannot be restored again.")){
             return false;
         }
         $.ajax({
-            url: `${baseUrl}donation.php?call=deletePermanent`,
+            url: `${baseUrl}blood_donation_request.php?call=deletePermanent`,
             type:'post',
-            data: { id: item.id},
+            data: { id: id},
             success:function(response){
                 var data = JSON.parse(response);
                 if(data['success'] === true) {
@@ -407,34 +472,49 @@
         var button = $(event.relatedTarget);
 
         var modal = $(this);
-        modal.find('#data-add-item-name').val('');
+        modal.find('#data-add-item-user-id').val('');
+        modal.find('#data-add-item-user-type').val('student');
+        modal.find('#data-add-item-blood-group').val('A+');
+        modal.find('#data-add-item-before-date').val('');
+        modal.find('#data-add-item-contact').val('');
         modal.find('#data-add-item-info').val('');
-        modal.find('#data-add-item-email').val('');
-        modal.find('#data-add-item-reference').val('');
     });
 
     $('#data-edit-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var donation = button.data('json');
+        var id = button.data('id');
+        var item = getItem(id);
 
         var modal = $(this);
-        modal.find('#data-edit-item-id').val(donation.id);
-        modal.find('#data-edit-item-name').val(donation.name);
-        modal.find('#data-edit-item-info').val(donation.info);
-        modal.find('#data-edit-item-email').val(donation.email)
-        modal.find('#data-edit-item-reference').val(donation.reference);
+        modal.find('#data-edit-item-id').val(item.id);
+        modal.find('#data-edit-item-user-id').val(item.user_id);
+        modal.find('#data-edit-item-user-type').val(item.user_type).change();
+        modal.find('#data-edit-item-blood-group').val(item.blood_group).change();
+        let before_date = item.before_date.split(' ')[0];
+        modal.find('#data-edit-item-before-date').val(before_date);
+        modal.find('#data-edit-item-contact').val(item.contact);
+        modal.find('#data-edit-item-info').val(item.info);
     });
 
     $('#data-details-modal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
-        var item = button.data('json');
+        var id = button.data('id');
+        var item = getItem(id);
 
         var modal = $(this);
-        modal.find('#data-item-name').text(item.name);
+        modal.find('#data-item-id').text(item.id);
+        modal.find('#data-item-user-id').text(item.user_id);
+        modal.find('#data-item-user-type').text(item.user_type)
+        modal.find('#data-item-blood-group').text(item.blood_group);
+        modal.find('#data-item-before-date').text(item.before_date);
+        modal.find('#data-item-contact').text(item.contact);
         modal.find('#data-item-info').text(item.info);
-        modal.find('#data-item-email').text(item.email)
-        modal.find('#data-item-reference').text(item.reference);
-        modal.find('#data-item-confirmed').text(item.confirmed !== 0);
+        modal.find('#data-item-created').text(item.created_at);
+        modal.find('#data-item-updated').text(item.updated_at);
     });
+
+    function getItem(id) {
+        return data.find(item => item.id == id);
+    }
 </script>
 <?php include('./footer.php'); ?>

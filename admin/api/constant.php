@@ -25,6 +25,8 @@ define('DEVICE_TABLE', 'device');
 define('LOG_TABLE', 'log');
 define('NOTIFICATION_TABLE', 'notification');
 define('PASSWORD_RESET_TABLE', 'password_reset');
+define('BLOOD_DONATION_TABLE', 'blood_donation');
+define('BLOOD_DONATION_REQUEST_TABLE', 'blood_donation_request');
 
 define('BASE_URL', 'http://192.168.1.103:8888/PSTUian-web/');
 
@@ -50,6 +52,7 @@ define('FCM_CLICK_ACTION', array(
     "open_chat" => "com.workfort.pstuian.action.OPEN_CHAT",
     "open_post" => "com.workfort.pstuian.action.OPEN_POST",
     "open_notifications" => "com.workfort.pstuian.action.OPEN_NOTIFICATIONS",
+    "open_blood_donation_request" => "com.workfort.pstuian.action.OPEN_BLOOD_DONATION_REQUEST",
 ));
 
 define('MESSAGE_TYPE', array(

@@ -32,10 +32,13 @@ switch ($call)
     case 'getAll':
         $page = 1;
         $limit = 20;
-        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+        if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
             $page = $_GET['page'];
         }
-        $response = $db->getAllPaged($page, $limit);
+        if(isset($_GET['limit']) && strlen($_GET['limit']) > 0) {
+            $limit = $_GET['limit'];
+        }
+        $response = $db->getAllPaged($page, $limit, "DESC");
 
         break;
 
@@ -75,11 +78,11 @@ switch ($call)
         $data = $fcm_util->createPushData($type, $title, $message);
         // send notification
         $resJson = $fcm_util->sendPush($tokens, $notification, $data);
+        // check notification result
         if($resJson === false) {
             $response['message'] = 'Failed to send notification!';
             break;
         }
-        // check notification result
         $resArr = json_decode($resJson, true);
         $success = $resArr['success'];
         if(!$success || $success <= 0) {
@@ -103,6 +106,39 @@ switch ($call)
             $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
             $logDb->insert($admin_id, 'admin', 'send', $log_data);
         }
+        break;
+
+    case 'update':
+        if($_POST['id'] === null || strlen($_POST['id']) <= 0
+        || $_POST['device_id'] === null || strlen($_POST['device_id']) <= 0
+        || $_POST['type'] === null || strlen($_POST['type']) <= 0
+        || $_POST['title'] === null ||  strlen($_POST['title']) <= 0 
+        || $_POST['message'] === null ||  strlen($_POST['message']) <= 0) break;
+
+        $id = $_POST['id'];
+        $device_id = $_POST['device_id'];
+        $type = $_POST['type'];
+        $title = $_POST['title'];
+        $message = $_POST['message'];
+
+        $result = $db->update($id, $device_id, $type, $title, $message);
+        if(!$result || $result <= 0) {
+            $response['message'] = 'Updated failed';
+            break;
+        }
+
+        $item = $db->getSingle($id);
+        $response['success'] = true;
+        $response['message'] = 'Updated successfully';
+        $response['data'] = $item;
+
+        // add log
+        $log_data = json_encode($item);
+        if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
+            $admin_id = $_SERVER['HTTP_X_ADMIN_ID'];
+            $logDb->insert($admin_id, 'admin', 'update', $log_data);
+        }
+
         break;
     
     default:

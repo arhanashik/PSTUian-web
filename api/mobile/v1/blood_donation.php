@@ -64,7 +64,7 @@ switch ($_GET['call'])
 
         $user_id = $_POST['user_id'];
         $user_type = $_POST['user_type'];
-        $request_id = $_POST['blood_group'];
+        $request_id = $_POST['request_id'];
         $date = $_POST['date'];
         $info = $_POST['info'];
         
