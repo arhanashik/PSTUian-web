@@ -26,7 +26,11 @@ define('LOG_TABLE', 'log');
 define('NOTIFICATION_TABLE', 'notification');
 define('PASSWORD_RESET_TABLE', 'password_reset');
 
+<<<<<<< HEAD
 define('BASE_URL', 'https://dev.pstuian.com/');
+=======
+define('BASE_URL', 'http://192.168.1.103:8888/PSTUian-web/');
+>>>>>>> dev
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up

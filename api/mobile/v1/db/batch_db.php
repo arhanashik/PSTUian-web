@@ -14,16 +14,21 @@ class BatchDb
 
     public function getAll($faculty_id)
     {
-        $sql = "SELECT id, name, title, session, total_student FROM " . BATCH_TABLE;
+        $columns = "b.id, b.name, b.title, b.session, b.total_student, COUNT(s.id)";
+        $sql = "SELECT $columns FROM " . BATCH_TABLE . " b LEFT JOIN " . STUDENT_TABLE . " s";
         //condition
-        $sql = $sql . " WHERE faculty_id = $faculty_id AND deleted = 0";
+        $sql = $sql . " ON s.batch_id = b.id";
+        //condition
+        $sql = $sql . " WHERE b.faculty_id = $faculty_id AND b.deleted = 0";
+        //grouping
+        $sql = $sql . " GROUP BY b.id";
         //sorting
-        $sql = $sql . " ORDER BY session ASC";
+        $sql = $sql . " ORDER BY b.session ASC";
         //constraints
         // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->bind_result($id, $name, $title, $session, $total_student);
+        $stmt->bind_result($id, $name, $title, $session, $total_student, $registered_student);
     
         $list = array();
         
@@ -35,6 +40,7 @@ class BatchDb
             $item['session'] = $session;
             $item['faculty_id'] = $faculty_id;
             $item['total_student'] = $total_student;
+            $item['registered_student'] = $registered_student;
           
             array_push($list, $item);
         }
