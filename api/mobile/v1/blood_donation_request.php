@@ -87,13 +87,13 @@ switch ($_GET['call'])
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['blood_group'] === null || strlen($_POST['blood_group']) <= 0 
         || $_POST['before_date'] === null || strlen($_POST['before_date']) <= 0 
-        || $_POST['cotact'] === null || strlen($_POST['cotact']) <= 0 
+        || $_POST['contact'] === null || strlen($_POST['contact']) <= 0 
         || $_POST['info'] === null) break;
 
         $id = $_POST['id'];
         $blood_group = $_POST['blood_group'];
         $before_date = $_POST['before_date'];
-        $cotact = $_POST['cotact'];
+        $contact = $_POST['contact'];
         $info = $_POST['info'];
         
         $data = $db->update($id, $blood_group, $before_date, $contact, $info);
