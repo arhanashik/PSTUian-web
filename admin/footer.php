@@ -28,7 +28,7 @@
             $('#topnavAccordion').addClass(navbartheme == 'light'? 'navbar-light bg-light' : 'navbar-dark bg-dark');
 
             // set nav bar expansion state
-            setNavBarExpanionState('#nav-link-academic', '#collapse-academic', "nav_bar_academic_expanded", false);
+            setNavBarExpanionState('#nav-link-academic', '#collapse-academic', "nav_bar_academic_expanded");
             setNavBarExpanionState('#nav-link-data', '#collapse-data', "nav_bar_data_expanded");
             setNavBarExpanionState('#nav-link-blood-donation', '#collapse-blood-donation', "nav_bar_blood_donation_expanded");
             setNavBarExpanionState('#nav-link-action', '#collapse-action', "nav_bar_action_expanded");
