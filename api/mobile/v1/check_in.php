@@ -1,6 +1,6 @@
 <?php
 require_once './auth_validation.php';
-require_once './db/teacher_db.php';
+require_once './db/check_in_db.php';
  
 $response = array();
 $response['success'] = false;
@@ -12,7 +12,7 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 }
 
 $call = $_GET['call'];
-$db = new BloodDonationDb();
+$db = new CheckInDb();
  
 switch ($_GET['call']) 
 {
@@ -55,12 +55,9 @@ switch ($_GET['call'])
         $response['data'] = $data;
         break;
 
-    case 'insert':
+    case 'checkIn':
         if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
-        || $_POST['user_type'] === null || strlen($_POST['user_type']) <= 0  
-        || $_POST['request_id'] === null
-        || $_POST['date'] === null || strlen($_POST['date']) <= 0 
-        || $_POST['info'] === null) break;
+        || $_POST['user_type'] === null || strlen($_POST['user_type']) <= 0) break;
 
         $user_id = $_POST['user_id'];
         $user_type = $_POST['user_type'];
@@ -81,16 +78,15 @@ switch ($_GET['call'])
         }
         break;
 
-    case 'update':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0 
-        || $_POST['request_id'] === null
-        || $_POST['date'] === null || strlen($_POST['date']) <= 0 
-        || $_POST['info'] === null) break;
+    case 'visibility':
+        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
+        || $_POST['user_type'] === null || strlen($_POST['user_type']) <= 0
+        || $_POST['visibility'] === null || strlen($_POST['visibility']) <= 0) break;
 
         $id = $_POST['id'];
         $request_id = $_POST['request_id'];
         $date = $_POST['date'];
-        $info = $_POST['info'];
+        $visibility = $_POST['visibility'];
         
         $result = $db->update($id, $request_id, $date, $info);
         if(!$result || $result <= 0) 
@@ -102,21 +98,6 @@ switch ($_GET['call'])
             $response['success'] = true;
             $response['message'] = 'Info changed successfullly!';
             $response['date'] = $db->getById($id);
-        }
-        break;
-
-    case 'delete':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0) break;
-
-        $result = $db->delete($id);
-        if(!$result || $result <= 0) 
-        {
-            $response['message'] = 'Failed to delete the request!';
-        }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Deleted successfullly!';
         }
         break;
     

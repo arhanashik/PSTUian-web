@@ -1,4 +1,5 @@
 <?php
+require_once './auth_validation.php';
 require_once './db/employee_db.php';
  
 $response = array();
@@ -10,7 +11,7 @@ if (isset($_GET['call']))
     switch ($_GET['call']) 
     {
         case 'getAll':
-            if($_GET['faculty_id'] === null || empty($_GET['faculty_id'])) break;
+            if(!isset($_GET['faculty_id']) || strlen($_GET['faculty_id']) <= 0) break;
 
             $faculty_id = $_GET['faculty_id'];
             $db = new EmplyeeDb();

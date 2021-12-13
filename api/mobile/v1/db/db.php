@@ -15,30 +15,34 @@ class Db {
     }
 
     // __call accepts function name and arguments
-    // So creating method overloading for getAll methods
+    // So creating method overloading
     function __call($name_of_function, $arguments) {
-        // It will match the function name
-        if($name_of_function != 'getAll') {
-            return;
+        switch ($name_of_function) {
+            // for getAll methods
+            case 'getAll':
+                $sql = "SELECT * FROM $this->table";
+                // sorting
+                $sql .= " ORDER BY id";
+                // condition
+                $sql .= " WHERE deleted = 0";
+                // if the sql is given as parameter, use that one
+                if (count($arguments) > 0) {
+                    $sql = $arguments[0];
+                }
+                $stmt = $this->con->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            
+                $list = array();
+                while ($row = $result->fetch_assoc()) {
+                    array_push($list, $row);
+                }
+        
+                return $list;
+
+            default:
+                break;
         }
-         
-        $sql = "SELECT * FROM $this->table";
-        //sorting
-        $sql = $sql . " ORDER BY id";
-        // if the sql is given as parameter, use that one
-        if (count($arguments) > 0) {
-            $sql = $arguments[0];
-        }
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        $list = array();
-        while ($row = $result->fetch_assoc()) {
-            array_push($list, $row);
-        }
- 
-        return $list;
     }
 
     public function get($id)

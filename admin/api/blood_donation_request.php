@@ -132,7 +132,7 @@ switch ($_GET['call'])
 
         //send notification
         $device_id = "all";
-        $title = "Need " . $item['blood_group'];
+        $title = "Need " . $item['blood_group'] . " blood";
         $body = $item['info'];
         $type = "blood_donation";
         $message = $item['info'] . " \nPlease contact at: " . $item['contact'];

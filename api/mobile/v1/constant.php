@@ -26,6 +26,7 @@ define('NOTIFICATION_TABLE', 'notification');
 define('PASSWORD_RESET_TABLE', 'password_reset');
 define('BLOOD_DONATION_TABLE', 'blood_donation');
 define('BLOOD_DONATION_REQUEST_TABLE', 'blood_donation_request');
+define('CHECK_IN_TABLE', 'check_in');
 
 define('BASE_URL', 'http://192.168.1.103:8888/PSTUian-web/');
 define('BASE_CV_URL', 'http://192.168.1.103:8888/PSTUian-web/');
