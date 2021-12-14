@@ -45,6 +45,26 @@ class Db {
         }
     }
 
+    public function getAllPaged($page, $limit, $sorting_order = 'ASC', $sorting_col = 'id') {
+        $skip_count = $page === 1? 0 : ($page - 1) * $limit;
+        $sql = "SELECT * FROM $this->table";
+        //sorting
+        $sql = $sql . " ORDER BY $sorting_col $sorting_order";
+        // limit and skip
+        $sql = $sql . " LIMIT $limit OFFSET $skip_count";
+ 
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $list = array();
+        while ($row = $result->fetch_assoc()) {
+            array_push($list, $row);
+        }
+ 
+        return $list;
+    }
+
     public function get($id)
     {
         $sql = "SELECT * FROM $this->table";
@@ -59,6 +79,32 @@ class Db {
         while ($row = $result->fetch_assoc()) {
             return $row;
         }
+    }
+
+    public function getSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row;
+        }
+    }
+
+    public function insertSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        return $this->con->insert_id;
+    }
+
+    public function executeSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
     public function isAlreadyInsered($id)

@@ -1,6 +1,7 @@
 <?php
 require_once './auth_validation.php';
 require_once './db/check_in_db.php';
+require_once './db/check_in_location_db.php';
  
 $response = array();
 $response['success'] = false;
@@ -13,10 +14,25 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 
 $call = $_GET['call'];
 $db = new CheckInDb();
+$checkInLocationDb = new CheckInLocationDb();
  
 switch ($_GET['call']) 
 {
     case 'getAll':
+        $location_id = -1;
+        $user_id = -1;
+        $user_type = null;
+        if(isset($_GET['location_id']) && strlen($_GET['location_id']) > 0) {
+            $location_id = $_GET['location_id'];
+        } else if(isset($_GET['user_id']) && strlen($_GET['user_id']) > 0 
+            && isset($_GET['user_type']) && strlen($_GET['user_type']) > 0) {
+            $user_id = $_GET['user_id'];
+            $user_type = $_GET['user_type'];
+        } else {
+            // if location_id or (user_id and user_type) is not available in the request, return
+            break;
+        }
+
         $page = 1;
         $limit = 25;
         if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
@@ -26,7 +42,13 @@ switch ($_GET['call'])
             $limit = $_GET['limit'];
         }
 
-        $data = $db->getAll($page, $limit);
+        $data = null;
+        if($location_id !== -1) {
+            $data = $db->getAllByLocation($location_id, $page, $limit);
+        } else if($user_id !== -1 && $user_type !== null) {
+            $data = $db->getAllByUser($user_id, $user_type, $page, $limit);
+        }
+
         if($data === null || empty($data)) 
         {
             $response['message'] = 'No data found!';
@@ -40,55 +62,76 @@ switch ($_GET['call'])
         break;
 
     case 'get':
-        if($_GET['id'] === null || strlen($_GET['id']) <= 0) break;
+        if(!isset($_GET['location_id']) || strlen($_GET['location_id']) <= 0 
+        || !isset($_GET['user_id']) || strlen($_GET['user_id']) <= 0
+        || !isset($_GET['user_type']) || strlen($_GET['user_type']) <= 0) break;
 
-        $id = $_GET['id'];
-        $data = $db->get($id);
+        $location_id = $_GET['location_id'];
+        $user_id = $_GET['user_id'];
+        $user_type = $_GET['user_type'];
+
+        $data = $db->getByUser($location_id, $user_id, $user_type);
         if($data === null || empty($data)) 
         {
             $response['message'] = 'No data found!';
             break;
         }
-        unset($data['password']);
         $response['success'] = true;
         $response['message'] = 'Data found';
         $response['data'] = $data;
         break;
 
     case 'checkIn':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
-        || $_POST['user_type'] === null || strlen($_POST['user_type']) <= 0) break;
+        if(!isset($_POST['location_id']) || strlen($_POST['location_id']) <= 0
+        || !isset($_POST['user_id']) || strlen($_POST['user_id']) <= 0
+        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0) break;
 
+        $location_id = $_POST['location_id'];
         $user_id = $_POST['user_id'];
         $user_type = $_POST['user_type'];
-        $request_id = $_POST['request_id'];
-        $date = $_POST['date'];
-        $info = $_POST['info'];
+
+        // check if valid location
+        $location = $checkInLocationDb->get($location_id);
+        if(!$location || empty($location)) {
+            $response['message'] = 'Invalid location!';
+            break;
+        }
+
+        $oldCheckIn = $db->getByUser($location_id, $user_id, $user_type);
+        if(!$oldCheckIn || empty($oldCheckIn)) 
+        { 
+            // new check in
+            $check_in_id = $db->insert($location_id, $user_id, $user_type);
+        } 
+        else 
+        { 
+            //checked in before, so increment the check in count
+            $check_in_id = $oldCheckIn['id'];
+            $result = $db->incrementCount($check_in_id);
+        }
         
-        $insert_id = $db->insert($user_id, $user_type, $request_id, $date, $info);
-        if(!$insert_id || $insert_id <= 0) 
+        if(!$check_in_id || $check_in_id <= 0) 
         {
-            $response['message'] = 'Sorry, failed to create donation request!';
+            $response['message'] = 'Sorry, check in failed!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Donation request created successfullly!';
-            $response['date'] = $db->getById($insert_id);
-        }
+
+        // increment the count for the location
+        $checkInLocationDb->incrementCount($location_id);
+
+        $response['success'] = true;
+        $response['message'] = 'Checked in successfullly!';
+        $response['data'] = $db->getCheckIn($check_in_id);
         break;
 
     case 'visibility':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
-        || $_POST['user_type'] === null || strlen($_POST['user_type']) <= 0
-        || $_POST['visibility'] === null || strlen($_POST['visibility']) <= 0) break;
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0
+        || !isset($_POST['visibility']) || strlen($_POST['visibility']) <= 0) break;
 
         $id = $_POST['id'];
-        $request_id = $_POST['request_id'];
-        $date = $_POST['date'];
         $visibility = $_POST['visibility'];
         
-        $result = $db->update($id, $request_id, $date, $info);
+        $result = $db->update($id, $visibility);
         if(!$result || $result <= 0) 
         {
             $response['message'] = 'Update failed!';
@@ -96,8 +139,8 @@ switch ($_GET['call'])
         else
         {
             $response['success'] = true;
-            $response['message'] = 'Info changed successfullly!';
-            $response['date'] = $db->getById($id);
+            $response['message'] = 'Updated successfullly!';
+            $response['data'] = $db->getById($id);
         }
         break;
     
