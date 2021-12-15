@@ -124,24 +124,38 @@ switch ($_GET['call'])
         $response['data'] = $db->getCheckIn($check_in_id);
         break;
 
-    case 'visibility':
+    case 'privacy':
         if(!isset($_POST['id']) || strlen($_POST['id']) <= 0
-        || !isset($_POST['visibility']) || strlen($_POST['visibility']) <= 0) break;
+        || !isset($_POST['privacy']) || strlen($_POST['privacy']) <= 0) break;
 
         $id = $_POST['id'];
-        $visibility = $_POST['visibility'];
+        $privacy = $_POST['privacy'];
         
-        $result = $db->update($id, $visibility);
+        $result = $db->update($id, $privacy);
         if(!$result || $result <= 0) 
         {
             $response['message'] = 'Update failed!';
+            break;
         }
-        else
+        $response['success'] = true;
+        $response['message'] = 'Updated successfullly!';
+        $response['data'] = $db->getCheckIn($id);
+        break;
+
+    case 'delete':
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) break;
+
+        $id = $_POST['id'];
+        
+        $result = $db->delete($id);
+        if(!$result || $result <= 0) 
         {
-            $response['success'] = true;
-            $response['message'] = 'Updated successfullly!';
-            $response['data'] = $db->getById($id);
+            $response['message'] = 'Failed to delete!';
+            break;
         }
+        $response['success'] = true;
+        $response['message'] = 'Deleted successfullly!';
+        $response['data'] = $id;
         break;
     
     default:

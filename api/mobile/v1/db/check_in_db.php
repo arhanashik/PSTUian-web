@@ -5,8 +5,8 @@ require_once dirname(__FILE__) . '/../constant.php';
 class CheckInDb extends Db
 {
     private $columns = "ci.id, ci.location_id, ci.user_id, ci.user_type, ci.count,
-     ci.visibility, ci.created_at, cil.name as location_name, s.name, s.phone, s.image_url, 
-     b.name as batch";
+     ci.privacy, ci.updated_at as date, cil.name as location_name, cil.image_url as location_image_url, 
+     s.name, s.phone, s.image_url, b.name as batch";
     private $select_query;
 
     public function __construct()
@@ -26,7 +26,7 @@ class CheckInDb extends Db
         $skip_count = $page === 1? 0 : ($page - 1) * $limit;
         $sql = $this->select_query;
         // conditions
-        $sql .= " WHERE ci.location_id = '$location_id' AND (ci.visibility = 'public' AND ci.deleted = 0)";
+        $sql .= " WHERE ci.location_id = '$location_id' AND (ci.privacy = 'public' AND ci.deleted = 0)";
         // sorting
         $sql .= " ORDER BY ci.created_at DESC";
         // limit and skip
@@ -42,7 +42,7 @@ class CheckInDb extends Db
         // conditions
         $sql .= " WHERE (ci.user_id = '$user_id' AND ci.user_type = '$user_type') AND ci.deleted = 0";
         // sorting
-        $sql .= " ORDER BY ci.created_at DESC";
+        $sql .= " ORDER BY ci.updated_at DESC";
         // limit and skip
         $sql = $sql . " LIMIT $limit OFFSET $skip_count";
  
@@ -56,7 +56,7 @@ class CheckInDb extends Db
         $sql .= " WHERE (ci.location_id = '$location_id' AND ci.deleted = 0)";
         $sql .= " AND (ci.user_id = '$user_id' AND ci.user_type = '$user_type')";
         // sorting
-        $sql .= " ORDER BY ci.created_at DESC";
+        $sql .= " ORDER BY ci.updated_at DESC";
         return parent::getSql($sql);
     }
 
@@ -75,9 +75,9 @@ class CheckInDb extends Db
         return parent::insertSql($sql);
     }
 
-    public function update($id, $visibility)
+    public function update($id, $privacy)
     {
-        $sql = "UPDATE " . CHECK_IN_TABLE . " SET visibility = '$visibility', updated_at = NOW() 
+        $sql = "UPDATE " . CHECK_IN_TABLE . " SET privacy = '$privacy' 
         WHERE id = '$id' AND deleted = 0";
         return parent::executeSql($sql);
     }

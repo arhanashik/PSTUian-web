@@ -2,23 +2,29 @@
 require_once dirname(__FILE__) . '/db.php';
 require_once dirname(__FILE__) . '/../constant.php';
 
-class BloodDonation extends Db
+class BloodDonationDb extends Db
 {
+    private $columns = "bd.id, bd.user_id, bd.user_type, bd.request_id, bd.date, 
+    bd.info, s.name, s.image_url";
+    private $select_query;
+
+
     public function __construct()
     {
         parent::__construct(BLOOD_DONATION_TABLE);
+
+        // create select query for the table
+        $this->select_query = "SELECT $this->columns FROM " . BLOOD_DONATION_TABLE . " bd ";
+        // join
+        $this->select_query .= " LEFT JOIN " . STUDENT_TABLE . " s ON s.id = bd.user_id";
     }
 
-    public function getAll($user_id)
+    public function getAll($user_id, $user_type, $page, $limit)
     {
         $skip_count = $page === 1? 0 : ($page - 1) * $limit;
-        $columns = "bd.id, bd.user_id, bd.user_type, bd.request_id, bd.date, 
-        bd.info, s.name, s.image_url";
-        $sql = "SELECT $columns FROM " . BLOOD_DONATION_TABLE . " bd ";
-        // join
-        $sql .= " LEFT JOIN " . STUDENT_TABLE . " s ON s.id = bd.user_id";
+        $sql = $this->select_query;
         // conditions
-        $sql .= " WHERE bd.user_id = '$user_id' AND bd.deleted = 0";
+        $sql .= " WHERE (bd.user_id = '$user_id' AND bd.user_type = '$user_type') AND bd.deleted = 0";
         // sorting
         $sql .= " ORDER BY bd.created_at DESC";
         // limit and skip
@@ -29,11 +35,7 @@ class BloodDonation extends Db
 
     public function getById($id)
     {
-        $columns = "bd.user_id, bd.user_type, bd.request_id, bd.date, 
-        bd.info, s.name, s.image_url";
-        $sql = "SELECT $columns FROM " . BLOOD_DONATION_TABLE . " bd ";
-        // join
-        $sql .= " LEFT JOIN " . STUDENT_TABLE . " s ON s.id = bd.user_id";
+        $sql = $this->select_query;
         // conditions
         $sql .= " WHERE bd.id = '$id' AND bd.deleted = 0";
  
@@ -52,10 +54,7 @@ class BloodDonation extends Db
     {
         $sql = "INSERT INTO " . BLOOD_DONATION_TABLE . "(user_id, user_type, request_id, date, info) 
         VALUES ('$user_id', '$user_type', '$request_id', '$date', '$info')";
-        
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        return $this->con->insert_id;
+        return parent::insertSql($sql);
     }
 
     public function update($id, $request_id, $date, $info)
@@ -63,8 +62,6 @@ class BloodDonation extends Db
         $sql = "UPDATE " . BLOOD_DONATION_TABLE . " SET request_id = '$request_id', 
         date = '$date', info = '$info', updated_at = NOW() 
         WHERE id = '$id' AND deleted = 0";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute() && $stmt->affected_rows > 0;
+        return parent::executeSql($sql);
     }
 }

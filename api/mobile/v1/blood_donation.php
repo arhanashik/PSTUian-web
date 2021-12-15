@@ -1,6 +1,6 @@
 <?php
 require_once './auth_validation.php';
-require_once './db/teacher_db.php';
+require_once './db/blood_donation_db.php';
  
 $response = array();
 $response['success'] = false;
@@ -17,6 +17,11 @@ $db = new BloodDonationDb();
 switch ($_GET['call']) 
 {
     case 'getAll':
+        if(!isset($_GET['user_id']) || strlen($_GET['user_id']) <= 0
+        || !isset($_GET['user_type']) || strlen($_GET['user_type']) <= 0) break;
+        $user_id = $_GET['user_id'];
+        $user_type = $_GET['user_type'];
+
         $page = 1;
         $limit = 25;
         if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
@@ -26,17 +31,15 @@ switch ($_GET['call'])
             $limit = $_GET['limit'];
         }
 
-        $data = $db->getAll($page, $limit);
+        $data = $db->getAll($user_id, $user_type, $page, $limit);
         if($data === null || empty($data)) 
         {
             $response['message'] = 'No data found!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Total ' . count($data) . ' item(s)';
-            $response['data'] = $data;
-        }
+        $response['success'] = true;
+        $response['message'] = 'Total ' . count($data) . ' item(s)';
+        $response['data'] = $data;
         break;
 
     case 'get':
@@ -106,18 +109,19 @@ switch ($_GET['call'])
         break;
 
     case 'delete':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0) break;
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) break;
 
+        $id = $_POST['id'];
+        
         $result = $db->delete($id);
         if(!$result || $result <= 0) 
         {
-            $response['message'] = 'Failed to delete the request!';
+            $response['message'] = 'Failed to delete!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Deleted successfullly!';
-        }
+        $response['success'] = true;
+        $response['message'] = 'Deleted successfullly!';
+        $response['data'] = $id;
         break;
     
     default:
