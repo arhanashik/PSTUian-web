@@ -28,8 +28,11 @@ define('PASSWORD_RESET_TABLE', 'password_reset');
 define('BLOOD_DONATION_TABLE', 'blood_donation');
 define('BLOOD_DONATION_REQUEST_TABLE', 'blood_donation_request');
 define('CHECK_IN_TABLE', 'check_in');
+define('CHECK_IN_LOCATION_TABLE', 'check_in_location');
+define('VERIFICATION_TABLE', 'verification');
 
 define('BASE_URL', 'http://192.168.1.103:8888/PSTUian-web/');
+define('BASE_EMAIL_VERIFICATION_URL', 'http://192.168.1.103:8888/PSTUian-web/api/mobile/v1/auth.php?call=emailVarification');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up

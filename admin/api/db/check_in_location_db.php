@@ -37,17 +37,33 @@ class CheckInLocationDb extends Db
         return parent::getSql($sql);
     }
 
-    public function insert($user_id, $user_type, $name, $details = '', $image_url = '', $link = '')
+    public function insert($user_id, $user_type, $name, $details, $image_url, $link)
     {
         $sql = "INSERT INTO " . CHECK_IN_LOCATION_TABLE . "(user_id, user_type, name, details, image_url, link) 
         VALUES ('$user_id', '$user_type', '$name', '$details', '$image_url', '$link')";
         return parent::insertSql($sql);
     }
 
+    public function update($id, $user_id, $user_type, $name, $details, $image_url, $link, $count)
+    {
+        $sql = "UPDATE " . CHECK_IN_LOCATION_TABLE . " SET user_id = '$user_id', 
+        user_type = '$user_type', name = '$name', details = '$details', 
+        image_url = '$image_url', link = '$link', count = '$count', updated_at = NOW() 
+        WHERE id = '$id'";
+        return parent::executeSql($sql);
+    }
+
+    public function updateVerification($id, $verified)
+    {
+        $sql = "UPDATE $this->table set verified = '$verified', updated_at = NOW() 
+        WHERE id = '$id'";
+        return parent::executeSql($sql);
+    }
+
     public function incrementCount($id)
     {
         $sql = "UPDATE " . CHECK_IN_LOCATION_TABLE . " SET count = count + 1, updated_at = NOW() 
-        WHERE id = '$id' AND deleted = 0";
+        WHERE id = '$id'";
         return parent::executeSql($sql);
     }
 }

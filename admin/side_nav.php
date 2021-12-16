@@ -35,6 +35,8 @@
                 <div class="collapse" id="collapse-data" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                         <a class="nav-link" href="slider.php">Slider</a>
+                        <a class="nav-link" href="check_in.php">Check In</a>
+                        <a class="nav-link" href="check_in_location.php">Check In Location</a>
                         <a class="nav-link" href="donation.php">Donation</a>
                         <a class="nav-link" href="info.php">Info</a>
                     </nav>
@@ -61,6 +63,7 @@
                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                         <a class="nav-link" href="device.php">Device</a>
                         <a class="nav-link" href="auth.php">Authentication</a>    
+                        <a class="nav-link" href="verification.php">Verification</a>    
                         <a class="nav-link" href="notification.php">Notification</a>
                         <a class="nav-link" href="user_inquiry.php">User Inquiry</a>
                         <a class="nav-link" href="password_reset.php">Password Reset</a>
