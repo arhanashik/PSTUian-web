@@ -131,7 +131,7 @@ switch ($call)
         }
         
         $data = $db->update_academic_info($name, $old_id, $id, $reg, $blood, $faculty_id, $session, $batch_id);
-        if(!$data || $data == 0) 
+        if(!$data || $data <= 0) 
         {
             $response['message'] = 'Update failed!';
         }
@@ -167,18 +167,16 @@ switch ($call)
             break;
         }
         $data = $db->update_connect_info($id, $address, $phone, $email, $cv_link, $linked_in, $fb_link);
-        if(!$data || $data == 0) 
+        if(!$data || $data <= 0) 
         {
             $response['message'] = 'Update failed!';
+            break;
         }
-        else
-        {
-            $user = $db->get($id);
-            unset($user['password']);
-            $response['success'] = true;
-            $response['message'] = 'Info changed successfullly!';
-            $response['data'] = $user;
-        }
+        $user = $db->get($id);
+        unset($user['password']);
+        $response['success'] = true;
+        $response['message'] = 'Info changed successfullly!';
+        $response['data'] = $user;
         break;
 
     case 'updateCv':
@@ -191,12 +189,10 @@ switch ($call)
         if(!$data || $data == 0) 
         {
             $response['message'] = 'Update failed!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Cv changed successfullly!';
-        }
+        $response['success'] = true;
+        $response['message'] = 'Cv changed successfullly!';
         break;
     
     default:

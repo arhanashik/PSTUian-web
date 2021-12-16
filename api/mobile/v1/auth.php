@@ -410,6 +410,66 @@ switch ($_GET['call']) {
         $response = 'Email Varification Successful. You can sign in now.';
         break;
 
+    case 'resendVerificationEmail':
+        if(!isset($_POST['user_type']) ||  strlen($_POST['user_type']) <= 0
+        || !isset($_POST['email']) ||  strlen($_POST['email']) <= 0) break;
+
+        $user_type = $_POST['user_type'];
+        $email = $_POST['email'];
+
+        if(!($user_type === 'student' || $user_type === 'teacher')) {
+            $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
+            $response['message'] = 'Invaild User Type!';
+            break;
+        }
+
+        $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
+
+        $user = $user_db->getByEmail($email);
+        if($user == null || !$user) {
+            $response['message'] = 'Ops, no account for this email';
+            break;
+        }
+
+        if(!$util->isValidEmail($email)) {
+            $response['message'] = 'Ops, your email is not valid. So email verification 
+            is not possible. Please contact with admin from help/support option.';
+            break;
+        }
+
+        // get verification entry
+        $verification = $verificationDb->getByUser($user['id'], $user_type);
+
+        // check already verified
+        if($verification && $verification['email_verification'] === 1) {
+            $response['message'] = 'Your email is already verified!';
+            break;
+        }
+        
+        // create verification entry if not exists
+        if(!$verification) {
+            $verificationDb->insert($user['id'], $user_type);
+        }
+
+        // update auth token
+        $time_now = date('Y-m-d H:i:s');
+        $auth_token = $util->getHash($email.$user_type, $time_now);
+        // remove device id. new login will update the device again.
+        $device_id = -1;
+        $db->update($user['id'], $user_type, $auth_token, $device_id);
+
+        // send verification email
+        $verification_link = BASE_EMAIL_VERIFICATION_URL . "&ui=" . $user['id'] . "&ut=" . $user_type . "&at=" . $auth_token;
+        if(!$util->sendVerificationEmail($email, $verification_link)) {
+            $response['message'] = 'Sorry, failed to send verification email. Please try again.';
+            break;
+        }
+        $response['success'] = true;
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Verification email sent successfullly. Please check spam folder if you cannot find it.';
+
+        break;
+
     default:
         break;
 }

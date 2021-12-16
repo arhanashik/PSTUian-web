@@ -84,6 +84,8 @@ class Util
 		<p>Thank you for using PSTUian.</p>
 		<p>Please verify your email by clicking on the following link.</p>
 		$verification_link_anchor
+		<p>If the above link does not work, please use this one:</p>
+		$verification_link
 		</body>
 		</html>
 		";
