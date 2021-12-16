@@ -1,6 +1,6 @@
 <?php
-require_once './db/teacher_db.php';
 require_once './auth_validation.php';
+require_once './db/blood_donation_db.php';
  
 $response = array();
 $response['success'] = false;
@@ -17,26 +17,29 @@ $db = new BloodDonationDb();
 switch ($_GET['call']) 
 {
     case 'getAll':
+        if(!isset($_GET['user_id']) || strlen($_GET['user_id']) <= 0
+        || !isset($_GET['user_type']) || strlen($_GET['user_type']) <= 0) break;
+        $user_id = $_GET['user_id'];
+        $user_type = $_GET['user_type'];
+
         $page = 1;
         $limit = 25;
-        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+        if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
             $page = $_GET['page'];
         }
-        if($_GET['limit'] !== null && strlen($_GET['limit']) > 0) {
+        if(isset($_GET['limit']) && strlen($_GET['limit']) > 0) {
             $limit = $_GET['limit'];
         }
 
-        $data = $db->getAll($page, $limit);
+        $data = $db->getAll($user_id, $user_type, $page, $limit);
         if($data === null || empty($data)) 
         {
             $response['message'] = 'No data found!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Total ' . count($data) . ' item(s)';
-            $response['data'] = $data;
-        }
+        $response['success'] = true;
+        $response['message'] = 'Total ' . count($data) . ' item(s)';
+        $response['data'] = $data;
         break;
 
     case 'get':
@@ -56,11 +59,11 @@ switch ($_GET['call'])
         break;
 
     case 'insert':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
-        || $_POST['user_type'] === null || strlen($_POST['user_type']) <= 0  
-        || $_POST['request_id'] === null
-        || $_POST['date'] === null || strlen($_POST['date']) <= 0 
-        || $_POST['info'] === null) break;
+        if(!isset($_POST['user_id']) || strlen($_POST['user_id']) <= 0
+        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0  
+        || !isset($_POST['request_id'])
+        || !isset($_POST['date']) || strlen($_POST['date']) <= 0 
+        || !isset($_POST['info'])) break;
 
         $user_id = $_POST['user_id'];
         $user_type = $_POST['user_type'];
@@ -72,20 +75,18 @@ switch ($_GET['call'])
         if(!$insert_id || $insert_id <= 0) 
         {
             $response['message'] = 'Sorry, failed to create donation request!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Donation request created successfullly!';
-            $response['date'] = $db->getById($insert_id);
-        }
+        $response['success'] = true;
+        $response['message'] = 'Donation request created successfullly!';
+        $response['data'] = $db->getById($insert_id);
         break;
 
     case 'update':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0 
-        || $_POST['request_id'] === null
-        || $_POST['date'] === null || strlen($_POST['date']) <= 0 
-        || $_POST['info'] === null) break;
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0 
+        || !isset($_POST['request_id'])
+        || !isset($_POST['date']) || strlen($_POST['date']) <= 0 
+        || !isset($_POST['info'])) break;
 
         $id = $_POST['id'];
         $request_id = $_POST['request_id'];
@@ -96,28 +97,27 @@ switch ($_GET['call'])
         if(!$result || $result <= 0) 
         {
             $response['message'] = 'Update failed!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Info changed successfullly!';
-            $response['date'] = $db->getById($id);
-        }
+        $response['success'] = true;
+        $response['message'] = 'Info changed successfullly!';
+        $response['data'] = $db->getById($id);
         break;
 
     case 'delete':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0) break;
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) break;
 
+        $id = $_POST['id'];
+        
         $result = $db->delete($id);
         if(!$result || $result <= 0) 
         {
-            $response['message'] = 'Failed to delete the request!';
+            $response['message'] = 'Failed to delete!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Deleted successfullly!';
-        }
+        $response['success'] = true;
+        $response['message'] = 'Deleted successfullly!';
+        $response['data'] = $id;
         break;
     
     default:

@@ -95,6 +95,32 @@ class Db {
         }
     }
 
+    public function getSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row;
+        }
+    }
+
+    public function insertSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        return $this->con->insert_id;
+    }
+
+    public function executeSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
     public function isAlreadyInsered($id)
     {
         $sql = "SELECT id FROM $this->table WHERE id = '$id'";

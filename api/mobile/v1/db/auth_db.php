@@ -35,6 +35,19 @@ class AuthDb extends Db
         return $num_rows > 0;
     }
 
+    public function isValidTokenForUser($user_id, $user_type, $auth_token)
+    {
+        $sql = "SELECT id FROM " . AUTH_TABLE;
+        $sql .= " WHERE (user_id = '$user_id' AND user_type = '$user_type')";
+        $sql .= " AND (auth_token = '$auth_token' AND deleted = 0)";
+        
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $num_rows = $result->num_rows;
+        return $num_rows > 0;
+    }
+
     public function insert($user_id, $user_type, $auth_token, $device_id)
     {
         $sql = "INSERT INTO " . AUTH_TABLE . "(user_id, device_id, user_type, auth_token) 

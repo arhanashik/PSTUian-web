@@ -15,20 +15,44 @@ class Db {
     }
 
     // __call accepts function name and arguments
-    // So creating method overloading for getAll methods
+    // So creating method overloading
     function __call($name_of_function, $arguments) {
-        // It will match the function name
-        if($name_of_function != 'getAll') {
-            return;
+        switch ($name_of_function) {
+            // for getAll methods
+            case 'getAll':
+                $sql = "SELECT * FROM $this->table";
+                // sorting
+                $sql .= " ORDER BY id";
+                // condition
+                $sql .= " WHERE deleted = 0";
+                // if the sql is given as parameter, use that one
+                if (count($arguments) > 0) {
+                    $sql = $arguments[0];
+                }
+                $stmt = $this->con->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            
+                $list = array();
+                while ($row = $result->fetch_assoc()) {
+                    array_push($list, $row);
+                }
+        
+                return $list;
+
+            default:
+                break;
         }
-         
+    }
+
+    public function getAllPaged($page, $limit, $sorting_order = 'ASC', $sorting_col = 'id') {
+        $skip_count = $page === 1? 0 : ($page - 1) * $limit;
         $sql = "SELECT * FROM $this->table";
         //sorting
-        $sql = $sql . " ORDER BY id";
-        // if the sql is given as parameter, use that one
-        if (count($arguments) > 0) {
-            $sql = $arguments[0];
-        }
+        $sql = $sql . " ORDER BY $sorting_col $sorting_order";
+        // limit and skip
+        $sql = $sql . " LIMIT $limit OFFSET $skip_count";
+ 
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -55,6 +79,32 @@ class Db {
         while ($row = $result->fetch_assoc()) {
             return $row;
         }
+    }
+
+    public function getSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row;
+        }
+    }
+
+    public function insertSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        return $this->con->insert_id;
+    }
+
+    public function executeSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
     public function isAlreadyInsered($id)

@@ -1,4 +1,5 @@
 <?php
+require_once './auth_validation.php';
 require_once './db/student_db.php';
  
 $response = array();
@@ -16,8 +17,8 @@ $db = new StudentDb();
 switch ($call) 
 {
     case 'getAll':
-        if($_GET['faculty_id'] === null || empty($_GET['faculty_id']) 
-        || $_GET['batch_id'] === null ||  empty($_GET['batch_id'])) break;
+        if(!isset($_GET['faculty_id']) || strlen($_GET['faculty_id']) <= 0 
+        || !isset($_GET['batch_id']) ||  strlen($_GET['batch_id']) <= 0) break;
 
         $faculty_id = $_GET['faculty_id'];
         $batch_id = $_GET['batch_id'];
@@ -51,7 +52,6 @@ switch ($call)
         break;    
 
     case 'updateImageUrl':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['image_url'] === null ||  strlen($_POST['image_url']) <= 0) break;
 
@@ -70,7 +70,6 @@ switch ($call)
         break;
 
     case 'updateName':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['name'] === null ||  strlen($_POST['name']) <= 0) break;
 
@@ -89,7 +88,6 @@ switch ($call)
         break;
 
     case 'updateBio':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['bio'] === null ||  strlen($_POST['bio']) <= 0) break;
 
@@ -108,7 +106,6 @@ switch ($call)
         break;
 
     case 'updateAcademicInfo':
-        require_once './auth_validation.php';
         if($_POST['name'] === null || strlen($_POST['name']) <= 0 
         || $_POST['old_id'] === null || strlen($_POST['old_id']) <= 0 
         || $_POST['id'] === null || strlen($_POST['id']) <= 0 
@@ -134,7 +131,7 @@ switch ($call)
         }
         
         $data = $db->update_academic_info($name, $old_id, $id, $reg, $blood, $faculty_id, $session, $batch_id);
-        if(!$data || $data == 0) 
+        if(!$data || $data <= 0) 
         {
             $response['message'] = 'Update failed!';
         }
@@ -149,7 +146,6 @@ switch ($call)
         break;
 
     case 'updateConnectInfo':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['address'] === null || $_POST['phone'] === null
         || $_POST['email'] === null || strlen($_POST['email']) <= 0 
@@ -171,22 +167,19 @@ switch ($call)
             break;
         }
         $data = $db->update_connect_info($id, $address, $phone, $email, $cv_link, $linked_in, $fb_link);
-        if(!$data || $data == 0) 
+        if(!$data || $data <= 0) 
         {
             $response['message'] = 'Update failed!';
+            break;
         }
-        else
-        {
-            $user = $db->get($id);
-            unset($user['password']);
-            $response['success'] = true;
-            $response['message'] = 'Info changed successfullly!';
-            $response['data'] = $user;
-        }
+        $user = $db->get($id);
+        unset($user['password']);
+        $response['success'] = true;
+        $response['message'] = 'Info changed successfullly!';
+        $response['data'] = $user;
         break;
 
     case 'updateCv':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['cv_link'] === null) break;
 
@@ -196,12 +189,10 @@ switch ($call)
         if(!$data || $data == 0) 
         {
             $response['message'] = 'Update failed!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Cv changed successfullly!';
-        }
+        $response['success'] = true;
+        $response['message'] = 'Cv changed successfullly!';
         break;
     
     default:

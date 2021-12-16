@@ -54,14 +54,54 @@ class Util
 		</html>
 		";
 
+		$sender = "admin@pstuian.com";
 		// Always set content-type when sending HTML email
-		$headers = "MIME-Version: 1.0" . "\r\n";
+		$headers = "From: <$sender>\r\n";
+		$headers .= "Reply-To: $sender\r\n";
+		$headers .= "Return-Path: $sender\r\n";
+		$headers .= "CC:\r\n";
+		$headers .= "BCC:\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
 		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-		// More headers
-		$headers .= 'From: <admin@pstuian.com>' . "\r\n";
-		// $headers .= 'Cc: myboss@example.com' . "\r\n";
+		$headers .= "X-Priority: 3\r\n";
+		$headers .= "X-Mailer: PHP". phpversion() ."\r\n";
 
 		return mail($to,$subject,$message,$headers);
+	}
+
+	public function sendVerificationEmail($receiver, $verification_link) {
+		$to = $receiver;
+		$subject = "PSTUian | Email Verification";
+
+		$verification_link_anchor = "<a href='$verification_link'>Verfication Link</a>";
+
+		$message = "
+		<html>
+		<head>
+		<title>PSTUian | Email Verification</title>
+		</head>
+		<body>
+		<p>Thank you for using PSTUian.</p>
+		<p>Please verify your email by clicking on the following link.</p>
+		$verification_link_anchor
+		<p>If the above link does not work, please use this one:</p>
+		$verification_link
+		</body>
+		</html>
+		";
+
+		$sender = "admin@pstuian.com";
+		// Always set content-type when sending HTML email
+		$headers = "From: <$sender>\r\n";
+		$headers .= "Reply-To: $sender\r\n";
+		$headers .= "Return-Path: $sender\r\n";
+		$headers .= "CC:\r\n";
+		$headers .= "BCC:\r\n";
+		$headers .= "MIME-Version: 1.0\r\n";
+		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+		$headers .= "X-Priority: 3\r\n";
+		$headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+
+		return mail($to, $subject, $message, $headers);
 	}
 }

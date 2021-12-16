@@ -24,6 +24,17 @@ class StudentDb extends Db
         return parent::getAll($sql);
     }
 
+    public function isAlreadyInseredByEmail($email)
+    {
+        $sql = "SELECT id FROM $this->table WHERE email = '$email'";
+        
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $num_rows = $result->num_rows;
+        return $num_rows > 0;
+    }
+
     public function getByEmail($email)
     {
         $sql = "SELECT * FROM " . STUDENT_TABLE;

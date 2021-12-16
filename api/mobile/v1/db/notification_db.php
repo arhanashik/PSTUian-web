@@ -8,8 +8,9 @@ class NotificationDb extends Db {
         parent::__construct(NOTIFICATION_TABLE);
     }
 
-    public function getAll($device_id)
+    public function getAll($device_id, $page, $limit)
     {
+        $skip_count = $page === 1? 0 : ($page - 1) * $limit;
         //query
         $sql = "SELECT * FROM " . NOTIFICATION_TABLE;
         //condition
@@ -21,8 +22,8 @@ class NotificationDb extends Db {
         $sql = $sql . " WHERE (device_id = 'all' OR device_id = '$device_id') AND deleted = 0";
         //sorting
         $sql = $sql . " ORDER BY id DESC";
-        //constraints
-        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
+        // limit and skip
+        $sql = $sql . " LIMIT $limit OFFSET $skip_count";
         return parent::getAll($sql);
     }
 

@@ -132,41 +132,56 @@ switch ($_GET['call'])
 
         //send notification
         $device_id = "all";
-        $title = "Need " . $item['blood_group'];
+        $title = "Need " . $item['blood_group'] . " blood";
         $body = $item['info'];
         $type = "blood_donation";
         $message = $item['info'] . " \nPlease contact at: " . $item['contact'];
-        $tokens = $device_db->getAllTokens();
-        if(empty($tokens)) {
-            $response['data'] = 'No receiver found!';
-            break;
-        }
         // create necessary data for notification
         $notification = $fcm_util->createPushNotification(
             $title, $body, FCM_CLICK_ACTION["open_blood_donation_request"]
         );
         $data = $fcm_util->createPushData($type, $title, $message);
-        // send notification
-        $resJson = $fcm_util->sendPush($tokens, $notification, $data);
-        // check notification result
-        if($resJson === false) {
-            $response['data'] = 'Failed to send notification!';
-            break;
+        $page = 1;
+        $limit = 20;
+        $total_device = 0;
+        $total_send = 0;
+        // send in batches
+        while (true) {
+            $tokens = $device_db->getAllTokenPaged($page, $limit);
+            if(!$tokens || empty($tokens)) {
+                // no more device to send
+                break;
+            }
+            $total_device += count($tokens);
+            // send notification
+            $resJson = $fcm_util->sendPush($tokens, $notification, $data);
+            // check notification result
+            if($resJson === false) {
+                $response['data'] = 'Failed to send notification!';
+                break;
+            }
+            if($resJson) {
+                $resArr = json_decode($resJson, true);
+                $success = $resArr['success'];
+                if($success && $success > 0) {
+                    $total_send += $success;
+                }
+            }
+            
+            $page++;
         }
-        $resArr = json_decode($resJson, true);
-        $success = $resArr['success'];
-        if(!$success || $success <= 0) {
-            $response['data'] = 'Failed to send notification!';
+        if($total_device <= 0) {
+            $response['data'] = 'No receiver found!';
             break;
         }
         // insert notification result into database
-        $data = "Target device: " . count($tokens) . " - Successful: " . $success;
+        $data = "Target device: " . $total_device . " - Successful: " . $total_send;
         $inserted = $notification_db->insert($device_id, $type, $title, $message, $data);
         if($inserted === null || !$inserted) {
             $response['data'] = 'Sorry, operation failed. Please try again.';
             break;
         }
-        $response['data'] = 'Notifcation sent to ' . $success . ' device(s)';
+        $response['data'] = "Notifcation sent to $total_send device(s) out of $total_device device(s)";
         // add log
         $log_data = json_encode($notification_db->getSingle($inserted));
         if(isset($_SERVER['HTTP_X_ADMIN_ID'])) {
