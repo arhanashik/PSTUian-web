@@ -59,11 +59,11 @@ switch ($_GET['call'])
         break;
 
     case 'insert':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
-        || $_POST['user_type'] === null || strlen($_POST['user_type']) <= 0  
-        || $_POST['request_id'] === null
-        || $_POST['date'] === null || strlen($_POST['date']) <= 0 
-        || $_POST['info'] === null) break;
+        if(!isset($_POST['user_id']) || strlen($_POST['user_id']) <= 0
+        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0  
+        || !isset($_POST['request_id'])
+        || !isset($_POST['date']) || strlen($_POST['date']) <= 0 
+        || !isset($_POST['info'])) break;
 
         $user_id = $_POST['user_id'];
         $user_type = $_POST['user_type'];
@@ -75,20 +75,18 @@ switch ($_GET['call'])
         if(!$insert_id || $insert_id <= 0) 
         {
             $response['message'] = 'Sorry, failed to create donation request!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Donation request created successfullly!';
-            $response['date'] = $db->getById($insert_id);
-        }
+        $response['success'] = true;
+        $response['message'] = 'Donation request created successfullly!';
+        $response['data'] = $db->getById($insert_id);
         break;
 
     case 'update':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0 
-        || $_POST['request_id'] === null
-        || $_POST['date'] === null || strlen($_POST['date']) <= 0 
-        || $_POST['info'] === null) break;
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0 
+        || !isset($_POST['request_id'])
+        || !isset($_POST['date']) || strlen($_POST['date']) <= 0 
+        || !isset($_POST['info'])) break;
 
         $id = $_POST['id'];
         $request_id = $_POST['request_id'];
@@ -99,13 +97,11 @@ switch ($_GET['call'])
         if(!$result || $result <= 0) 
         {
             $response['message'] = 'Update failed!';
+            break;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Info changed successfullly!';
-            $response['date'] = $db->getById($id);
-        }
+        $response['success'] = true;
+        $response['message'] = 'Info changed successfullly!';
+        $response['data'] = $db->getById($id);
         break;
 
     case 'delete':

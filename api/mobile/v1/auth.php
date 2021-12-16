@@ -4,6 +4,7 @@ require_once './db/auth_db.php';
 require_once './db/student_db.php';
 require_once './db/teacher_db.php';
 require_once './db/password_reset_db.php';
+require_once './db/verification_db.php';
 require_once './util/util.php';
  
 $response = array();
@@ -21,6 +22,7 @@ $db = new AuthDb();
 $studentDb = new StudentDb();
 $teacherDb = new TeacherDb();
 $passwordResetDb = new PasswordResetDb();
+$verificationDb = new VerificationDb();
 $util = new Util();
 
 switch ($_GET['call']) {
@@ -47,6 +49,14 @@ switch ($_GET['call']) {
         if(!($id = $user_db->validate($email, $password))) {
             $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
             $response['message'] = 'Invaild Account!';
+            break;
+        }
+
+        // check verification entry
+        $verification = $verificationDb->getByUser($id, $user_type);
+        if(!$verification || $verification['email_verification'] !== 1) {
+            $response['code'] = ERROR_EMAIL_NOT_VERIFIED;
+            $response['message'] = 'Your email is not verified yet! Please complete your email verification and try again.';
             break;
         }
         
@@ -99,14 +109,14 @@ switch ($_GET['call']) {
         $device_id = $_POST['device_id'];
         $user_type = 'student';
         if($studentDb->isAlreadyInsered($id)) {
-            $response['message'] = 'Account already exists!';
+            $response['message'] = 'Account already exists for this id!';
             break;
         }
-        if($db->getByEmail($email)) {
+        if($studentDb->isAlreadyInseredByEmail($email)) {
             $response['message'] = 'Ops, Account already exists for this email';
             break;
         }
-        //default password
+        // default password
         $password = md5($id);
         $result = $studentDb->insert($name, $id, $reg, $email, $batch_id, $session, $faculty_id, $password);
         if(!$result) {
@@ -119,9 +129,15 @@ switch ($_GET['call']) {
         $result = $db->insert($id, $user_type, $auth_token, $device_id);
         $user = $studentDb->get($id);
         unset($user['password']);
+
+        // create verification entry
+        $verificationDb->insert($id, "student");
+        // send verification email
+        $verification_link = BASE_EMAIL_VERIFICATION_URL . "&ui=" . $user['id'] . "&ut=" . $user_type . "&at=" . $auth_token;
+        $util->sendVerificationEmail($email, $verification_link);
         
         $response['success'] = true;
-        $response['message'] = 'Sign up Successful!';
+        $response['message'] = 'Sign up Successful! A verification link has been sent to your email address. Please check your inbox.';
         $response['data'] = $user;
         $response['auth_token'] = $auth_token;
         break;
@@ -160,9 +176,15 @@ switch ($_GET['call']) {
         $time_now = date('Y-m-d H:i:s');
         $auth_token = $util->getHash($email.$user_type, $time_now);
         $result = $db->insert($user['id'], $user_type, $auth_token, $device_id);
+
+        // create verification entry
+        $verificationDb->insert($user['id'], "teacher");
+        // send verification email
+        $verification_link = BASE_EMAIL_VERIFICATION_URL . "&ui=" . $user['id'] . "&ut=" . $user_type . "&at=" . $auth_token;
+        $util->sendVerificationEmail($email, $verification_link);
         
         $response['success'] = true;
-        $response['message'] = 'Sign up Successful!';
+        $response['message'] = 'Sign up Successful! A verification link has been sent to your email address. Please check your inbox.';
         $response['data'] = $user;
         $response['auth_token'] = $auth_token;
         break;
@@ -332,6 +354,63 @@ switch ($_GET['call']) {
         $response['message'] = 'Password reset successfullly';
         $response['auth_token'] = $auth_token;
 
+        break;
+
+    case 'emailVarification':
+        if(!isset($_GET['ui']) ||  strlen($_GET['ui']) <= 0 
+        || !isset($_GET['ut']) || strlen($_GET['ut']) <= 0
+        || !isset($_GET['at']) || strlen($_GET['at']) <= 0) break;
+
+        $id = $_GET['ui'];
+        $user_type = $_GET['ut'];
+        $auth_token = $_GET['at'];
+
+        if(!($user_type === 'student' || $user_type === 'teacher')) {
+            $response = 'Invaild User Type!';
+            break;
+        }
+
+        $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
+        if(!$user_db->get($id)) {
+            $response = 'Account not found!';
+            break;
+        }
+
+        if(!$db->isValidTokenForUser($id, $user_type, $auth_token)) {
+            $response = 'Invalid Request!';
+            break;
+        }
+
+        // get verification entry
+        $verification = $verificationDb->getByUser($id, $user_type);
+        if(!$verification) {
+            $response = 'Invalid Request! No Data found.';
+            break;
+        }
+
+        // check already verified
+        if($verification['email_verification'] === 1) {
+            $response = 'Your email is already verified!';
+            break;
+        }
+
+        // update verification
+        if(!$verificationDb->update($verification['id'], 1)) {
+            $response = 'Email verification failed. Please try again.';
+            break;
+        }
+
+        //update auth token
+        $time_now = date('Y-m-d H:i:s');
+        $auth_token = $util->getHash($auth_token, $time_now);
+        // remove device id. new login will update the device again.
+        $device_id = -1;
+        $db->update($id, $user_type, $auth_token, $device_id);
+
+        $response = 'Email Varification Successful. You can sign in now.';
+        break;
+
+    default:
         break;
 }
  
