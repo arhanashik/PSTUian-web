@@ -49,7 +49,8 @@ class DeviceDb extends Db
         $sql = "INSERT INTO " . DEVICE_TABLE . "($columns) 
         VALUES ('$id', '$fcm_token', '$model', '$android_version', '$app_version_code', 
         '$app_version_name', '$ip_address', '$lat', '$lng', '$locale')";
-        return parent::insertSql($sql);
+        // do not use insertSql($sql). That will return 0, because device id is not integer
+        return parent::executeSql($sql);
     }
 
     public function update(
