@@ -8,6 +8,21 @@ class Util
 		return sha1($str.$extra);
 	}
 
+	/**
+	 * Function to get the client ip address
+	 *
+	 * @return string The Ip address
+	 */
+	public function getIp(): string {
+		if(isset($_SERVER['HTTP_CLIENT_IP'])) {
+			return $_SERVER['HTTP_CLIENT_IP'];
+		}
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			return $_SERVER['HTTP_X_FORWARDED_FOR'];
+		}
+		return $_SERVER['REMOTE_ADDR'];
+	}
+
 	public function isValidEmail(string $email) : bool
 	{
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

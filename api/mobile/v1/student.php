@@ -26,13 +26,11 @@ switch ($call)
         if($data === null || empty($data)) 
         {
             $response['message'] = 'No data found!';
+            return;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Total ' . count($data) . ' item(s)';
-            $response['data'] = $data;
-        }
+        $response['success'] = true;
+        $response['message'] = 'Total ' . count($data) . ' item(s)';
+        $response['data'] = $data;
         break;
 
     case 'get':
@@ -101,7 +99,7 @@ switch ($call)
         else
         {
             $response['success'] = true;
-            $response['message'] = 'Name changed successfullly!';
+            $response['message'] = 'Bio changed successfullly!';
         }
         break;
 
