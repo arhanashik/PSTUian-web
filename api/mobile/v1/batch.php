@@ -1,4 +1,5 @@
 <?php
+require_once './auth_validation.php';
 require_once './db/batch_db.php';
  
 $response = array();

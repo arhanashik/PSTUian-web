@@ -9,19 +9,11 @@ class AuthDb extends Db
         parent::__construct(AUTH_TABLE);
     }
 
-    public function getByUserIdAndType($user_id, $user_type)
+    public function getByUserIdTypeAndDevice($user_id, $user_type, $device_id)
     {
-        $sql = "SELECT * FROM " . AUTH_TABLE . " WHERE user_id = '$user_id' AND user_type = '$user_type'";
-        
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        while ($row = $result->fetch_assoc()) {
-            return $row;
-        }
- 
-        return false;
+        $sql = "SELECT * FROM " . AUTH_TABLE . " WHERE (user_id = '$user_id' AND 
+        user_type = '$user_type') AND (device_id = '$device_id' AND deleted = 0)";
+        return parent::getSql($sql);
     }
 
     public function isValidToken($auth_token)
@@ -52,27 +44,30 @@ class AuthDb extends Db
     {
         $sql = "INSERT INTO " . AUTH_TABLE . "(user_id, device_id, user_type, auth_token) 
         VALUES ('$user_id', '$device_id', '$user_type', '$auth_token')";
-        
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        return $this->con->insert_id;
+        return parent::insertSql($sql);
     }
 
     public function update($user_id, $user_type, $auth_token, $device_id)
     {
-        $sql = "UPDATE " . AUTH_TABLE . " SET device_id = '$device_id', auth_token = '$auth_token', deleted = 0, updated_at = NOW() 
-        WHERE user_id = '$user_id' AND user_type = '$user_type'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute() && $stmt->affected_rows > 0;
+        $sql = "UPDATE " . AUTH_TABLE . " SET auth_token = '$auth_token', updated_at = NOW() 
+        WHERE (user_id = '$user_id' AND user_type = '$user_type') AND 
+        (device_id = '$device_id' AND deleted = 0)";
+        return parent::executeSql($sql);
     }
 
-    public function invalidateAuth($user_id, $user_type)
+    public function invalidateAuth($user_id, $user_type, $device_id)
     {
-        $sql = "UPDATE " . AUTH_TABLE . " SET deleted = 1, updated_at = NOW() 
-        WHERE user_id = '$user_id' AND user_type = '$user_type'";
-        
-        $stmt = $this->con->prepare($sql);
-        return $stmt->execute() && $stmt->affected_rows > 0;
+        $sql = "UPDATE " . AUTH_TABLE . " SET auth_token = null, updated_at = NOW() 
+        WHERE (user_id = '$user_id' AND user_type = '$user_type') AND 
+        (device_id = '$device_id' AND deleted = 0)";
+        return parent::executeSql($sql);
+    }
+
+    public function invalidateAllAuth($user_id, $user_type)
+    {
+        $sql = "UPDATE " . AUTH_TABLE . " SET auth_token = null, updated_at = NOW() 
+        WHERE (user_id = '$user_id' AND user_type = '$user_type') AND 
+        (auth_token IS NOT NULL AND deleted = 0)";
+        return parent::executeSqlCount($sql);
     }
 }

@@ -107,6 +107,18 @@ class Db {
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
+    /*
+    * Returns false if execution faild.
+    * Returns affected row count if successful.
+    */
+    public function executeSqlCount($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        if($stmt->execute()) return $stmt->affected_rows;
+
+        return false;
+    }
+
     public function isAlreadyInsered($id)
     {
         $sql = "SELECT id FROM $this->table WHERE id = '$id'";

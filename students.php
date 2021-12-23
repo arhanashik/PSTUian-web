@@ -105,7 +105,7 @@
           url: `${baseUrl}batch.php?call=getAll`,
           type:'get',
           data: {faculty_id: faculty_id},
-          success:function(response){
+          success:function(response) {
             var json = JSON.parse(response);
             if(json && json['success'] === false) {
               return false;
@@ -129,7 +129,7 @@
             url: `${baseUrl}student.php?call=getAll`,
             type:'get',
             data: {faculty_id: faculty_id, batch_id: batch_id},
-            success:function(response){
+            success:function(response) {
               var json = JSON.parse(response);
                 if(json && json['success'] === false) {
                   return false;

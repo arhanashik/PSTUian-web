@@ -1,7 +1,8 @@
 <?php 
   if(!isset($_GET['ui']) ||  strlen($_GET['ui']) <= 0 
   || !isset($_GET['ut']) || strlen($_GET['ut']) <= 0
-  || !isset($_GET['at']) || strlen($_GET['at']) <= 0) {
+  || !isset($_GET['at']) || strlen($_GET['at']) <= 0
+  || !isset($_GET['di']) || strlen($_GET['di']) <= 0) {
     echo 'Invalid Request';
     exit(1);
   }
@@ -9,6 +10,7 @@
   $ui = $_GET['ui'];
   $ut = $_GET['ut'];
   $at = $_GET['at'];
+  $di = $_GET['di'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -127,6 +129,7 @@
       var data = { 
         user_id: <?php echo $ui; ?>, 
         user_type: '<?php echo $ut; ?>', 
+        device_id: '<?php echo $di; ?>', 
         password: new_password,
       };
       $.ajax({
