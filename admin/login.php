@@ -54,12 +54,17 @@ if (isset($_SESSION['admin']) && isset($_SESSION['auth_token'])) {
                 url: `${baseUrl}auth.php?call=signIn`,
                 type:'post',
                 data:{ email: email, password: password, user_type: 'admin' },
-                success:function(response){
-                    var data = JSON.parse(response);
-                    if(data['code'] == 200){
-                        window.location = "index.php";
-                    }else{
-                        $("#error").text(data['message']);
+                success:function(response) {
+                    try {
+                        let result = JSON.parse(response);
+                        if(result['code'] == 200){
+                            window.location = "index.php";
+                        }else{
+                            $("#error").text(result['message']);
+                        }
+                    } catch (error) {
+                        console.log(response);
+                        $("#error").text('Invalid server response.');
                     }
                 },
                 error: function(xhr, status, error) {

@@ -1,14 +1,14 @@
    
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
 require_once dirname(__FILE__) .  '/../../../vendor/phpmailer/PHPMailer.php';
 require_once dirname(__FILE__) .  '/../../../vendor/phpmailer/Exception.php';
 require_once dirname(__FILE__) .  '/../../../vendor/phpmailer/SMTP.php';
 
 require_once dirname(__FILE__) . '/../constant.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class Util
 {
