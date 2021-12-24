@@ -296,6 +296,7 @@ switch ($_GET['call']) {
         $user_type = $_POST['user_type'];
         $email = $_POST['email'];
         $email = $_POST['email'];
+        $device_id = $_POST['device_id'];
 
         if(!($user_type === 'student' || $user_type === 'teacher')) {
             $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
