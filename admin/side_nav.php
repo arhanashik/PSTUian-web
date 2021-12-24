@@ -67,6 +67,7 @@
                         <a class="nav-link" href="notification.php">Notification</a>
                         <a class="nav-link" href="user_inquiry.php">User Inquiry</a>
                         <a class="nav-link" href="password_reset.php">Password Reset</a>
+                        <a class="nav-link" href="email.php">Email</a>
                         <a class="nav-link" href="log.php">Log</a>
                     </nav>
                 </div>
