@@ -134,18 +134,21 @@ class Util
 		</html>
 		";
 
+		$sender = "admin@pstuian.com";
 		// Always set content-type when sending HTML email
-		$headers = "MIME-Version: 1.0" . "\r\n";
-		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+		// $headers = "MIME-Version: 1.0" . "\r\n";
+		// $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
 		// More headers
-		$headers .= 'From: <admin@pstuian.com>' . "\r\n";
+		// $headers .= 'From: <admin@pstuian.com>' . "\r\n";
 		// $headers .= 'Cc: myboss@example.com' . "\r\n";
+		// return mail($to,$subject,$message,$headers);
 
-		return mail($to,$subject,$message,$headers);
+		$result = $this->sendEmail($sender, $receiver, $subject, $message, true);
+		return $result === '';
 	}
 
-	public function sendEmail($sender, $receiver, $title, $body) {
+	public function sendEmail($sender, $receiver, $title, $body, $isHTML = false) {
 		//Create an instance; passing `true` enables exceptions
 		$mail = new PHPMailer(true);
 
@@ -173,7 +176,7 @@ class Util
 			// $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
 
 			//Content
-			$mail->isHTML(false);                                  //Set email format to HTML
+			$mail->isHTML($isHTML);                                  //Set email format to HTML
 			$mail->Subject = $title;
 			$mail->Body    = $body;
 			// $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';

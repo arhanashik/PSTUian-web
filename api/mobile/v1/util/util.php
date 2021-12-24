@@ -1,14 +1,13 @@
-   
 <?php
+require_once dirname(__FILE__, 5) .  '/vendor/phpmailer/PHPMailer.php';
+require_once dirname(__FILE__, 5) .  '/vendor/phpmailer/Exception.php';
+require_once dirname(__FILE__, 5) .  '/vendor/phpmailer/SMTP.php';
+
+require_once dirname(__FILE__, 2) . '/constant.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-
-require_once dirname(__FILE__) .  '/../../../../vendor/phpmailer/PHPMailer.php';
-require_once dirname(__FILE__) .  '/../../../../vendor/phpmailer/Exception.php';
-require_once dirname(__FILE__) .  '/../../../../vendor/phpmailer/SMTP.php';
-
-require_once dirname(__FILE__) . '/../constant.php';
 
 class Util
 {
@@ -73,23 +72,27 @@ class Util
 		<body>
 		<p>Please reset your password from following link. The link is valid for next 1 day.</p>
 		$reset_link_anchor
+		<p>If the above link does not work, please use this one:</p>
+		$reset_link
 		</body>
 		</html>
 		";
 
 		$sender = "admin@pstuian.com";
 		// Always set content-type when sending HTML email
-		$headers = "From: <$sender>\r\n";
-		$headers .= "Reply-To: $sender\r\n";
-		$headers .= "Return-Path: $sender\r\n";
-		$headers .= "CC:\r\n";
-		$headers .= "BCC:\r\n";
-		$headers .= "MIME-Version: 1.0\r\n";
-		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-		$headers .= "X-Priority: 3\r\n";
-		$headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+		// $headers = "From: <$sender>\r\n";
+		// $headers .= "Reply-To: $sender\r\n";
+		// $headers .= "Return-Path: $sender\r\n";
+		// $headers .= "CC:\r\n";
+		// $headers .= "BCC:\r\n";
+		// $headers .= "MIME-Version: 1.0\r\n";
+		// $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+		// $headers .= "X-Priority: 3\r\n";
+		// $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+		// return mail($to,$subject,$message,$headers);
 
-		return mail($to,$subject,$message,$headers);
+		$result = $this->sendEmail($sender, $receiver, $subject, $message);
+		return $result === '';
 	}
 
 	public function sendVerificationEmail($receiver, $verification_link) {
@@ -115,17 +118,19 @@ class Util
 
 		$sender = "admin@pstuian.com";
 		// Always set content-type when sending HTML email
-		$headers = "From: <$sender>\r\n";
-		$headers .= "Reply-To: $sender\r\n";
-		$headers .= "Return-Path: $sender\r\n";
-		$headers .= "CC:\r\n";
-		$headers .= "BCC:\r\n";
-		$headers .= "MIME-Version: 1.0\r\n";
-		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-		$headers .= "X-Priority: 3\r\n";
-		$headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+		// $headers = "From: <$sender>\r\n";
+		// $headers .= "Reply-To: $sender\r\n";
+		// $headers .= "Return-Path: $sender\r\n";
+		// $headers .= "CC:\r\n";
+		// $headers .= "BCC:\r\n";
+		// $headers .= "MIME-Version: 1.0\r\n";
+		// $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+		// $headers .= "X-Priority: 3\r\n";
+		// $headers .= "X-Mailer: PHP". phpversion() ."\r\n";
+		// return mail($to, $subject, $message, $headers);
 
-		return mail($to, $subject, $message, $headers);
+		$result = $this->sendEmail($sender, $receiver, $subject, $message);
+		return $result === '';
 	}
 
 	public function sendEmail($sender, $receiver, $title, $body) {
