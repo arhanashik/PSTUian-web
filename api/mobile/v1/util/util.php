@@ -62,7 +62,7 @@ class Util
 		$to = $receiver;
 		$subject = "PSTUian | Reset password";
 
-		$reset_link_anchor = "<a href='$reset_link'>$reset_link</a>";
+		$reset_link_anchor = "<a href='$reset_link'>Reset Password Link</a>";
 
 		$message = "
 		<html>
