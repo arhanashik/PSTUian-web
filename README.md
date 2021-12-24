@@ -23,8 +23,10 @@
 - Paging added for following tables in Admin panel: Authentication, Device, Donation, Log, Notification, User Inquiry
 - Default banner image updated
 
-1.3.0 - Account Verification, Multiple Devie
+1.3.0 - Blood Donation, Check In, Account Verification, Multiple Devie
 ----------------------
+- Blood donation and donation request option
+- Check in and create check in location option
 - Email verification is a must to see all information except the home page 
 - Users can sign in from multiple devices
 - Sign in/sign out is possible from the website also
