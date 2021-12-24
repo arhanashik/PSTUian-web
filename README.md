@@ -23,6 +23,15 @@
 - Paging added for following tables in Admin panel: Authentication, Device, Donation, Log, Notification, User Inquiry
 - Default banner image updated
 
+1.3.0 - Blood Donation, Check In, Account Verification, Multiple Devie
+----------------------
+- Blood donation and donation request option
+- Check in and create check in location option
+- Email verification is a must to see all information except the home page 
+- Users can sign in from multiple devices
+- Sign in/sign out is possible from the website also
+- User can see the signed in devices and can sign out from all of them
+
 ## DEPLOY
 - Change the base url with appropriate environment in root website, admin and api
 - Update db credentials in constant.php file under admin/api and api/movile/v1 directories

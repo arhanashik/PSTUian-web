@@ -28,18 +28,21 @@ switch ($_GET['call'])
     case 'getAll':
         $page = 1;
         $limit = 20;
-        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+        if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
             $page = $_GET['page'];
         }
-        $response = $db->getAllPaged($page, $limit);
+        if(isset($_GET['limit']) && strlen($_GET['limit']) > 0) {
+            $limit = $_GET['limit'];
+        }
+        $response = $db->getAllPaged($page, $limit, "DESC");
 
         break;
         
     case 'add':
-        if(!isset($_POST['name']) || empty($_POST['name'])
-        || !isset($_POST['info']) || empty($_POST['info'])
-        || !isset($_POST['email']) || empty($_POST['email'])
-        || !isset($_POST['reference']) || empty($_POST['reference'])) {
+        if(!isset($_POST['name']) || strlen($_POST['name']) <= 0
+        || !isset($_POST['info']) || strlen($_POST['info']) <= 0
+        || !isset($_POST['email']) || strlen($_POST['email']) <= 0
+        || !isset($_POST['reference']) || strlen($_POST['reference']) <= 0) {
             break;
         }
         $name = $_POST['name'];
@@ -47,6 +50,10 @@ switch ($_GET['call'])
         $email = $_POST['email'];
         $reference = $_POST['reference'];
         $result = $db->insert($name, $info, $email, $reference);
+        if(!$result || $result <= 0) {
+            $response['message'] = 'Insertion failed';
+            break;
+        }
 
         $response['success'] = true;
         $response['message'] = 'Inserted Successfully';
@@ -60,11 +67,11 @@ switch ($_GET['call'])
         break;
 
     case 'update':
-        if(!isset($_POST['id']) || empty($_POST['id'])
-        || !isset($_POST['name']) || empty($_POST['name'])
-        || !isset($_POST['info']) || empty($_POST['info'])
-        || !isset($_POST['email']) || empty($_POST['email'])
-        || !isset($_POST['reference']) || empty($_POST['reference'])) {
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0
+        || !isset($_POST['name']) || strlen($_POST['name']) <= 0
+        || !isset($_POST['info']) || strlen($_POST['info']) <= 0
+        || !isset($_POST['email']) || strlen($_POST['email']) <= 0
+        || !isset($_POST['reference']) || strlen($_POST['reference']) <= 0) {
             break;
         }
         $id = $_POST['id'];
@@ -73,6 +80,10 @@ switch ($_GET['call'])
         $email = $_POST['email'];
         $reference = $_POST['reference'];
         $result = $db->update($id, $name, $info, $email, $reference);
+        if(!$result || $result <= 0) {
+            $response['message'] = 'Updated failed';
+            break;
+        }
 
         $response['success'] = true;
         $response['message'] = 'Updated Successfully';
@@ -86,7 +97,7 @@ switch ($_GET['call'])
         break;
 
     case 'confirm':
-        if(!isset($_POST['id']) || empty($_POST['id'])) {
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) {
             break;
         }
         $id = $_POST['id'];
@@ -104,7 +115,7 @@ switch ($_GET['call'])
         break;
 
     case 'unconfirm':
-        if(!isset($_POST['id']) || empty($_POST['id'])) {
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0) {
             break;
         }
         $id = $_POST['id'];

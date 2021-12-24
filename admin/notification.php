@@ -19,8 +19,8 @@
                         <th scope="col">Title</th>
                         <th scope="col">Message</th>
                         <th scope="col">Result</th>
-                        <th scope="col">Created At</th>
-                        <th scope="col">Updated At</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Updated</th>
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
@@ -96,9 +96,53 @@
             </div>
         </div>
     </div>
+
+    <!-- Data Edit Modal -->
+    <div class="modal fade" id="data-edit-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <p class="text-danger" id="data-edit-modal-error"></p>
+                        <input type="text" class="form-control"  id="data-edit-item-id" hidden/>
+                        <div class="form-group">
+                            <label for="data-edit-item-device-id">Device</label>
+                            <input type="text" class="form-control" id="data-edit-item-device-id"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-type">Type</label>
+                            <select class="form-select" id="data-edit-item-type" aria-label="Select Type">
+                                <option selected value="default">Default</option>
+                                <option value="blood_donation">Blood Donation</option>
+                                <option value="news">News</option>
+                                <option value="help">Help</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-title">Title</label>
+                            <input type="text" class="form-control" id="data-edit-item-title"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="data-edit-item-message">Message</label>
+                            <textarea type="text" rows="3" class="form-control" id="data-edit-item-message"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="updateData()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 <script>
     var currentPage = 1;
+    var data = [];
     $(document).ready(function() {
         loadData(currentPage);
     });
@@ -126,15 +170,16 @@
             success:function(response) {
                 $('#page-number').html(`Showing results for Page ${page}`);
                 $('#data-table tbody').empty();
-                var list = JSON.parse(response);
-                if(list['code'] && list['code'] !== 200) {
+                var result = JSON.parse(response);
+                if(result['code'] && result['code'] !== 200) {
                     $('#toast-title').text('Failed');
-                    $('#toast-message').text(list['message']);
+                    $('#toast-message').text(result['message']);
                     $('#toast').toast('show');
                     return;
                 }
-                for (i = 0; i < list.length; i++) {
-                    $('#data-table > tbody:last-child').append(generateTr(list[i]));
+                data = result;
+                for (i = 0; i < data.length; i++) {
+                    $('#data-table > tbody:last-child').append(generateTr(data[i]));
                 }
             },
             error: function(xhr, status, error) {
@@ -145,7 +190,9 @@
     }
 
     function generateTr(item) {
+        var param = item.id;
         var deleted = item.deleted !== 0;
+        var btnEdit = `<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#data-edit-modal" data-id='${param}'><i class="far fa-edit"></i></button>`;
         var btnRestore = `<button class="btn btn-secondary" onclick='restoreNotification(` + item.id + `)'><i class="fas fa-trash-restore-alt"></i></button>`;
         var btnDelete = `<button class="btn btn-danger" onclick='deleteQuery(` + item.id + `)'><i class="far fa-trash-alt"></i></button>`;
         var btnDeletePermanent = `<button class="btn btn-danger <?php echo ($role == 'super_admin')? 'visible' : 'invisible';?>" onclick='deletePermanent(` + item.id + `)'><i class="far fa-minus-square"></i></button>`;
@@ -158,7 +205,7 @@
         `<td>${item.data}</td>` +
         `<td>${item.created_at}</td>` +
         `<td>${item.updated_at}</td>` +
-        `<td id="td-action-${item.id}">${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
+        `<td id="td-action-${item.id}">${btnEdit} ${deleted? btnRestore : btnDelete} ${btnDeletePermanent}</td>` +
         `</tr>`;
     }
 
@@ -193,6 +240,41 @@
             error: function(xhr, status, error) {
                 var err = JSON.parse(xhr.responseText);
                 $('#data-add-modal-error').text(err.Message);
+                console.log(err);
+            }
+        });
+    }
+
+    function updateData() {
+        var id = $('#data-edit-item-id').val();
+        var device_id = $('#data-edit-item-device-id').val();
+        var type = $('#data-edit-item-type').val();
+        var title = $('#data-edit-item-title').val();
+        var message = $('#data-edit-item-message').val();
+        var data = { 
+            id: id,
+            device_id: device_id,
+            type: type, 
+            title: title,
+            message: message,
+        }
+        $.ajax({
+            url: `${baseUrl}notification.php?call=update`,
+            type:'post',
+            data: data,
+            success:function(response){
+                console.log(response);
+                var data = JSON.parse(response);
+                if(data['success'] === true) {
+                    loadData(currentPage);
+                    $('#data-edit-modal').modal('hide');
+                } else {
+                    $('#data-edit-modal-error').text(data['message']);
+                }
+            },
+            error: function(xhr, status, error) {
+                var err = JSON.parse(xhr.responseText);
+                $('#data-edit-modal-error').text(err.Message);
                 console.log(err);
             }
         });
@@ -278,5 +360,23 @@
         modal.find('#data-add-item-title').val('');
         modal.find('#data-add-item-message').val('');
     });
+
+    $('#data-edit-modal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('id');
+        var item = getItem(id);
+
+        var modal = $(this);
+        modal.find('#data-edit-modal-error').html('');
+        modal.find('#data-edit-item-id').val(item.id);
+        modal.find('#data-edit-item-device-id').val(item.device_id);
+        modal.find('#data-edit-item-type').val(item.type).change();
+        modal.find('#data-edit-item-title').val(item.title);
+        modal.find('#data-edit-item-message').val(item.message);
+    });
+
+    function getItem(id) {
+        return data.find(item => item.id == id);
+    }
 </script>
 <?php include('./footer.php'); ?>

@@ -183,6 +183,7 @@
             data: { page : page },
             type:'get',
             success:function(response) {
+                console.log(response);
                 $('#page-number').html(`Showing results for Page ${page}`);
                 $('#data-table tbody').empty();
                 var list = JSON.parse(response);

@@ -28,23 +28,15 @@
             $('#topnavAccordion').addClass(navbartheme == 'light'? 'navbar-light bg-light' : 'navbar-dark bg-dark');
 
             // set nav bar expansion state
-            var navbarTablesExpaned = localStorage.getItem("nav_bar_tables_expanded");
-            if(navbarTablesExpaned == null || navbarTablesExpaned == '') {
-                navbarTablesExpaned = 'expanded';
-            }
-            if(navbarTablesExpaned == 'collapsed') {
-                $('#nav-link-tables').addClass('collapsed');
-                $('#collapseTables').removeClass('show');
-            } else {
-                $('#nav-link-tables').removeClass('collapsed');
-                $('#collapseTables').addClass('show');
-            }
+            setNavBarExpanionState('#nav-link-academic', '#collapse-academic', "nav_bar_academic_expanded");
+            setNavBarExpanionState('#nav-link-data', '#collapse-data', "nav_bar_data_expanded");
+            setNavBarExpanionState('#nav-link-blood-donation', '#collapse-blood-donation', "nav_bar_blood_donation_expanded");
+            setNavBarExpanionState('#nav-link-action', '#collapse-action', "nav_bar_action_expanded");
             // store nav bar collapse state
-            $( "#nav-link-tables" ).click(function() {
-                var isCollapsed = $('#nav-link-tables').hasClass('collapsed');
-                var collapsed = isCollapsed? 'collapsed' : 'expanded';
-                localStorage.setItem("nav_bar_tables_expanded", collapsed);
-            });
+            storeNavBarState("#nav-link-academic", "nav_bar_academic_expanded");
+            storeNavBarState("#nav-link-data", "nav_bar_data_expanded");
+            storeNavBarState("#nav-link-blood-donation", "nav_bar_blood_donation_expanded");
+            storeNavBarState("#nav-link-action", "nav_bar_action_expanded");
 
             // sign out
             function signOut() {
@@ -52,14 +44,20 @@
                     url: `${baseUrl}auth.php?call=signOut`,
                     type:'get',
                     data:{ user_type: 'admin' },
-                    success:function(response){
-                        var data = JSON.parse(response);
-                        if(data['code'] == 200){
-                            sessionStorage.clear();
-                            window.location = "login.php";
-                        } else{
+                    success:function(response) {
+                        try {
+                            let result = JSON.parse(response);
+                            if(result['code'] == 200) {
+                                window.location = "login.php";
+                            } else{
+                                $('#toast-title').text('Error');
+                                $('#toast-message').text(result['message']);
+                                $('#toast').toast('show');
+                            }
+                        } catch (error) {
+                            console.log(response);
                             $('#toast-title').text('Error');
-                            $('#toast-message').text(data['message']);
+                            $('#toast-message').text('Invalid server response.');
                             $('#toast').toast('show');
                         }
                     },
@@ -69,6 +67,28 @@
                         $('#toast-message').text("Failed to sign out");
                         $('#toast').toast('show');
                     }
+                });
+            }
+
+            function setNavBarExpanionState(navBarId, childId, storeVar, defaultCollapsed = true) {
+                var navbarExpaned = localStorage.getItem(storeVar);
+                if(navbarExpaned == null || navbarExpaned == '') {
+                    navbarExpaned = defaultCollapsed? 'collapsed' : 'expanded';
+                }
+                if(navbarExpaned == 'collapsed') {
+                    $(navBarId).addClass('collapsed');
+                    $(childId).removeClass('show');
+                } else {
+                    $(navBarId).removeClass('collapsed');
+                    $(childId).addClass('show');
+                }
+            }
+
+            function storeNavBarState(id, storeVar) {
+                $( id ).click(function() {
+                    var isCollapsed = $(id).hasClass('collapsed');
+                    var collapsed = isCollapsed? 'collapsed' : 'expanded';
+                    localStorage.setItem(storeVar, collapsed);
                 });
             }
         </script>

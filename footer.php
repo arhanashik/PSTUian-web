@@ -49,5 +49,37 @@
     <script src="js/aos.js"></script>
     <script src="js/jquery.sticky.js"></script>
     <script src="js/main.js"></script>
-    </body>
+    <script>
+        // sign out
+        function signOut() {
+            let deviceId = getDeviceId();
+            let data = {
+                id : '<?php echo $user_id; ?>',
+                user_type : '<?php echo $user_type; ?>',
+                device_id : deviceId,
+            }
+            console.log(data);
+            $.ajax({
+                url: `${baseUrl}auth.php?call=signOut`,
+                type:'post',
+                data: data,
+                success:function(response){
+                    console.log(response);
+                    try {
+                        let result = JSON.parse(response);
+                        if(result['code'] == 200) {
+                            window.location = 'index.php';
+                        }
+                    } catch (error) {
+                        console.log('Sign out failed! Invalid response.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    var err = JSON.parse(xhr.responseText);
+                    console.log(err);
+                }
+            });
+        }
+    </script>
+</body>
 </html>

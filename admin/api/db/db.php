@@ -40,13 +40,13 @@ class Db {
         return $list;
     }
 
-    public function getAllPaged($page, $limit, $sorting_order = 'ASC') {
+    public function getAllPaged($page, $limit, $sorting_order = 'ASC', $sorting_col = 'id') {
         $skip_count = $page === 1? 0 : ($page - 1) * $limit;
         $sql = "SELECT * FROM $this->table";
         // condition
         //$sql = $sql . " WHERE deleted = 0";
         //sorting
-        $sql = $sql . " ORDER BY id $sorting_order";
+        $sql = $sql . " ORDER BY $sorting_col $sorting_order";
         // limit and skip
         $sql = $sql . " LIMIT $limit OFFSET $skip_count";
  
@@ -95,6 +95,32 @@ class Db {
         }
     }
 
+    public function getSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            return $row;
+        }
+    }
+
+    public function insertSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        return $this->con->insert_id;
+    }
+
+    public function executeSql($sql)
+    {
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
     public function isAlreadyInsered($id)
     {
         $sql = "SELECT id FROM $this->table WHERE id = '$id'";
@@ -125,6 +151,15 @@ class Db {
     public function restore($id)
     {
         $sql = "UPDATE $this->table set deleted = 0, updated_at = NOW() WHERE id = '$id'";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function updateConfirmation($id, $confirmed)
+    {
+        $sql = "UPDATE $this->table set confirmed = '$confirmed', updated_at = NOW() 
+        WHERE id = '$id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;

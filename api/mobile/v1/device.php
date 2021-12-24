@@ -1,5 +1,6 @@
 <?php
 require_once './db/device_db.php';
+require_once './util/util.php';
  
 $response = array();
 $response['success'] = false;
@@ -12,31 +13,52 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 
 $call = $_GET['call'];
 $db = new DeviceDb();
+$util = new Util();
 
 switch ($call) 
 {
+    case 'getAll':
+        require_once './auth_validation.php';
+        if(!isset($_GET['user_id']) || strlen($_GET['user_id']) <= 0
+        || !isset($_GET['user_type']) || strlen($_GET['user_type']) <= 0) break;
+
+        $user_id = $_GET['user_id'];
+        $user_type = $_GET['user_type'];
+
+        $page = 1;
+        $limit = 25;
+        if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
+            $page = $_GET['page'];
+        }
+        if(isset($_GET['limit']) && strlen($_GET['limit']) > 0) {
+            $limit = $_GET['limit'];
+        }
+
+        $data = $db->getAllByUser($user_id, $user_type, $page, $limit);
+        if(!$data || empty($data))
+        {
+            $response['message'] = 'No data found!';
+            return;
+        }
+        $response['success'] = true;
+        $response['message'] = 'Total ' . count($data) . ' item(s)';
+        $response['data'] = $data;
+        break;
+
     case 'register':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0
-        || $_POST['fcm_token'] === null || strlen($_POST['fcm_token']) <= 0 
-        || $_POST['model'] === null
-        || $_POST['android_version'] === null
-        || $_POST['app_version_code'] === null
-        || $_POST['app_version_name'] === null
-        || $_POST['ip_address'] === null
-        || $_POST['lat'] === null
-        || $_POST['lng'] === null
-        || $_POST['locale'] === null) break;
+        if(!isset($_POST['id']) || strlen($_POST['id']) <= 0
+        || !isset($_POST['fcm_token']) || strlen($_POST['fcm_token']) <= 0) break;
 
         $id = $_POST['id'];
         $fcm_token = $_POST['fcm_token'];
-        $model = $_POST['model'];
-        $android_version = $_POST['android_version'];
-        $app_version_code = $_POST['app_version_code'];
-        $app_version_name = $_POST['app_version_name'];
-        $ip_address = $_POST['ip_address'];
-        $lat = $_POST['lat'];
-        $lng = $_POST['lng'];
-        $locale = $_POST['locale'];
+        $model = isset($_POST['model']) ? $_POST['model'] : '';
+        $android_version = isset($_POST['android_version']) ? $_POST['android_version'] : '';
+        $app_version_code = isset($_POST['app_version_code']) ? $_POST['app_version_code'] : 0;
+        $app_version_name = isset($_POST['app_version_name']) ? $_POST['app_version_name'] : '';
+        $ip_address = isset($_POST['ip_address']) ? $_POST['ip_address'] : $util->getIp();
+        $lat = isset($_POST['lat']) ? $_POST['lat'] : '0:0';
+        $lng = isset($_POST['lng']) ? $_POST['lng'] : '0:0';
+        $locale = isset($_POST['locale']) ? $_POST['locale'] : 'en';
 
         $exists = $db->isAlreadyInsered($id);
         if($exists) {
@@ -60,8 +82,8 @@ switch ($call)
         break;
 
     case 'updateFcmToken':
-        if($_POST['device_id'] === null || strlen($_POST['device_id']) <= 0
-        || $_POST['fcm_token'] === null || strlen($_POST['fcm_token']) <= 0) break;
+        if(!isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0
+        || !isset($_POST['fcm_token']) || strlen($_POST['fcm_token']) <= 0) break;
 
         $device_id = $_POST['device_id'];
         $fcm_token = $_POST['fcm_token'];

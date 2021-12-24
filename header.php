@@ -1,4 +1,19 @@
 <?php 
+  session_start();
+  $uri = $_SERVER['REQUEST_URI'];
+  $path = basename($uri);
+  $auth_token = isset($_SESSION['x_auth_token']) ? $_SESSION['x_auth_token'] : null;
+
+  // check signin for required pages
+  $pages = ['teachers.php', 'students.php', 'employees.php'];
+  // check is signed in
+  if(in_array($path, $pages) && $auth_token === null) {
+    header('Location: login.php?from=' . $path);
+      return;
+  }
+  
+  $user_id = isset($_SESSION['x_user']) ? $_SESSION['x_user']['id'] : null;
+  $user_type = isset($_SESSION['x_user_type']) ? $_SESSION['x_user_type'] : null;
   $play_store_url = "https://play.google.com/store/apps/details?id=com.workfort.pstuian";
 ?>
 <!DOCTYPE html>
@@ -24,17 +39,22 @@
   <script src="js/jquery-migrate-3.0.1.min.js"></script>
   <script>
       // Base api url
-      var baseUrl = 'api/mobile/v1/';
+      let baseUrl = 'api/mobile/v1/';
 
       //adding headers to ajax
       $.ajaxSetup({
-          headers: { 'x-auth-token': 'unknown' }
+        headers: { 
+          'x-auth-token': '<?php echo $auth_token; ?>',
+        }
       });
 
-      $(function() { // do things when the document is ready
-          
+      // do things when the document is ready
+      $(function() {
+        
       });
   </script>
+  <!-- Register the device -->
+  <script src="js/device.js"></script>
 </head>
 
 <body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
@@ -90,6 +110,15 @@
                               <li><a href="admission_support.php" class="nav-link text-left">Admission</a></li>
                               <li><a href="donation.php" class="nav-link text-left">Donation</a></li>
                               <li><a href="contact.php" class="nav-link text-left">Contact</a></li>
+                              <li>
+                                <?php
+                                  $link = '<a href="login.php" class="nav-link text-left">Sign In</a>';
+                                  if($auth_token !== null) {
+                                    $link = '<a href="#" onclick="signOut()" class="nav-link text-left">Sign Out</a>';
+                                  }
+                                  echo $link;
+                                ?>
+                              </li>
                             </ul>                                                                                                                                                                                                                                                                                         
                         </nav>
                     </div>

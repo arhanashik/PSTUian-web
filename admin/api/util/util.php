@@ -1,7 +1,14 @@
    
 <?php
+require_once dirname(__FILE__, 4) .  '/vendor/phpmailer/PHPMailer.php';
+require_once dirname(__FILE__, 4) .  '/vendor/phpmailer/Exception.php';
+require_once dirname(__FILE__, 4) .  '/vendor/phpmailer/SMTP.php';
 
-require_once dirname(__FILE__) . '/../constant.php';
+require_once dirname(__FILE__, 2) . '/constant.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class Util
 {
@@ -127,14 +134,57 @@ class Util
 		</html>
 		";
 
+		$sender = "admin@pstuian.com";
 		// Always set content-type when sending HTML email
-		$headers = "MIME-Version: 1.0" . "\r\n";
-		$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+		// $headers = "MIME-Version: 1.0" . "\r\n";
+		// $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
 		// More headers
-		$headers .= 'From: <admin@pstuian.com>' . "\r\n";
+		// $headers .= 'From: <admin@pstuian.com>' . "\r\n";
 		// $headers .= 'Cc: myboss@example.com' . "\r\n";
+		// return mail($to,$subject,$message,$headers);
 
-		return mail($to,$subject,$message,$headers);
+		$result = $this->sendEmail($sender, $receiver, $subject, $message, true);
+		return $result === '';
+	}
+
+	public function sendEmail($sender, $receiver, $title, $body, $isHTML = false) {
+		//Create an instance; passing `true` enables exceptions
+		$mail = new PHPMailer(true);
+
+		try {
+			//Server settings
+			// $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+			// $mail->isSMTP();                                            //Send using SMTP
+			// $mail->Host       = 'smtp.example.com';                     //Set the SMTP server to send through
+			// $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+			// $mail->Username   = 'user@example.com';                     //SMTP username
+			// $mail->Password   = 'secret';                               //SMTP password
+			// $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+			// $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+
+			//Recipients
+			$mail->setFrom($sender, 'PSTUian');
+			// $mail->addAddress('joe@example.net', 'Joe User');     //Add a recipient
+			$mail->addAddress($receiver,);               //Name is optional
+			$mail->addReplyTo($sender, 'PSTUian');
+			// $mail->addCC('cc@example.com');
+			// $mail->addBCC('bcc@example.com');
+
+			//Attachments
+			// $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+			// $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+
+			//Content
+			$mail->isHTML($isHTML);                                  //Set email format to HTML
+			$mail->Subject = $title;
+			$mail->Body    = $body;
+			// $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+			$mail->send();
+			return '';
+		} catch (Exception $e) {
+			return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+		}
 	}
 }

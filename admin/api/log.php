@@ -32,8 +32,11 @@ switch ($call)
     case 'getAll':
         $page = 1;
         $limit = 20;
-        if($_GET['page'] !== null && strlen($_GET['page']) > 0) {
+        if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
             $page = $_GET['page'];
+        }
+        if(isset($_GET['limit']) && strlen($_GET['limit']) > 0) {
+            $limit = $_GET['limit'];
         }
         $response = $db->getAll($page, $limit);
         

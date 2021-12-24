@@ -20,10 +20,18 @@ switch ($call)
     case 'getAll':
         $user_id = -1;
         $user_type = null;
-        if($_GET['user_id'] !== null && strlen($_GET['user_id']) > 0 
-        && $_GET['user_type'] !== null && strlen($_GET['user_type']) > 0) {
+        if(isset($_GET['user_id']) && strlen($_GET['user_id']) > 0 
+        && isset($_GET['user_type']) && strlen($_GET['user_type']) > 0) {
             $user_id = $_GET['user_id'];
             $user_type = $_GET['user_type'];
+        }
+        $page = 1;
+        $limit = 25;
+        if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
+            $page = $_GET['page'];
+        }
+        if(isset($_GET['limit']) && strlen($_GET['limit']) > 0) {
+            $limit = $_GET['limit'];
         }
 
         $device_id = -1;
@@ -34,7 +42,7 @@ switch ($call)
             }
         }
 
-        $data = $db->getAll($device_id);
+        $data = $db->getAll($device_id, $page, $limit);
         if(empty($data)) 
         {
             $response['message'] = 'No data found!';

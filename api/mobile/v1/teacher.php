@@ -1,4 +1,5 @@
 <?php
+require_once './auth_validation.php';
 require_once './db/teacher_db.php';
  
 $response = array();
@@ -49,7 +50,6 @@ switch ($_GET['call'])
         break; 
 
     case 'updateImageUrl':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['image_url'] === null ||  strlen($_POST['image_url']) <= 0) break;
 
@@ -68,7 +68,6 @@ switch ($_GET['call'])
         break;
 
     case 'updateName':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['name'] === null ||  strlen($_POST['name']) <= 0) break;
 
@@ -87,7 +86,6 @@ switch ($_GET['call'])
         break;
 
     case 'updateBio':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['bio'] === null ||  strlen($_POST['bio']) <= 0) break;
 
@@ -106,7 +104,6 @@ switch ($_GET['call'])
         break;
 
     case 'updateAcademicInfo':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0
         || $_POST['name'] === null || strlen($_POST['name']) <= 0  
         || $_POST['designation'] === null || strlen($_POST['designation']) <= 0 
@@ -137,7 +134,6 @@ switch ($_GET['call'])
         break;
 
     case 'updateConnectInfo':
-        require_once './auth_validation.php';
         if($_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['address'] === null || $_POST['phone'] === null
         || $_POST['email'] === null || strlen($_POST['email']) <= 0 

@@ -1,4 +1,5 @@
 <?php
+require_once './auth_validation.php';
 require_once './constant.php';
 require_once './util/file_upload_util.php';
 
@@ -17,7 +18,6 @@ $util = new FileUploadUtil();
 switch ($call) 
 {
     case 'uploadImage':
-        require_once './auth_validation.php';
         if(!isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
         || !isset($_POST['name']) || strlen($_POST['name']) <= 0
         || !isset($_FILES['file'])) {
@@ -48,7 +48,6 @@ switch ($call)
         break;
 
     case 'uploadPdf':
-        require_once './auth_validation.php';
         if(!isset($_POST['name']) || !isset($_FILES['file'])) {
             break;
         }
