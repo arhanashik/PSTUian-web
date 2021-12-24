@@ -64,7 +64,6 @@
                 body: body, 
             },
             success:function(response) {
-                console.log(response);
                 try {
                     let result = JSON.parse(response);
                     if(result['success'] === true) {
@@ -73,6 +72,7 @@
                     }
                     $('#error-message').html(result['message']);
                 } catch (error) {
+                    console.log(response);
                     $('#error-message').html('Invalid server response.');
                 }
             },

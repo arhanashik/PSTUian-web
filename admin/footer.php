@@ -44,14 +44,20 @@
                     url: `${baseUrl}auth.php?call=signOut`,
                     type:'get',
                     data:{ user_type: 'admin' },
-                    success:function(response){
-                        var data = JSON.parse(response);
-                        if(data['code'] == 200){
-                            sessionStorage.clear();
-                            window.location = "login.php";
-                        } else{
+                    success:function(response) {
+                        try {
+                            let result = JSON.parse(response);
+                            if(result['code'] == 200) {
+                                window.location = "login.php";
+                            } else{
+                                $('#toast-title').text('Error');
+                                $('#toast-message').text(result['message']);
+                                $('#toast').toast('show');
+                            }
+                        } catch (error) {
+                            console.log(response);
                             $('#toast-title').text('Error');
-                            $('#toast-message').text(data['message']);
+                            $('#toast-message').text('Invalid server response.');
                             $('#toast').toast('show');
                         }
                     },
