@@ -1,10 +1,10 @@
    
 <?php
-require_once dirname(__FILE__) .  '/../../../vendor/phpmailer/PHPMailer.php';
-require_once dirname(__FILE__) .  '/../../../vendor/phpmailer/Exception.php';
-require_once dirname(__FILE__) .  '/../../../vendor/phpmailer/SMTP.php';
+require_once dirname(__FILE__, 4) .  '/vendor/phpmailer/PHPMailer.php';
+require_once dirname(__FILE__, 4) .  '/vendor/phpmailer/Exception.php';
+require_once dirname(__FILE__, 4) .  '/vendor/phpmailer/SMTP.php';
 
-require_once dirname(__FILE__) . '/../constant.php';
+require_once dirname(__FILE__, 2) . '/constant.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
