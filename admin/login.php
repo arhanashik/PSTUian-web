@@ -1,7 +1,11 @@
 <?php
+$uri = $_SERVER['REQUEST_URI'];
+$path = isset($_GET['from']) ? $_GET['from'] : 'index.php';
+
 session_start();
 if (isset($_SESSION['admin']) && isset($_SESSION['auth_token'])) {
-    header("location: index.php");
+    header('Location: ' . $path);
+    return;
 }
 ?>
 <!DOCTYPE html>
