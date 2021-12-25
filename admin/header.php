@@ -1,7 +1,10 @@
 <?php
+$uri = $_SERVER['REQUEST_URI'];
+$path = basename($uri);
+
 session_start();
 if(!isset($_SESSION['admin']) && !isset($_SESSION['auth_token'])) {
-   header('Location: login.php');
+    header('Location: login.php?from=' . $path);
    return;
 }
 
