@@ -9,7 +9,7 @@
   // check is signed in
   if(in_array($path, $pages) && $auth_token === null) {
     header('Location: login.php?from=' . $path);
-      return;
+    return;
   }
   
   $user_id = isset($_SESSION['x_user']) ? $_SESSION['x_user']['id'] : null;
