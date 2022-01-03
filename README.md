@@ -44,6 +44,10 @@ Project Structure:
 - Sign in/sign out is possible from the website also
 - User can see the signed in devices and can sign out from all of them
 
+1.3.1 - Bug fix and improvements
+----------------------
+- Device registration without fcm token
+
 ## DEPLOY
 - Change the base url with appropriate environment in root website, admin and api
 - Update db credentials in constant.php file under admin/api and api/movile/v1 directories
