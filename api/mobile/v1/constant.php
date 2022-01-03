@@ -30,8 +30,8 @@ define('CHECK_IN_TABLE', 'check_in');
 define('CHECK_IN_LOCATION_TABLE', 'check_in_location');
 define('VERIFICATION_TABLE', 'verification');
 
-define('BASE_URL', 'http://dev.pstuian.com/');
-define('BASE_CV_URL', 'http://cv-dev.pstuian.com/');
+define('BASE_URL', 'https://dev.pstuian.com/');
+define('BASE_CV_URL', 'https://cv-dev.pstuian.com/');
 define('BASE_EMAIL_VERIFICATION_URL', 'https://api-dev.pstuian.com/mobile/v1/auth.php?call=emailVarification');
 
 // Change the second parameter to suit your needs
