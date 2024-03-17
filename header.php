@@ -5,7 +5,7 @@
   $auth_token = isset($_SESSION['x_auth_token']) ? $_SESSION['x_auth_token'] : null;
 
   // check signin for required pages
-  $pages = ['teachers.php', 'students.php', 'employees.php'];
+  $pages = ['teachers.php', 'students.php', 'employees.php', 'delete_account.php'];
   // check is signed in
   if(in_array($path, $pages) && $auth_token === null) {
     header('Location: login.php?from=' . $path);
@@ -119,6 +119,11 @@
                                   echo $link;
                                 ?>
                               </li>
+                              <?php
+                                  if($auth_token !== null) {
+                                    echo '<li><a href="delete_account.php" class="nav-link text-left">Delete Account</a></li>';
+                                  }
+                                ?>
                             </ul>                                                                                                                                                                                                                                                                                         
                         </nav>
                     </div>

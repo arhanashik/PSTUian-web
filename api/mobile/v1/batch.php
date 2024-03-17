@@ -16,7 +16,7 @@ $db = new BatchDb();
 switch ($_GET['call']) 
 {
     case 'getAll':
-        if($_GET['faculty_id'] === null || strlen($_GET['faculty_id']) <= 0) break;
+        if(!isset($_GET['faculty_id']) || strlen($_GET['faculty_id']) <= 0) break;
 
         $faculty_id = $_GET['faculty_id'];
         $data = $db->getAll($faculty_id);

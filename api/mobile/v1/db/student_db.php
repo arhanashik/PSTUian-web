@@ -169,4 +169,12 @@ class StudentDb extends Db
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
+
+    public function delete_account($id, $email, $password)
+    {
+        $sql = "UPDATE " . STUDENT_TABLE . " set deleted = 1, updated_at = NOW() WHERE email = '$email' AND password = '$password'";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
 }

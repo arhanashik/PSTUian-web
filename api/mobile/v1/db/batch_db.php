@@ -38,7 +38,7 @@ class BatchDb
             $item['name'] = $name;
             $item['title'] = $title;
             $item['session'] = $session;
-            $item['faculty_id'] = $faculty_id;
+            $item['faculty_id'] = (int) $faculty_id;
             $item['total_student'] = $total_student;
             $item['registered_student'] = $registered_student;
           
