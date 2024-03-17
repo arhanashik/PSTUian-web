@@ -13,7 +13,7 @@ Project Structure:
 - Other folder and files in the root directory are the files for the PSTU website.
 
 ## INSTALLATION
-1. Install XAMPP(for windows) or WAMP(for MAC)
+1. Install XAMPP(for windows) or WAMP/MAMP(for MAC)
 2. Clone the repo inside the localhost directory
 3. Open phpMyAdmin and create two databases: pstuian.db and pstuian_dev.db
 4. Import the sql(api/mobile/v1/backup/pstuian.sql)
@@ -47,6 +47,10 @@ Project Structure:
 1.3.1 - Bug fix and improvements
 ----------------------
 - Device registration without fcm token
+
+1.4.0 - Delete Account
+----------------------
+- Added option for requestion account deletion
 
 ## DEPLOY
 - Change the base url with appropriate environment in root website, admin and api
