@@ -36,6 +36,7 @@ class DeviceDb extends Db
         $fcm_token, 
         $model, 
         $android_version, 
+        $ios_version,
         $app_version_code, 
         $app_version_name, 
         $ip_address, 
@@ -44,11 +45,11 @@ class DeviceDb extends Db
         $locale
     )
     {
-        $columns = "id, fcm_token, model, android_version, app_version_code, app_version_name, 
+        $columns = "id, fcm_token, model, android_version, ios_version, app_version_code, app_version_name, 
         ip_address, lat, lng, locale";
         $sql = "INSERT INTO " . DEVICE_TABLE . "($columns) 
-        VALUES ('$id', '$fcm_token', '$model', '$android_version', '$app_version_code', 
-        '$app_version_name', '$ip_address', '$lat', '$lng', '$locale')";
+        VALUES ('$id', '$fcm_token', '$model', '$android_version', '$ios_version', 
+        '$app_version_code', '$app_version_name', '$ip_address', '$lat', '$lng', '$locale')";
         // do not use insertSql($sql). That will return 0, because device id is not integer
         return parent::executeSql($sql);
     }
@@ -58,6 +59,7 @@ class DeviceDb extends Db
         $fcm_token, 
         $model, 
         $android_version, 
+        $ios_version,
         $app_version_code, 
         $app_version_name, 
         $ip_address, 
@@ -67,10 +69,10 @@ class DeviceDb extends Db
     )
     {
         $sql = "UPDATE " . DEVICE_TABLE . " SET fcm_token = '$fcm_token', model = '$model', 
-        android_version = '$android_version', app_version_code = '$app_version_code', 
-        app_version_name = '$app_version_name', ip_address = '$ip_address', lat = '$lat', 
-        lng = '$lng', locale = '$locale', updated_at = NOW() 
-        WHERE id = '$id' AND deleted = 0";
+        android_version = '$android_version', ios_version = '$ios_version', 
+        app_version_code = '$app_version_code', app_version_name = '$app_version_name', 
+        ip_address = '$ip_address', lat = '$lat', lng = '$lng', locale = '$locale',
+         updated_at = NOW() WHERE id = '$id' AND deleted = 0";
         return parent::executeSql($sql);
     }
 
