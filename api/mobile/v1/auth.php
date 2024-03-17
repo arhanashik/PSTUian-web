@@ -511,6 +511,51 @@ switch ($_GET['call']) {
 
         break;
 
+    case 'deleteAccount':
+        if(!isset($_POST['user_id']) ||  strlen($_POST['user_id']) <= 0 
+        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
+        || !isset($_POST['email']) || strlen($_POST['email']) <= 0
+        || !isset($_POST['password']) || strlen($_POST['password']) <= 0) break;
+
+        $id = $_POST['user_id'];
+        $user_type = $_POST['user_type'];
+        $email = $_POST['email'];
+        $password = md5($_POST['password']);
+
+        if(!($user_type === 'student' || $user_type === 'teacher')) {
+            $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
+            $response['message'] = 'Invaild User Type!';
+            break;
+        }
+
+        $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
+        if(!$user_db->get($id)) {    
+            $response['code'] = ERROR_ACCOUNT_DOES_NOT_EXIST;
+            $response['message'] = 'Account not found!';
+            break;
+        }
+
+        if(!$user_db->delete_account($id, $email, $password)) {
+            $response['code'] = ERROR_FAILED_TO_UPDATE;
+            $response['message'] = 'Account deletion failed. Please try again.';
+            break;
+        }
+        
+        $invalidateAllAuth = $db->invalidateAllAuth($id, $user_type);
+        if(!$invalidateAllAuth) {
+            $response['code'] = ERROR_FAILED_TO_AUTHENTICATE;
+            $response['message'] = 'Failed to complete the action!';
+            break;
+        }
+        session_destroy();
+
+        $response['success'] = true;
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Request accepted successfullly. You account will no longer be available. To recover the account, please contact within 3 days before it is permanently deleted!';
+        $response['auth_token'] = $auth_token;
+
+        break;
+
     default:
         break;
 }

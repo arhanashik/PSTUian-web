@@ -47,12 +47,15 @@ switch ($call)
 
     case 'register':
         if(!isset($_POST['id']) || strlen($_POST['id']) <= 0
-        || !isset($_POST['fcm_token']) || strlen($_POST['fcm_token']) <= 0) break;
+        || !isset($_POST['fcm_token'])) {
+            break;
+        }
 
         $id = $_POST['id'];
         $fcm_token = $_POST['fcm_token'];
         $model = isset($_POST['model']) ? $_POST['model'] : '';
         $android_version = isset($_POST['android_version']) ? $_POST['android_version'] : '';
+        $ios_version = isset($_POST['ios_version']) ? $_POST['ios_version'] : '';
         $app_version_code = isset($_POST['app_version_code']) ? $_POST['app_version_code'] : 0;
         $app_version_name = isset($_POST['app_version_name']) ? $_POST['app_version_name'] : '';
         $ip_address = isset($_POST['ip_address']) ? $_POST['ip_address'] : $util->getIp();
@@ -62,10 +65,10 @@ switch ($call)
 
         $exists = $db->isAlreadyInsered($id);
         if($exists) {
-            $result = $db->update($id, $fcm_token, $model, $android_version, $app_version_code, 
+            $result = $db->update($id, $fcm_token, $model, $android_version, $ios_version, $app_version_code, 
             $app_version_name, $ip_address, $lat, $lng, $locale);
         } else {
-            $result = $db->insert($id, $fcm_token, $model, $android_version, $app_version_code, 
+            $result = $db->insert($id, $fcm_token, $model, $android_version, $ios_version, $app_version_code, 
             $app_version_name, $ip_address, $lat, $lng, $locale);
         }
         
