@@ -42,7 +42,7 @@ switch ($_GET['call']) {
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
 
-        if(!($user = $user_db->get($id))) {
+        if(!($user = $user_db->getByEmail($email))) {
             $response['code'] = USER_NOT_FOUND;
             $response['message'] = 'Account does not exist!';
             break;
@@ -187,7 +187,7 @@ switch ($_GET['call']) {
         }
 
         $response['code'] = SUCCESS;
-        $response['message'] = 'Updated successfully';
+        $response['data'] = 'Updated successfully';
 
         break;
 
