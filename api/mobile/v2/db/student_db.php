@@ -51,11 +51,11 @@ class StudentDb extends Db
         }
     }
 
-    public function validate($user_id, $email)
+    public function validate($email, $password)
     {
 
         $sql = "SELECT user_id FROM " . STUDENT_TABLE;
-        $sql = $sql . " WHERE (user_id = '$user_id' AND email = '$email') AND deleted = 0";
+        $sql = $sql . " WHERE (email = '$email' AND password = '$password') AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
@@ -68,12 +68,22 @@ class StudentDb extends Db
         }
     }
 
-    public function insert($user_id, $name, $id, $reg, $email, $batch_id, $session, $faculty_id)
+    public function insert($name, $id, $reg, $faculty_id, $batch_id, $session, $email, $password)
     {
         //columns to select
-        $columns = "user_id, name, id, reg, email, batch_id, session, faculty_id";
+        $columns = "name, id, reg, faculty_id, batch_id, session, email, password";
         $sql = "INSERT INTO " . STUDENT_TABLE . "($columns) 
-        VALUES ('$user_id', '$name', '$id','$reg', '$email', '$batch_id', '$session', '$faculty_id')";
+        VALUES ('$name', '$id','$reg', '$faculty_id', '$batch_id', '$session', '$email', '$password')";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function update_user_id($user_id, $email, $password)
+    {
+        $sql = "UPDATE " . STUDENT_TABLE . " set user_id = '$user_id', updated_at = NOW()";
+        //condition
+        $sql = $sql . " WHERE email = '$email' AND password = '$password'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
@@ -131,9 +141,18 @@ class StudentDb extends Db
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function delete_account($user_id, $email)
+    public function update_password($email, $old_password, $new_password)
     {
-        $sql = "UPDATE " . STUDENT_TABLE . " set deleted = 1, updated_at = NOW() WHERE user_id = '$user_id' AND email = '$email'";
+        $sql = "UPDATE " . STUDENT_TABLE . " set password = '$new_password', updated_at = NOW() 
+        WHERE (email = '$email' AND password = '$old_password') AND deleted = 0";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function delete_account($email, $password)
+    {
+        $sql = "UPDATE " . STUDENT_TABLE . " set deleted = 1, updated_at = NOW() WHERE email = '$email' AND password = '$password'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;

@@ -1,6 +1,5 @@
 <?php
 
-// ----------- v1 ----------//
 define('DB_HOST', 'localhost');
 define('DB_USER', 'pstuianc_dev');
 define('DB_PASS', 'qGPKUPvsCabp');
@@ -91,5 +90,3 @@ define('USER_NOT_FOUND', 'SU001');
 define('USER_REGISTRATION_FAILED', 'SU002');
 define('USER_BLOCKLISTED', 'SU003');
 define('USER_ALREADY_EXIST', 'SU004');
-
-// ----------- v1 ----------//

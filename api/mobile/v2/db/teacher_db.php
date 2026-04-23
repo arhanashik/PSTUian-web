@@ -23,17 +23,18 @@ class TeacherDb extends Db
 
     public function getById($user_id)
     {
-        $sql = "SELECT name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE; 
+        $sql = "SELECT id, name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE; 
         //condition
         $sql = $sql . " WHERE user_id = $user_id AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->bind_result($name, $designation, $bio, $phone, $linked_in, $address, $email, $department, $blood, $faculty_id, $fb_link, $image_url);
+        $stmt->bind_result($id, $name, $designation, $bio, $phone, $linked_in, $address, $email, $department, $blood, $faculty_id, $fb_link, $image_url);
 
         $item = array();
         while ($stmt->fetch()) {
             $item['user_id'] = $user_id;
+            $item['id'] = $id;
             $item['name'] = $name;
             $item['designation'] = $designation;
             $item['bio'] = $bio;
@@ -53,17 +54,18 @@ class TeacherDb extends Db
 
     public function getByEmail($email)
     {
-        $sql = "SELECT user_id, name, designation, bio, phone, linked_in, address, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE; 
+        $sql = "SELECT user_id, id, name, designation, bio, phone, linked_in, address, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE; 
         //condition
         $sql = $sql . " WHERE email = '$email' AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->bind_result($user_id, $name, $designation, $bio, $phone, $linked_in, $address, $department, $blood, $faculty_id, $fb_link, $image_url);
+        $stmt->bind_result($user_id, $id, $name, $designation, $bio, $phone, $linked_in, $address, $department, $blood, $faculty_id, $fb_link, $image_url);
 
         $item = array();
         while ($stmt->fetch()) {
             $item['user_id'] = $user_id;
+            $item['id'] = $id;
             $item['name'] = $name;
             $item['designation'] = $designation;
             $item['bio'] = $bio;
@@ -83,7 +85,7 @@ class TeacherDb extends Db
 
     public function isAlreadyInseredByEmail($email)
     {
-        $sql = "SELECT user_id FROM $this->table WHERE email = '$email'";
+        $sql = "SELECT id FROM $this->table WHERE email = '$email'";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
@@ -92,10 +94,10 @@ class TeacherDb extends Db
         return $num_rows > 0;
     }
 
-    public function validate($user_id, $email)
+    public function validate($email, $password)
     {
         $sql = "SELECT user_id FROM " . TEACHER_TABLE;
-        $sql = $sql . " WHERE (user_id = '$user_id' AND email = '$email') AND deleted = 0";
+        $sql = $sql . " WHERE (email = '$email' AND password = '$password') AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
@@ -108,12 +110,22 @@ class TeacherDb extends Db
         }
     }
 
-    public function insert($user_id, $name, $designation, $department, $email, $faculty_id)
+    public function insert($name, $faculty_id, $designation, $department, $email, $password)
     {
         //columns to select
-        $columns = "user_id, name, designation, department, email, faculty_id";
+        $columns = "name, faculty_id, designation, department, email, password";
         $sql = "INSERT INTO " . TEACHER_TABLE . "($columns) 
-        VALUES ('$user_id', '$name', '$designation','$department', '$email', '$faculty_id')";
+        VALUES ('$name', '$faculty_id', '$designation', '$department', '$email', '$password')";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function update_user_id($user_id, $email, $password)
+    {
+        $sql = "UPDATE " . TEACHER_TABLE . " set user_id = '$user_id', updated_at = NOW()";
+        //condition
+        $sql = $sql . " WHERE email = '$email' AND password = '$password'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
@@ -163,9 +175,18 @@ class TeacherDb extends Db
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function delete_account($user_id, $email)
+    public function update_password($email, $old_password, $new_password)
     {
-        $sql = "UPDATE " . TEACHER_TABLE . " set deleted = 1, updated_at = NOW() WHERE user_id = '$user_id' AND email = '$email'";
+        $sql = "UPDATE " . TEACHER_TABLE . " set password = '$new_password', updated_at = NOW() 
+        WHERE (email = '$email' AND password = '$old_password') AND deleted = 0";
+        
+        $stmt = $this->con->prepare($sql);
+        return $stmt->execute() && $stmt->affected_rows > 0;
+    }
+
+    public function delete_account($email, $password)
+    {
+        $sql = "UPDATE " . TEACHER_TABLE . " set deleted = 1, updated_at = NOW() WHERE email = '$email' AND password = '$password'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
