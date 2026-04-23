@@ -12,7 +12,7 @@ class StudentDb extends Db
     public function getAllByFacultyAndBatch($faculty_id, $batch_id)
     {
         //columns to select
-        $columns = "name, id, reg, phone, linked_in, blood, address, email, session, batch_id, faculty_id, fb_link, image_url, cv_link, bio";
+        $columns = "user_id, name, id, reg, phone, linked_in, blood, address, email, session, batch_id, faculty_id, fb_link, image_url, cv_link, bio";
         //query
         $sql = "SELECT $columns FROM " . STUDENT_TABLE;
         //condition
