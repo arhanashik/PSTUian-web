@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once './constant.php';
 require_once './db/auth_db.php';
 require_once './db/student_db.php';

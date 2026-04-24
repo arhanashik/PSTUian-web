@@ -68,14 +68,34 @@ class StudentDb extends Db
         }
     }
 
-    public function insert($name, $id, $reg, $faculty_id, $batch_id, $session, $email, $password)
-    {
-        //columns to select
-        $columns = "name, id, reg, faculty_id, batch_id, session, email, password";
-        $sql = "INSERT INTO " . STUDENT_TABLE . "($columns) 
-        VALUES ('$name', '$id','$reg', '$faculty_id', '$batch_id', '$session', '$email', '$password')";
-        
+    public function insert(
+        $name,
+        $id,
+        $reg,
+        $faculty_id,
+        $batch_id,
+        $session,
+        $email,
+        $password
+    ) {
+        $sql = "INSERT INTO " . STUDENT_TABLE . "
+                (`name`, `id`, `reg`, `faculty_id`, `batch_id`, `session`, `email`, `password`)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
         $stmt = $this->con->prepare($sql);
+
+        $stmt->bind_param(
+            "ssssssss",
+            $name,
+            $id,
+            $reg,
+            $faculty_id,
+            $batch_id,
+            $session,
+            $email,
+            $password
+        );
+
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 

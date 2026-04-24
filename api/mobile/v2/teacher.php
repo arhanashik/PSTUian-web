@@ -1,9 +1,10 @@
 <?php
+require_once './constant.php';
 require_once './auth_validation.php';
 require_once './db/teacher_db.php';
  
 $response = array();
-$response['success'] = false;
+$response['code'] = MISSING_PARAM;
 $response['message'] = 'Required parameters are missing';
 
 if(!isset($_GET['call']) || empty($_GET['call'])) {
@@ -21,16 +22,16 @@ switch ($_GET['call'])
 
         $faculty_id = $_GET['faculty_id'];
         $data = $db->getAll($faculty_id);
-        if($data === null || empty($data)) 
+        if(!$data || $data === null) 
         {
+            $response['code'] = READ_FAILD;
             $response['message'] = 'No data found!';
+            return;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Total ' . count($data) . ' item(s)';
-            $response['data'] = $data;
-        }
+        
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Total ' . count($data) . ' item(s)';
+        $response['data'] = $data;
         break;
 
     case 'get':
@@ -40,77 +41,102 @@ switch ($_GET['call'])
         $data = $db->get($id);
         if($data === null || empty($data)) 
         {
+            $response['code'] = USER_NOT_FOUND;
             $response['message'] = 'No data found!';
             break;
         }
         unset($data['password']);
-        $response['success'] = true;
+
+        $response['code'] = SUCCESS;
         $response['message'] = 'Data found';
         $response['data'] = $data;
-        break; 
+        break;
+
+    case 'getByEmail':
+        if($_GET['email'] === null || strlen($_GET['email']) <= 0) break;
+
+        $email = $_GET['email'];
+        $data = $db->getByEmail($email);
+        if($data === null || empty($data)) 
+        {
+            $response['code'] = USER_NOT_FOUND;
+            $response['message'] = 'No data found!';
+            break;
+        }
+        unset($data['password']);
+
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Data found';
+        $response['data'] = $data;
+        break;
 
     case 'updateImageUrl':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0 
+        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0 
         || $_POST['image_url'] === null ||  strlen($_POST['image_url']) <= 0) break;
 
-        $id = $_POST['id'];
+        $user_id = $_POST['user_id'];
         $image_url = $_POST['image_url'];
-        $data = $db->update_image_url($id, $image_url);
+        $data = $db->update_image_url($user_id, $image_url);
         if(!$data || $data == 0) 
         {
+            $response['code'] = WRITE_FAILD;
             $response['message'] = 'Update failed!';
         }
         else
         {
-            $response['success'] = true;
-            $response['message'] = 'Profile picture changed successfullly!';
+            $response['code'] = SUCCESS;
+            $response['data'] = $image_url;
         }
         break;
 
     case 'updateName':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0 
+        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0 
         || $_POST['name'] === null ||  strlen($_POST['name']) <= 0) break;
 
-        $id = $_POST['id'];
+        $user_id = $_POST['user_id'];
         $name = $_POST['name'];
-        $data = $db->update_name($id, $name);
+        $data = $db->update_name($user_id, $name);
         if(!$data || $data == 0) 
         {
+            $response['code'] = WRITE_FAILD;
             $response['message'] = 'Update failed!';
         }
         else
         {
-            $response['success'] = true;
-            $response['message'] = 'Name changed successfullly!';
+            $response['code'] = SUCCESS;
+            $response['data'] = $name;
         }
         break;
 
     case 'updateBio':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0 
+        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0 
         || $_POST['bio'] === null ||  strlen($_POST['bio']) <= 0) break;
 
-        $id = $_POST['id'];
+        $user_id = $_POST['user_id'];
         $bio = $_POST['bio'];
-        $data = $db->update_bio($id, $bio);
+        $data = $db->update_bio($user_id, $bio);
         if(!$data || $data == 0) 
         {
+            $response['code'] = WRITE_FAILD;
             $response['message'] = 'Update failed!';
         }
         else
         {
-            $response['success'] = true;
-            $response['message'] = 'Name changed successfullly!';
+            $response['code'] = SUCCESS;
+            $response['data'] = $bio;
         }
         break;
 
     case 'updateAcademicInfo':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0
+        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
+        || $_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['name'] === null || strlen($_POST['name']) <= 0  
         || $_POST['designation'] === null || strlen($_POST['designation']) <= 0 
         || $_POST['department'] === null || strlen($_POST['department']) <= 0 
         || $_POST['blood'] === null
         || $_POST['faculty_id'] === null || strlen($_POST['faculty_id']) <= 0) break;
 
+        $user_id = $_POST['user_id'];
         $id = $_POST['id'];
         $name = $_POST['name'];
         $designation = $_POST['designation'];
@@ -118,29 +144,31 @@ switch ($_GET['call'])
         $blood = $_POST['blood'];
         $faculty_id = $_POST['faculty_id'];
         
-        $data = $db->update_academic_info($id, $name, $designation, $department, $blood, $faculty_id);
-        if(!$data || $data == 0) 
+        $data = $db->update_academic_info($user_id, $name, $designation, $department, $blood, $faculty_id);
+        if(!$data || $data <= 0) 
         {
+            $response['code'] = WRITE_FAILD;
             $response['message'] = 'Update failed!';
         }
         else
         {
             $user = $db->get($id);
             unset($user['password']);
-            $response['success'] = true;
+
+            $response['code'] = SUCCESS;
             $response['message'] = 'Info changed successfullly!';
             $response['data'] = $user;
         }
         break;
 
     case 'updateConnectInfo':
-        if($_POST['id'] === null || strlen($_POST['id']) <= 0 
+        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0 
         || $_POST['address'] === null || $_POST['phone'] === null
         || $_POST['email'] === null || strlen($_POST['email']) <= 0 
         || $_POST['old_email'] === null || strlen($_POST['old_email']) <= 0
         || $_POST['linked_in'] === null|| $_POST['fb_link'] === null) break;
 
-        $id = $_POST['id'];
+        $user_id = $_POST['user_id'];
         $address = $_POST['address'];
         $phone = $_POST['phone'];
         $email = $_POST['email'];
@@ -153,19 +181,19 @@ switch ($_GET['call'])
             $response['message'] = 'Ops, Account already exists for this email';
             break;
         }
-        $data = $db->update_connect_info($id, $address, $phone, $email, $linked_in, $fb_link);
-        if(!$data || $data == 0) 
+        $data = $db->update_connect_info($user_id, $address, $phone, $email, $linked_in, $fb_link);
+        if(!$data || $data <= 0) 
         {
+            $response['code'] = WRITE_FAILD;
             $response['message'] = 'Update failed!';
+            break;
         }
-        else
-        {
-            $user = $db->get($id);
-            unset($user['password']);
-            $response['success'] = true;
-            $response['message'] = 'Info changed successfullly!';
-            $response['data'] = $user;
-        }
+        $user = $db->getByEmail($email);
+        unset($user['password']);
+
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Info changed successfullly!';
+        $response['data'] = $user;
         break;
     
     default:

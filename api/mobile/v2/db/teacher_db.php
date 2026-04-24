@@ -110,14 +110,30 @@ class TeacherDb extends Db
         }
     }
 
-    public function insert($name, $faculty_id, $designation, $department, $email, $password)
-    {
-        //columns to select
-        $columns = "name, faculty_id, designation, department, email, password";
-        $sql = "INSERT INTO " . TEACHER_TABLE . "($columns) 
-        VALUES ('$name', '$faculty_id', '$designation', '$department', '$email', '$password')";
-        
+    public function insert(
+        $name,
+        $faculty_id,
+        $designation,
+        $department,
+        $email,
+        $password
+    ) {
+        $sql = "INSERT INTO " . TEACHER_TABLE . "
+                (`name`, `faculty_id`, `designation`, `department`, `email`, `password`)
+                VALUES (?, ?, ?, ?, ?, ?)";
+
         $stmt = $this->con->prepare($sql);
+
+        $stmt->bind_param(
+            "ssssss",
+            $name,
+            $faculty_id,
+            $designation,
+            $department,
+            $email,
+            $password
+        );
+
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
