@@ -103,7 +103,7 @@ switch ($_GET['call']) {
             $response['message'] = 'Account already exists for this id!';
             break;
         }
-        if($studentDb->isAlreadyInseredByEmail($email)) {
+        if($studentDb->isAlreadyInseredByEmail($email) || $teacherDb->isAlreadyInseredByEmail($email)) {
             $response['code'] = USER_ALREADY_EXIST;
             $response['message'] = 'Ops, Account already exists for this email';
             break;
@@ -141,7 +141,7 @@ switch ($_GET['call']) {
         $device_id = $_POST['device_id'];
         $user_type = 'teacher';
 
-        if($teacherDb->isAlreadyInseredByEmail($email)) {
+        if($studentDb->isAlreadyInseredByEmail($email) || $teacherDb->isAlreadyInseredByEmail($email)) {
             $response['code'] = USER_ALREADY_EXIST;
             $response['message'] = 'Account already exists!';
             break;
