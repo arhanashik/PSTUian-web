@@ -11,14 +11,14 @@ class TeacherDb extends Db
 
     public function getAll($faculty_id)
     {
-        $sql = "SELECT user_id, name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE;
+        $sql = "SELECT id, name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE;
         //condition
         $sql = $sql . " WHERE faculty_id = $faculty_id AND deleted = 0";
         //sorting
         $sql = $sql . " ORDER BY created_at ASC";
         //constraints
         // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
-        return $list = parent::getAll($sql);
+        return parent::getAll($sql);
     }
 
     public function getById($user_id)

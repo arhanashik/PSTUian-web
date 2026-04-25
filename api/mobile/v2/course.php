@@ -1,9 +1,9 @@
 <?php
-require_once './auth_validation.php';
 require_once './db/course_db.php';
+require_once './constant.php';
  
 $response = array();
-$response['success'] = false;
+$response['code'] = MISSING_PARAM;
 $response['message'] = 'Required parameters are missing';
  
 if (isset($_GET['call'])) 
@@ -16,13 +16,14 @@ if (isset($_GET['call']))
             $faculty_id = $_GET['faculty_id'];
             $db = new CourseDb();
             $data = $db->getAll($faculty_id);
-            if($data === null || empty($data)) 
+            if(!$data || $data === null) 
             {
+                $response['code'] = READ_FAILD;
                 $response['message'] = 'No data found!';
             }
             else
             {
-                $response['success'] = true;
+                $response['code'] = SUCCESS;
                 $response['message'] = 'Total ' . count($data) . ' item(s)';
                 $response['data'] = $data;
             }

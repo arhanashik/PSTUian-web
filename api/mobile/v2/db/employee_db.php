@@ -11,13 +11,13 @@ class EmplyeeDb extends Db
 
     public function getAll($faculty_id)
     {
-        $sql = "SELECT id, name, designation, department, phone, address, image_url FROM " . EMPLOYEE_TABLE;
+        $sql = "SELECT id, name, designation, department, phone, address, faculty_id, image_url FROM " . EMPLOYEE_TABLE;
         //condition
         $sql = $sql . " WHERE faculty_id = $faculty_id AND deleted = 0";
         //sorting
         $sql = $sql . " ORDER BY created_at ASC";
         //constraints
         // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
-        return $list = parent::getAll($sql);
+        return parent::getAll($sql);
     }
 }
