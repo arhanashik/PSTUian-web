@@ -16,9 +16,9 @@ if (isset($_GET['call']))
             $faculty_id = $_GET['faculty_id'];
             $db = new EmplyeeDb();
             $data = $db->getAll($faculty_id);
-            if(!$data || $data === null) 
+            if($data === false) 
             {
-                $response['code'] = READ_FAILD;
+                $response['code'] = READ_FAILED;
                 $response['message'] = 'No data found!';
             }
             else

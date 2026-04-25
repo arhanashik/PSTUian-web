@@ -21,9 +21,9 @@ switch ($_GET['call'])
 
         $faculty_id = $_GET['faculty_id'];
         $data = $db->getAll($faculty_id);
-        if(!$data || $data === null) 
+        if($data === false) 
         {
-            $response['code'] = READ_FAILD;
+            $response['code'] = READ_FAILED;
             $response['message'] = 'No data found!';
             return;
         }
@@ -78,7 +78,7 @@ switch ($_GET['call'])
         $data = $db->update_image_url($user_id, $image_url);
         if(!$data || $data == 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
         }
         else
@@ -97,7 +97,7 @@ switch ($_GET['call'])
         $data = $db->update_name($user_id, $name);
         if(!$data || $data == 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
         }
         else
@@ -116,7 +116,7 @@ switch ($_GET['call'])
         $data = $db->update_bio($user_id, $bio);
         if(!$data || $data == 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
         }
         else
@@ -146,7 +146,7 @@ switch ($_GET['call'])
         $data = $db->update_academic_info($user_id, $name, $designation, $department, $blood, $faculty_id);
         if(!$data || $data <= 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
         }
         else
@@ -183,7 +183,7 @@ switch ($_GET['call'])
         $data = $db->update_connect_info($user_id, $address, $phone, $email, $linked_in, $fb_link);
         if(!$data || $data <= 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
             break;
         }

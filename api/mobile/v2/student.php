@@ -22,14 +22,17 @@ switch ($call)
 
         $faculty_id = $_GET['faculty_id'];
         $batch_id = $_GET['batch_id'];
-        $data = $db->getAllByFacultyAndBatch($faculty_id, $batch_id);
-        if(!$data || $data === null) 
-        {
-            $response['code'] = READ_FAILD;
-            $response['message'] = 'Could not read data!';
+        $page = $_GET['page'];
+        $limit = $_GET['limit'];
+
+        $data = $db->getAllByFacultyAndBatch($faculty_id, $batch_id, $page, $limit);
+
+        if ($data === false) {
+            $response['code'] = READ_FAILED;
+            $response['message'] = 'Database error occurred.';
             return;
         }
-        
+
         $response['code'] = SUCCESS;
         $response['message'] = 'Total ' . count($data) . ' item(s)';
         $response['data'] = $data;
@@ -80,7 +83,7 @@ switch ($call)
         $data = $db->update_image_url($user_id, $image_url);
         if(!$data || $data == 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
         }
         else
@@ -99,7 +102,7 @@ switch ($call)
         $data = $db->update_name($user_id, $name);
         if(!$data || $data == 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
         }
         else
@@ -118,7 +121,7 @@ switch ($call)
         $data = $db->update_bio($user_id, $bio);
         if(!$data || $data == 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
         }
         else
@@ -159,7 +162,7 @@ switch ($call)
         $data = $db->update_academic_info($user_id, $name, $id, $reg, $blood, $faculty_id, $session, $batch_id);
         if(!$data || $data <= 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
         }
         else
@@ -198,7 +201,7 @@ switch ($call)
         $data = $db->update_connect_info($user_id, $address, $phone, $email, $cv_link, $linked_in, $fb_link);
         if(!$data || $data <= 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
             break;
         }
@@ -219,7 +222,7 @@ switch ($call)
         $data = $db->update_cv($user_id, $cv_link);
         if(!$data || $data == 0) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
             break;
         }

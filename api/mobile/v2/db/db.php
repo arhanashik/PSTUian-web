@@ -20,24 +20,28 @@ class Db {
         switch ($name_of_function) {
             // for getAll methods
             case 'getAll':
-                $sql = "SELECT * FROM $this->table";
-                // sorting
-                $sql .= " ORDER BY id";
-                // condition
-                $sql .= " WHERE deleted = 0";
-                // if the sql is given as parameter, use that one
+                $sql = "SELECT * FROM $this->table WHERE deleted = 0 ORDER BY id";
+
                 if (count($arguments) > 0) {
                     $sql = $arguments[0];
                 }
+
                 $stmt = $this->con->prepare($sql);
-                $stmt->execute();
-                $result = $stmt->get_result();
-            
-                $list = array();
-                while ($row = $result->fetch_assoc()) {
-                    array_push($list, $row);
+                if (!$stmt) {
+                    return false;
                 }
-        
+
+                if (!$stmt->execute()) {
+                    return false;
+                }
+
+                $result = $stmt->get_result();
+
+                $list = [];
+                while ($row = $result->fetch_assoc()) {
+                    $list[] = $row;
+                }
+
                 return $list;
 
             default:

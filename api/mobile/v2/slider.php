@@ -14,7 +14,7 @@ if (isset($_GET['call']))
             $db = new SliderDb();
             $data = $db->getAll();
             if(!$data) {
-                $response['code'] = READ_FAILD;
+                $response['code'] = READ_FAILED;
                 $response['message'] = 'No data found!';
             } else {
                 $response['code'] = SUCCESS;

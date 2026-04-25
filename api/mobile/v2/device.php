@@ -19,7 +19,6 @@ $util = new Util();
 switch ($call) 
 {
     case 'getAll':
-        require_once './auth_validation.php';
         if(!isset($_GET['user_id']) || strlen($_GET['user_id']) <= 0
         || !isset($_GET['user_type']) || strlen($_GET['user_type']) <= 0) break;
 
@@ -37,7 +36,7 @@ switch ($call)
 
         $data = $db->getAllByUser($user_id, $user_type, $page, $limit);
         if(!$data) {
-            $response['code'] = READ_FAILD;
+            $response['code'] = READ_FAILED;
             $response['message'] = 'No data found!';
             return;
         }
@@ -77,7 +76,7 @@ switch ($call)
         $operation_type = $exists? 'updated' : 'registered';
         if($result === null || !$result) 
         {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = "Sorry, device not $operation_type. Please try again.";
             break;
         }

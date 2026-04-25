@@ -29,9 +29,9 @@ define('CHECK_IN_TABLE', 'check_in');
 define('CHECK_IN_LOCATION_TABLE', 'check_in_location');
 define('VERIFICATION_TABLE', 'verification');
 
-define('BASE_URL', 'http://192.168.1.101:8888/PSTUian-web/');
-define('BASE_CV_URL', 'http://192.168.1.101:8888/PSTUian-web/');
-define('BASE_EMAIL_VERIFICATION_URL', 'http://192.168.1.101:8888/PSTUian-web/api/mobile/v1/auth.php?call=emailVarification');
+define('BASE_URL', 'https://dev.pstuian.com');
+define('BASE_CV_URL', 'https://dev.pstuian.com');
+define('BASE_EMAIL_VERIFICATION_URL', 'https://dev.pstuian.com/api/mobile/v1/auth.php?call=emailVarification');
 
 // Change the second parameter to suit your needs
 // Here 4 means, how many times it should go up
@@ -80,8 +80,8 @@ define('MESSAGE_STATUS', array(
 define('SUCCESS', 'S00000');
 define('MISSING_PARAM', 'S00001');
 define('INVALID_PARAM', 'S00002');
-define('READ_FAILD', 'S00003'); // failed to get data from db
-define('WRITE_FAILD', 'S00004'); // failed to store data to db
+define('READ_FAILED', 'S00003'); // failed to get data from db
+define('WRITE_FAILED', 'S00004'); // failed to store data to db
 define('AUTH_FAILED', 'S00005');
 define('VALIDATION_FAILED', 'S00006');
 define('UNKONWN_ERROR', 'S11111');

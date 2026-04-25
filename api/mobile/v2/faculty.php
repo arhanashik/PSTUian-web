@@ -19,7 +19,7 @@ switch ($_GET['call'])
     case 'getAll':
         $data = $db->getAll();
         if(!$data) {
-            $response['code'] = READ_FAILD;
+            $response['code'] = READ_FAILED;
             $response['message'] = 'No data found!';
         } else {
             $response['code'] = SUCCESS;
@@ -34,7 +34,7 @@ switch ($_GET['call'])
         $id = $_GET['id'];
         $data = $db->get($id);
         if($data === null || !$data) {
-            $response['code'] = READ_FAILD;
+            $response['code'] = READ_FAILED;
             $response['message'] = 'No data found!';
         } else {
             $response['code'] = SUCCESS;

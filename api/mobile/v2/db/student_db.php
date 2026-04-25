@@ -9,18 +9,28 @@ class StudentDb extends Db
         parent::__construct(STUDENT_TABLE);
     }
 
-    public function getAllByFacultyAndBatch($faculty_id, $batch_id)
+    public function getAllByFacultyAndBatch($faculty_id, $batch_id, $page, $limit)
     {
-        //columns to select
+        // Calculate offset
+        $offset = ($page - 1) * $limit;
+
+        // Columns to select
         $columns = "user_id, name, id, reg, phone, linked_in, blood, address, email, session, batch_id, faculty_id, fb_link, image_url, cv_link, bio";
-        //query
+
+        // Query
         $sql = "SELECT $columns FROM " . STUDENT_TABLE;
-        //condition
-        $sql = $sql . " WHERE (faculty_id = $faculty_id AND batch_id = $batch_id) AND deleted = 0";
-        //sorting
-        $sql = $sql . " ORDER BY id ASC";
-        //constraints
-        // $sql = $sql . " LIMIT $limit OFFSET $skip_item_count";
+
+        // Conditions
+        $sql .= " WHERE faculty_id = $faculty_id
+                AND batch_id = $batch_id
+                AND deleted = 0";
+
+        // Sorting
+        $sql .= " ORDER BY id ASC";
+
+        // Pagination
+        $sql .= " LIMIT $limit OFFSET $offset";
+
         return parent::getAll($sql);
     }
 
