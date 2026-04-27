@@ -48,7 +48,14 @@ switch ($_GET['call']) {
         }
         unset($user['password']);
 
-        if(!($user_id = $user_db->validate($email, $password))) {
+        $user_id = $user_db->validate($email, $password);
+        if($user_id === '0') { // legacy user. user_id needs to be updated before signing in
+            $response['code'] = USER_ID_INVALID;
+            $response['message'] = 'Invalid user id!';
+            break;
+        }
+
+        if(!$user_id) {
             $response['code'] = VALIDATION_FAILED;
             $response['message'] = 'Invaild Account!';
             break;

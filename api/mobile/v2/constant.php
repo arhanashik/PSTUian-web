@@ -86,6 +86,7 @@ define('AUTH_FAILED', 'S00005');
 define('VALIDATION_FAILED', 'S00006');
 define('UNKONWN_ERROR', 'S11111');
 
+define('USER_ID_INVALID', 'SU000'); // user without valid user_id
 define('USER_NOT_FOUND', 'SU001');
 define('USER_REGISTRATION_FAILED', 'SU002');
 define('USER_BLOCKLISTED', 'SU003');
