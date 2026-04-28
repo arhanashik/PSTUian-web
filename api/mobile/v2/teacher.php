@@ -128,7 +128,6 @@ switch ($_GET['call'])
 
     case 'updateAcademicInfo':
         if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
-        || $_POST['id'] === null || strlen($_POST['id']) <= 0 
         || $_POST['name'] === null || strlen($_POST['name']) <= 0  
         || $_POST['designation'] === null || strlen($_POST['designation']) <= 0 
         || $_POST['department'] === null || strlen($_POST['department']) <= 0 
@@ -136,7 +135,6 @@ switch ($_GET['call'])
         || $_POST['faculty_id'] === null || strlen($_POST['faculty_id']) <= 0) break;
 
         $user_id = $_POST['user_id'];
-        $id = $_POST['id'];
         $name = $_POST['name'];
         $designation = $_POST['designation'];
         $department = $_POST['department'];
@@ -148,16 +146,13 @@ switch ($_GET['call'])
         {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
+            return;
         }
-        else
-        {
-            $user = $db->get($id);
-            unset($user['password']);
+        $user = $db->getByUserId($user_id);
 
-            $response['code'] = SUCCESS;
-            $response['message'] = 'Info changed successfullly!';
-            $response['data'] = $user;
-        }
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Info changed successfullly!';
+        $response['data'] = $user;
         break;
 
     case 'updateConnectInfo':
@@ -187,8 +182,7 @@ switch ($_GET['call'])
             $response['message'] = 'Update failed!';
             break;
         }
-        $user = $db->getByEmail($email);
-        unset($user['password']);
+        $user = $db->getByUserId($user_id);
 
         $response['code'] = SUCCESS;
         $response['message'] = 'Info changed successfullly!';

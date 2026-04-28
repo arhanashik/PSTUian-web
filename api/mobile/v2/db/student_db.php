@@ -45,11 +45,9 @@ class StudentDb extends Db
         return $num_rows > 0;
     }
 
-    public function getByEmail($email)
+    public function getByUserId($user_id)
     {
-        $sql = "SELECT * FROM " . STUDENT_TABLE;
-        //condition
-        $sql = $sql . " WHERE email = '$email' AND deleted = 0";
+        $sql = "SELECT * FROM " . STUDENT_TABLE . " WHERE user_id = '$user_id' AND deleted = 0";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -57,6 +55,22 @@ class StudentDb extends Db
         if($result->num_rows <= 0) return false;
     
         while ($row = $result->fetch_assoc()) {
+            unset($row['password']);
+            return $row;
+        }
+    }
+
+    public function getByEmail($email)
+    {
+        $sql = "SELECT * FROM " . STUDENT_TABLE . " WHERE email = '$email' AND deleted = 0";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            unset($row['password']);
             return $row;
         }
     }

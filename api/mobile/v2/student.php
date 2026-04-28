@@ -164,16 +164,13 @@ switch ($call)
         {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
+            return;
         }
-        else
-        {
-            $user = $db->get($id);
-            unset($user['password']);
+        $user = $db->getByUserId($user_id);
 
-            $response['code'] = SUCCESS;
-            $response['message'] = 'Info changed successfullly!';
-            $response['data'] = $user;
-        }
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Info changed successfullly!';
+        $response['data'] = $user;
         break;
 
     case 'updateConnectInfo':
@@ -186,8 +183,8 @@ switch ($call)
         $user_id = $_POST['user_id'];
         $address = $_POST['address'];
         $phone = $_POST['phone'];
-        $email = $_POST['email'];
         $old_email = $_POST['old_email'];
+        $email = $_POST['email'];
         $cv_link = $_POST['cv_link'];
         $linked_in = $_POST['linked_in'];
         $fb_link = $_POST['fb_link'];
@@ -198,6 +195,7 @@ switch ($call)
             $response['message'] = 'Ops, Account already exists for this email';
             break;
         }
+
         $data = $db->update_connect_info($user_id, $address, $phone, $email, $cv_link, $linked_in, $fb_link);
         if(!$data || $data <= 0) 
         {
@@ -205,8 +203,7 @@ switch ($call)
             $response['message'] = 'Update failed!';
             break;
         }
-        $user = $db->getByEmail($email);
-        unset($user['password']);
+        $user = $db->getByUserId($user_id);
 
         $response['code'] = SUCCESS;
         $response['message'] = 'Info changed successfullly!';

@@ -21,66 +21,34 @@ class TeacherDb extends Db
         return parent::getAll($sql);
     }
 
-    public function getById($user_id)
+    public function getByUserId($user_id)
     {
-        $sql = "SELECT id, name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE; 
-        //condition
-        $sql = $sql . " WHERE user_id = $user_id AND deleted = 0";
-        
+        $sql = "SELECT * FROM " . TEACHER_TABLE . " WHERE user_id = '$user_id' AND deleted = 0";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->bind_result($id, $name, $designation, $bio, $phone, $linked_in, $address, $email, $department, $blood, $faculty_id, $fb_link, $image_url);
+        $result = $stmt->get_result();
 
-        $item = array();
-        while ($stmt->fetch()) {
-            $item['user_id'] = $user_id;
-            $item['id'] = $id;
-            $item['name'] = $name;
-            $item['designation'] = $designation;
-            $item['bio'] = $bio;
-            $item['phone'] = $phone;
-            $item['linked_in'] = $linked_in;
-            $item['address'] = $address;
-            $item['email'] = $email;
-            $item['department'] = $department;
-            $item['blood'] = $blood;
-            $item['faculty_id'] = $faculty_id;
-            $item['fb_link'] = $fb_link;
-            $item['image_url'] = $image_url;
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            unset($row['password']);
+            return $row;
         }
- 
-        return $item;
     }
 
     public function getByEmail($email)
     {
-        $sql = "SELECT user_id, id, name, designation, bio, phone, linked_in, address, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE; 
-        //condition
-        $sql = $sql . " WHERE email = '$email' AND deleted = 0";
-        
+        $sql = "SELECT * FROM " . TEACHER_TABLE . " WHERE email = '$email' AND deleted = 0";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
-        $stmt->bind_result($user_id, $id, $name, $designation, $bio, $phone, $linked_in, $address, $department, $blood, $faculty_id, $fb_link, $image_url);
+        $result = $stmt->get_result();
 
-        $item = array();
-        while ($stmt->fetch()) {
-            $item['user_id'] = $user_id;
-            $item['id'] = $id;
-            $item['name'] = $name;
-            $item['designation'] = $designation;
-            $item['bio'] = $bio;
-            $item['phone'] = $phone;
-            $item['linked_in'] = $linked_in;
-            $item['address'] = $address;
-            $item['email'] = $email;
-            $item['department'] = $department;
-            $item['blood'] = $blood;
-            $item['faculty_id'] = $faculty_id;
-            $item['fb_link'] = $fb_link;
-            $item['image_url'] = $image_url;
+        if($result->num_rows <= 0) return false;
+    
+        while ($row = $result->fetch_assoc()) {
+            unset($row['password']);
+            return $row;
         }
- 
-        return empty($item)? false : $item;
     }
 
     public function isAlreadyInseredByEmail($email)
