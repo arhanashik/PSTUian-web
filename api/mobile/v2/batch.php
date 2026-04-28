@@ -23,7 +23,7 @@ switch ($_GET['call'])
         $data = $db->getAll($faculty_id);
         if($data === null || !$data) 
         {
-            $response['code'] = READ_FAILD;
+            $response['code'] = READ_FAILED;
             $response['message'] = 'No data found!';
         }
         else
@@ -41,7 +41,7 @@ switch ($_GET['call'])
         $data = $db->get($id);
         if($data === null || !$data)
         {
-            $response['code'] = READ_FAILD;
+            $response['code'] = READ_FAILED;
             $response['message'] = 'No data found!';
         }
         else

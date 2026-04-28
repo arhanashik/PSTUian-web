@@ -2,9 +2,10 @@
 require_once './auth_validation.php';
 require_once './db/check_in_db.php';
 require_once './db/check_in_location_db.php';
+require_once './constant.php';
  
 $response = array();
-$response['success'] = false;
+$response['code'] = MISSING_PARAM;
 $response['message'] = 'Required parameters are missing';
 
 if(!isset($_GET['call']) || empty($_GET['call'])) {
@@ -34,7 +35,7 @@ switch ($_GET['call'])
         }
 
         $page = 1;
-        $limit = 25;
+        $limit = 20;
         if(isset($_GET['page']) && strlen($_GET['page']) > 0) {
             $page = $_GET['page'];
         }
@@ -42,23 +43,21 @@ switch ($_GET['call'])
             $limit = $_GET['limit'];
         }
 
-        $data = null;
+        $data = false;
         if($location_id !== -1) {
             $data = $db->getAllByLocation($location_id, $page, $limit);
         } else if($user_id !== -1 && $user_type !== null) {
             $data = $db->getAllByUser($user_id, $user_type, $page, $limit);
         }
 
-        if($data === null || empty($data)) 
-        {
-            $response['message'] = 'No data found!';
+        if ($data === false) {
+            $response['code'] = READ_FAILED;
+            $response['message'] = 'Database error occurred.';
+            return;
         }
-        else
-        {
-            $response['success'] = true;
-            $response['message'] = 'Total ' . count($data) . ' item(s)';
-            $response['data'] = $data;
-        }
+        $response['code'] = SUCCESS;
+        $response['message'] = 'Total ' . count($data) . ' item(s)';
+        $response['data'] = $data;
         break;
 
     case 'get':
@@ -73,10 +72,11 @@ switch ($_GET['call'])
         $data = $db->getByUser($location_id, $user_id, $user_type);
         if($data === null || empty($data)) 
         {
+            $response['code'] = READ_FAILED;
             $response['message'] = 'No data found!';
             break;
         }
-        $response['success'] = true;
+        $response['code'] = SUCCESS;
         $response['message'] = 'Data found';
         $response['data'] = $data;
         break;
@@ -119,7 +119,7 @@ switch ($_GET['call'])
         // increment the count for the location
         $checkInLocationDb->incrementCount($location_id);
 
-        $response['success'] = true;
+        $response['code'] = SUCCESS;
         $response['message'] = 'Checked in successfullly!';
         $response['data'] = $db->getCheckIn($check_in_id);
         break;
@@ -134,10 +134,11 @@ switch ($_GET['call'])
         $result = $db->update($id, $privacy);
         if(!$result || $result <= 0) 
         {
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
             break;
         }
-        $response['success'] = true;
+        $response['code'] = SUCCESS;
         $response['message'] = 'Updated successfullly!';
         $response['data'] = $db->getCheckIn($id);
         break;
@@ -150,10 +151,11 @@ switch ($_GET['call'])
         $result = $db->delete($id);
         if(!$result || $result <= 0) 
         {
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Failed to delete!';
             break;
         }
-        $response['success'] = true;
+        $response['code'] = SUCCESS;
         $response['message'] = 'Deleted successfullly!';
         $response['data'] = $id;
         break;

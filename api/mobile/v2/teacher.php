@@ -1,6 +1,7 @@
 <?php
-require_once './constant.php';
+require_once './auth_validation.php';
 require_once './db/teacher_db.php';
+require_once './constant.php';
  
 $response = array();
 $response['code'] = MISSING_PARAM;

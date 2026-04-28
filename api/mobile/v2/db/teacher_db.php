@@ -11,7 +11,7 @@ class TeacherDb extends Db
 
     public function getAll($faculty_id)
     {
-        $sql = "SELECT id, name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE;
+        $sql = "SELECT user_id, id, name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE;
         //condition
         $sql = $sql . " WHERE faculty_id = $faculty_id AND deleted = 0";
         //sorting

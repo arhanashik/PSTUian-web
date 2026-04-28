@@ -19,6 +19,8 @@ $util = new Util();
 switch ($call) 
 {
     case 'getAll':
+        require_once './auth_validation.php';
+        
         if(!isset($_GET['user_id']) || strlen($_GET['user_id']) <= 0
         || !isset($_GET['user_type']) || strlen($_GET['user_type']) <= 0) break;
 

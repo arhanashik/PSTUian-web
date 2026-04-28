@@ -225,7 +225,7 @@ switch ($_GET['call']) {
         }
 
         if(!$user_db->update_password($email, $old_password, $new_password)) {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Password change failed. Please try again.';
             break;
         }
@@ -308,7 +308,7 @@ switch ($_GET['call']) {
         }
 
         if(!$user_db->delete_account($email, $password)) {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Account deletion failed. Please try again.';
             break;
         }
