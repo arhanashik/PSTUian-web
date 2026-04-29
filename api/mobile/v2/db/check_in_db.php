@@ -49,12 +49,11 @@ class CheckInDb extends Db
         return parent::getAll($sql);
     }
 
-    public function getByUser($location_id, $user_id, $user_type)
+    public function getByUser($user_id, $user_type)
     {
         $sql = $this->select_query;
         // conditions
-        $sql .= " WHERE (ci.location_id = '$location_id' AND ci.deleted = 0)";
-        $sql .= " AND (ci.user_id = '$user_id' AND ci.user_type = '$user_type')";
+        $sql .= " WHERE (ci.user_id = '$user_id' AND ci.user_type = '$user_type') AND ci.deleted = 0";
         // sorting
         $sql .= " ORDER BY ci.updated_at DESC";
         return parent::getSql($sql);
@@ -75,7 +74,13 @@ class CheckInDb extends Db
         return parent::insertSql($sql);
     }
 
-    public function update($id, $privacy)
+    public function updateLocation($id, $location_id)
+    {
+        $sql = "UPDATE " . CHECK_IN_TABLE . " SET location_id = '$location_id' WHERE id = '$id' AND deleted = 0";
+        return parent::executeSql($sql);
+    }
+
+    public function updatePrivacy($id, $privacy)
     {
         $sql = "UPDATE " . CHECK_IN_TABLE . " SET privacy = '$privacy' 
         WHERE id = '$id' AND deleted = 0";

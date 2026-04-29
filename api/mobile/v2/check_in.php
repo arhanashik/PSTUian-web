@@ -61,15 +61,13 @@ switch ($_GET['call'])
         break;
 
     case 'get':
-        if(!isset($_GET['location_id']) || strlen($_GET['location_id']) <= 0 
-        || !isset($_GET['user_id']) || strlen($_GET['user_id']) <= 0
+        if(!isset($_GET['user_id']) || strlen($_GET['user_id']) <= 0
         || !isset($_GET['user_type']) || strlen($_GET['user_type']) <= 0) break;
 
-        $location_id = $_GET['location_id'];
         $user_id = $_GET['user_id'];
         $user_type = $_GET['user_type'];
 
-        $data = $db->getByUser($location_id, $user_id, $user_type);
+        $data = $db->getByUser($user_id, $user_type);
         if($data === null || empty($data)) 
         {
             $response['code'] = READ_FAILED;
@@ -93,31 +91,29 @@ switch ($_GET['call'])
         // check if valid location
         $location = $checkInLocationDb->get($location_id);
         if(!$location || empty($location)) {
+            $response['code'] = INVALID_PARAM;
             $response['message'] = 'Invalid location!';
             break;
         }
 
-        $oldCheckIn = $db->getByUser($location_id, $user_id, $user_type);
-        if(!$oldCheckIn || empty($oldCheckIn)) 
-        { 
+        $oldCheckIn = $db->getByUser($user_id, $user_type);
+        if(!$oldCheckIn || empty($oldCheckIn)) { 
             // new check in
             $check_in_id = $db->insert($location_id, $user_id, $user_type);
-        } 
-        else 
-        { 
+        } else {
             //checked in before, so increment the check in count
             $check_in_id = $oldCheckIn['id'];
-            $result = $db->incrementCount($check_in_id);
+            $result = $db->updateLocation($check_in_id, $location_id);
         }
         
-        if(!$check_in_id || $check_in_id <= 0) 
-        {
+        if(!$check_in_id || $check_in_id <= 0) {
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Sorry, check in failed!';
             break;
         }
 
-        // increment the count for the location
-        $checkInLocationDb->incrementCount($location_id);
+        // increment the check in count
+        $checkInLocationDb->incrementCount($check_in_id);
 
         $response['code'] = SUCCESS;
         $response['message'] = 'Checked in successfullly!';
@@ -131,7 +127,7 @@ switch ($_GET['call'])
         $id = $_POST['id'];
         $privacy = $_POST['privacy'];
         
-        $result = $db->update($id, $privacy);
+        $result = $db->updatePrivacy($id, $privacy);
         if(!$result || $result <= 0) 
         {
             $response['code'] = WRITE_FAILED;
