@@ -11,7 +11,7 @@ class TeacherDb extends Db
 
     public function getAll($faculty_id)
     {
-        $sql = "SELECT user_id, id, name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE;
+        $sql = "SELECT auth_user_id, id, name, designation, bio, phone, linked_in, address, email, department, blood, faculty_id, fb_link, image_url FROM " . TEACHER_TABLE;
         //condition
         $sql = $sql . " WHERE faculty_id = $faculty_id AND deleted = 0";
         //sorting
@@ -21,9 +21,9 @@ class TeacherDb extends Db
         return parent::getAll($sql);
     }
 
-    public function getByUserId($user_id)
+    public function getByAuthUserId($auth_user_id)
     {
-        $sql = "SELECT * FROM " . TEACHER_TABLE . " WHERE user_id = '$user_id' AND deleted = 0";
+        $sql = "SELECT * FROM " . TEACHER_TABLE . " WHERE auth_user_id = '$auth_user_id' AND deleted = 0";
         $stmt = $this->con->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -64,7 +64,7 @@ class TeacherDb extends Db
 
     public function validate($email, $password)
     {
-        $sql = "SELECT user_id FROM " . TEACHER_TABLE;
+        $sql = "SELECT auth_user_id FROM " . TEACHER_TABLE;
         $sql = $sql . " WHERE (email = '$email' AND password = '$password') AND deleted = 0";
         
         $stmt = $this->con->prepare($sql);
@@ -74,7 +74,7 @@ class TeacherDb extends Db
         if($result->num_rows <= 0) return false;
     
         while ($row = $result->fetch_assoc()) {
-            return $row['user_id'];
+            return $row['auth_user_id'];
         }
     }
 
@@ -105,9 +105,9 @@ class TeacherDb extends Db
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_user_id($user_id, $email, $password)
+    public function update_auth_user_id($auth_user_id, $email, $password)
     {
-        $sql = "UPDATE " . TEACHER_TABLE . " set user_id = '$user_id', updated_at = NOW()";
+        $sql = "UPDATE " . TEACHER_TABLE . " set auth_user_id = '$auth_user_id', updated_at = NOW()";
         //condition
         $sql = $sql . " WHERE email = '$email' AND password = '$password'";
         
@@ -115,45 +115,45 @@ class TeacherDb extends Db
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_image_url($user_id, $image_url)
+    public function update_image_url($auth_user_id, $image_url)
     {
-        $sql = "UPDATE " . TEACHER_TABLE . " set image_url = '$image_url', updated_at = NOW() WHERE user_id = '$user_id'";
+        $sql = "UPDATE " . TEACHER_TABLE . " set image_url = '$image_url', updated_at = NOW() WHERE auth_user_id = '$auth_user_id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_name($user_id, $name)
+    public function update_name($auth_user_id, $name)
     {
-        $sql = "UPDATE " . TEACHER_TABLE . " set name = '$name', updated_at = NOW() WHERE user_id = '$user_id'";
+        $sql = "UPDATE " . TEACHER_TABLE . " set name = '$name', updated_at = NOW() WHERE auth_user_id = '$auth_user_id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_bio($user_id, $bio)
+    public function update_bio($auth_user_id, $bio)
     {
-        $sql = "UPDATE " . TEACHER_TABLE . " set bio = '$bio', updated_at = NOW() WHERE user_id = '$user_id'";
+        $sql = "UPDATE " . TEACHER_TABLE . " set bio = '$bio', updated_at = NOW() WHERE auth_user_id = '$auth_user_id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_academic_info($user_id, $name, $designation, $department, $blood, $faculty_id)
+    public function update_academic_info($auth_user_id, $name, $designation, $department, $blood, $faculty_id)
     {
         $sql = "UPDATE " . TEACHER_TABLE . " set name = '$name', designation = '$designation', 
         department = '$department', blood = '$blood', faculty_id = '$faculty_id', 
-        updated_at = NOW() WHERE user_id = '$user_id'";
+        updated_at = NOW() WHERE auth_user_id = '$auth_user_id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_connect_info($user_id, $address, $phone, $email, $linked_in, $fb_link)
+    public function update_connect_info($auth_user_id, $address, $phone, $email, $linked_in, $fb_link)
     {
         $sql = "UPDATE " . TEACHER_TABLE . " set address = '$address', phone = '$phone', 
         email = '$email', linked_in = '$linked_in', fb_link = '$fb_link', updated_at = NOW() 
-        WHERE user_id = '$user_id'";
+        WHERE auth_user_id = '$auth_user_id'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;

@@ -48,26 +48,26 @@ switch ($_GET['call']) {
         }
         unset($user['password']);
 
-        $user_id = $user_db->validate($email, $password);
-        if($user_id === '0') { // legacy user. user_id needs to be updated before signing in
+        $auth_user_id = $user_db->validate($email, $password);
+        if($auth_user_id === '0') { // legacy user. user_id needs to be updated before signing in
             $response['code'] = USER_ID_INVALID;
             $response['message'] = 'Invalid user id!';
             break;
         }
 
-        if(!$user_id) {
+        if(!$auth_user_id) {
             $response['code'] = VALIDATION_FAILED;
             $response['message'] = 'Invaild Account!';
             break;
         }
 
         $time_now = date('Y-m-d H:i:s');
-        $auth_token = $util->getHash($user_id.$password, $time_now);
-        $old_auth = $db->getByUserIdTypeAndDevice($user_id, $user_type, $device_id);
+        $auth_token = $util->getHash($auth_user_id.$password, $time_now);
+        $old_auth = $db->getByUserIdTypeAndDevice($auth_user_id, $user_type, $device_id);
         if(!$old_auth || empty($old_auth)) {
-            $result = $db->insert($user_id, $user_type, $auth_token, $device_id);
+            $result = $db->insert($auth_user_id, $user_type, $auth_token, $device_id);
         } else {
-            $result = $db->update($user_id, $user_type, $auth_token, $device_id);
+            $result = $db->update($auth_user_id, $user_type, $auth_token, $device_id);
         }
         if(!$result) {
             $response['code'] = AUTH_FAILED;
@@ -167,13 +167,13 @@ switch ($_GET['call']) {
         $response['data'] = $user;
         break;
 
-    case 'updateUserId':
-        if(!isset($_POST['user_id']) ||  strlen($_POST['user_id']) <= 0 
+    case 'updateAuthUserId':
+        if(!isset($_POST['auth_user_id']) ||  strlen($_POST['auth_user_id']) <= 0 
         || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
         || !isset($_POST['email']) || strlen($_POST['email']) <= 0
         || !isset($_POST['password']) || strlen($_POST['password']) <= 0) break;
         
-        $user_id = $_POST['user_id'];
+        $auth_user_id = $_POST['auth_user_id'];
         $user_type = $_POST['user_type'];
         $email = $_POST['email'];
         $password = md5($_POST['password']);
@@ -185,9 +185,9 @@ switch ($_GET['call']) {
         }
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
-        $result = $user_db->update_user_id($user_id, $email, $password);
+        $result = $user_db->update_auth_user_id($auth_user_id, $email, $password);
         if(!$result) {
-            $response['code'] = WRITE_FAILD;
+            $response['code'] = WRITE_FAILED;
             $response['message'] = 'Failed to upate!';
             break;
         }
@@ -218,7 +218,7 @@ switch ($_GET['call']) {
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
 
-        if(!($user_id = $user_db->validate($email, $password))) {
+        if(!($auth_user_id = $user_db->validate($email, $password))) {
             $response['code'] = VALIDATION_FAILED;
             $response['message'] = 'Invaild Account!';
             break;
@@ -232,8 +232,8 @@ switch ($_GET['call']) {
 
         // update auth token
         $time_now = date('Y-m-d H:i:s');
-        $auth_token = $util->getHash($user_id.$new_password, $time_now);
-        $db->update($user_id, $user_type, $auth_token, $device_id);
+        $auth_token = $util->getHash($auth_user_id.$new_password, $time_now);
+        $db->update($auth_user_id, $user_type, $auth_token, $device_id);
 
         $response['code'] = SUCCESS;
         $response['message'] = 'Password changed successfullly';
@@ -242,14 +242,14 @@ switch ($_GET['call']) {
         break;
 
     case 'signOut':
-        if(!isset($_POST['user_id']) ||  strlen($_POST['user_id']) <= 0 
+        if(!isset($_POST['auth_user_id']) ||  strlen($_POST['auth_user_id']) <= 0 
         || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
         || !isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0) break;
         
-        $user_id = $_POST['user_id'];
+        $auth_user_id = $_POST['auth_user_id'];
         $user_type = $_POST['user_type'];
         $device_id = $_POST['device_id'];
-        $invalidateAuth = $db->invalidateAuth($user_id, $user_type, $device_id);
+        $invalidateAuth = $db->invalidateAuth($auth_user_id, $user_type, $device_id);
         if(!$invalidateAuth) {
             $response['code'] = AUTH_FAILED;
             $response['message'] = 'Failed to sign out!';
@@ -261,12 +261,12 @@ switch ($_GET['call']) {
         break;
 
     case 'signOutFromAllDevice':
-        if(!isset($_POST['user_id']) ||  strlen($_POST['user_id']) <= 0 
+        if(!isset($_POST['auth_user_id']) ||  strlen($_POST['auth_user_id']) <= 0 
         || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0) break;
         
-        $user_id = $_POST['user_id'];
+        $auth_user_id = $_POST['auth_user_id'];
         $user_type = $_POST['user_type'];
-        $result = $db->invalidateAllAuth($user_id, $user_type);
+        $result = $db->invalidateAllAuth($auth_user_id, $user_type);
         if(!$result) {
             $response['code'] = AUTH_FAILED;
             $response['message'] = 'Failed to sign out!';
@@ -294,13 +294,13 @@ switch ($_GET['call']) {
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
 
-        if(!($user_id = $user_db->validate($email, $password))) {
+        if(!($auth_user_id = $user_db->validate($email, $password))) {
             $response['code'] = VALIDATION_FAILED;
             $response['message'] = 'Invaild Account!';
             break;
         }
         
-        $invalidateAllAuth = $db->invalidateAllAuth($user_id, $user_type);
+        $invalidateAllAuth = $db->invalidateAllAuth($auth_user_id, $user_type);
         if(!$invalidateAllAuth) {
             $response['code'] = AUTH_FAILED;
             $response['message'] = 'Failed to complete the action!';

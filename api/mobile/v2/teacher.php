@@ -71,12 +71,12 @@ switch ($_GET['call'])
         break;
 
     case 'updateImageUrl':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0 
+        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
         || $_POST['image_url'] === null ||  strlen($_POST['image_url']) <= 0) break;
 
-        $user_id = $_POST['user_id'];
+        $auth_user_id = $_POST['auth_user_id'];
         $image_url = $_POST['image_url'];
-        $data = $db->update_image_url($user_id, $image_url);
+        $data = $db->update_image_url($auth_user_id, $image_url);
         if(!$data || $data == 0) 
         {
             $response['code'] = WRITE_FAILED;
@@ -90,12 +90,12 @@ switch ($_GET['call'])
         break;
 
     case 'updateName':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0 
+        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
         || $_POST['name'] === null ||  strlen($_POST['name']) <= 0) break;
 
-        $user_id = $_POST['user_id'];
+        $auth_user_id = $_POST['auth_user_id'];
         $name = $_POST['name'];
-        $data = $db->update_name($user_id, $name);
+        $data = $db->update_name($auth_user_id, $name);
         if(!$data || $data == 0) 
         {
             $response['code'] = WRITE_FAILED;
@@ -109,12 +109,12 @@ switch ($_GET['call'])
         break;
 
     case 'updateBio':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0 
+        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
         || $_POST['bio'] === null ||  strlen($_POST['bio']) <= 0) break;
 
-        $user_id = $_POST['user_id'];
+        $auth_user_id = $_POST['auth_user_id'];
         $bio = $_POST['bio'];
-        $data = $db->update_bio($user_id, $bio);
+        $data = $db->update_bio($auth_user_id, $bio);
         if(!$data || $data == 0) 
         {
             $response['code'] = WRITE_FAILED;
@@ -128,28 +128,28 @@ switch ($_GET['call'])
         break;
 
     case 'updateAcademicInfo':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0
+        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0
         || $_POST['name'] === null || strlen($_POST['name']) <= 0  
         || $_POST['designation'] === null || strlen($_POST['designation']) <= 0 
         || $_POST['department'] === null || strlen($_POST['department']) <= 0 
         || $_POST['blood'] === null
         || $_POST['faculty_id'] === null || strlen($_POST['faculty_id']) <= 0) break;
 
-        $user_id = $_POST['user_id'];
+        $auth_user_id = $_POST['auth_user_id'];
         $name = $_POST['name'];
         $designation = $_POST['designation'];
         $department = $_POST['department'];
         $blood = $_POST['blood'];
         $faculty_id = $_POST['faculty_id'];
         
-        $data = $db->update_academic_info($user_id, $name, $designation, $department, $blood, $faculty_id);
+        $data = $db->update_academic_info($auth_user_id, $name, $designation, $department, $blood, $faculty_id);
         if(!$data || $data <= 0) 
         {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
             return;
         }
-        $user = $db->getByUserId($user_id);
+        $user = $db->getByAuthUserId($auth_user_id);
 
         $response['code'] = SUCCESS;
         $response['message'] = 'Info changed successfullly!';
@@ -157,13 +157,13 @@ switch ($_GET['call'])
         break;
 
     case 'updateConnectInfo':
-        if($_POST['user_id'] === null || strlen($_POST['user_id']) <= 0 
+        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
         || $_POST['address'] === null || $_POST['phone'] === null
         || $_POST['email'] === null || strlen($_POST['email']) <= 0 
         || $_POST['old_email'] === null || strlen($_POST['old_email']) <= 0
         || $_POST['linked_in'] === null|| $_POST['fb_link'] === null) break;
 
-        $user_id = $_POST['user_id'];
+        $auth_user_id = $_POST['auth_user_id'];
         $address = $_POST['address'];
         $phone = $_POST['phone'];
         $email = $_POST['email'];
@@ -176,14 +176,14 @@ switch ($_GET['call'])
             $response['message'] = 'Ops, Account already exists for this email';
             break;
         }
-        $data = $db->update_connect_info($user_id, $address, $phone, $email, $linked_in, $fb_link);
+        $data = $db->update_connect_info($auth_user_id, $address, $phone, $email, $linked_in, $fb_link);
         if(!$data || $data <= 0) 
         {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
             break;
         }
-        $user = $db->getByUserId($user_id);
+        $user = $db->getByAuthUserId($auth_user_id);
 
         $response['code'] = SUCCESS;
         $response['message'] = 'Info changed successfullly!';

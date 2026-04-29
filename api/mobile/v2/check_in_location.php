@@ -26,7 +26,7 @@ switch ($_GET['call'])
         if(isset($_GET['limit']) && strlen($_GET['limit']) > 0) {
             $limit = $_GET['limit'];
         }
-        $sorting_order = 'DESC';
+        $sorting_order = 'ASC';
         $sorting_col = 'created_at';
         $data = $db->getAllPaged($page, $limit, $sorting_order, $sorting_col);
         if ($data === false) {
