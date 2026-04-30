@@ -1,0 +1,53 @@
+# Dependencies
+/vendor/
+
+# Firebase Service Account Credentials
+/private/*.json
+
+# Environment Files
+.env
+.env.*
+!.env.example
+
+# Composer
+composer.phar
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+tmp/
+temp/
+
+# IDE Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# PHPUnit
+.phpunit.result.cache
+
+# Node (if ever used)
+node_modules/
+
+# Backup Files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Archive Files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Generated Files
+coverage/
