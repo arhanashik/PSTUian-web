@@ -241,43 +241,11 @@ switch ($_GET['call']) {
 
         break;
 
-    case 'signOut':
-        if(!isset($_POST['auth_user_id']) ||  strlen($_POST['auth_user_id']) <= 0 
-        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
-        || !isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0) break;
-        
-        $auth_user_id = $_POST['auth_user_id'];
-        $user_type = $_POST['user_type'];
-        $device_id = $_POST['device_id'];
-        $invalidateAuth = $db->invalidateAuth($auth_user_id, $user_type, $device_id);
-        if(!$invalidateAuth) {
-            $response['code'] = AUTH_FAILED;
-            $response['message'] = 'Failed to sign out!';
-            break;
-        }
-        $response['code'] = SUCCESS;
-        $response['message'] = 'Signed out successfullly';
-
-        break;
-
-    case 'signOutFromAllDevice':
-        if(!isset($_POST['auth_user_id']) ||  strlen($_POST['auth_user_id']) <= 0 
-        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0) break;
-        
-        $auth_user_id = $_POST['auth_user_id'];
-        $user_type = $_POST['user_type'];
-        $result = $db->invalidateAllAuth($auth_user_id, $user_type);
-        if(!$result) {
-            $response['code'] = AUTH_FAILED;
-            $response['message'] = 'Failed to sign out!';
-            break;
-        }
-        $response['code'] = SUCCESS;
-        $response['message'] = 'Signed out successfullly from ' . $result . ' device(s)';
-
-        break;
-
     case 'deleteAccount':
+        require_once './auth_validator.php';
+        $uid = FirebaseAuthValidator::uid();
+        $auth_email = FirebaseAuthValidator::email();
+
         if(!isset($_POST['email']) ||  strlen($_POST['email']) <= 0 
         || !isset($_POST['password']) || strlen($_POST['password']) <= 0
         || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0) break;
@@ -293,17 +261,11 @@ switch ($_GET['call']) {
         }
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
+        $auth_user_id = $user_db->validate($email, $password);
 
-        if(!($auth_user_id = $user_db->validate($email, $password))) {
+        if(!$auth_user_id || $uid != $auth_user_id || $auth_email != $email) {
             $response['code'] = VALIDATION_FAILED;
             $response['message'] = 'Invaild Account!';
-            break;
-        }
-        
-        $invalidateAllAuth = $db->invalidateAllAuth($auth_user_id, $user_type);
-        if(!$invalidateAllAuth) {
-            $response['code'] = AUTH_FAILED;
-            $response['message'] = 'Failed to complete the action!';
             break;
         }
 

@@ -7,6 +7,8 @@ $response = array();
 $response['code'] = MISSING_PARAM;
 $response['message'] = 'Required parameters are missing';
 
+$auth_user_id = FirebaseAuthValidator::uid();
+
 if(!isset($_GET['call']) || empty($_GET['call'])) {
     echo json_encode($response);
     return;
@@ -22,8 +24,7 @@ switch ($_GET['call'])
 
         $faculty_id = $_GET['faculty_id'];
         $data = $db->getAll($faculty_id);
-        if($data === false) 
-        {
+        if($data === false) {
             $response['code'] = READ_FAILED;
             $response['message'] = 'No data found!';
             return;
@@ -39,8 +40,7 @@ switch ($_GET['call'])
 
         $id = $_GET['id'];
         $data = $db->get($id);
-        if($data === null || empty($data)) 
-        {
+        if($data === null || empty($data)) {
             $response['code'] = USER_NOT_FOUND;
             $response['message'] = 'No data found!';
             break;
@@ -57,8 +57,7 @@ switch ($_GET['call'])
 
         $email = $_GET['email'];
         $data = $db->getByEmail($email);
-        if($data === null || empty($data)) 
-        {
+        if($data === null || empty($data)) {
             $response['code'] = USER_NOT_FOUND;
             $response['message'] = 'No data found!';
             break;
@@ -71,41 +70,33 @@ switch ($_GET['call'])
         break;
 
     case 'updateImageUrl':
-        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
-        || $_POST['image_url'] === null ||  strlen($_POST['image_url']) <= 0) break;
+        if($_POST['image_url'] === null ||  strlen($_POST['image_url']) <= 0) break;
 
-        $auth_user_id = $_POST['auth_user_id'];
         $image_url = $_POST['image_url'];
         $data = $db->update_image_url($auth_user_id, $image_url);
-        if(!$data || $data == 0) 
-        {
+        if(!$data || $data == 0) {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
+            return;
         }
-        else
-        {
-            $response['code'] = SUCCESS;
-            $response['data'] = $image_url;
-        }
+
+        $response['code'] = SUCCESS;
+        $response['data'] = $image_url;
         break;
 
     case 'updateName':
-        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
-        || $_POST['name'] === null ||  strlen($_POST['name']) <= 0) break;
+        if($_POST['name'] === null ||  strlen($_POST['name']) <= 0) break;
 
-        $auth_user_id = $_POST['auth_user_id'];
         $name = $_POST['name'];
         $data = $db->update_name($auth_user_id, $name);
-        if(!$data || $data == 0) 
-        {
+        if(!$data || $data == 0) {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
+            return;
         }
-        else
-        {
-            $response['code'] = SUCCESS;
-            $response['data'] = $name;
-        }
+
+        $response['code'] = SUCCESS;
+        $response['data'] = $name;
         break;
 
     case 'updateBio':
@@ -115,16 +106,14 @@ switch ($_GET['call'])
         $auth_user_id = $_POST['auth_user_id'];
         $bio = $_POST['bio'];
         $data = $db->update_bio($auth_user_id, $bio);
-        if(!$data || $data == 0) 
-        {
+        if(!$data || $data == 0) {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
+            return;
         }
-        else
-        {
-            $response['code'] = SUCCESS;
-            $response['data'] = $bio;
-        }
+
+        $response['code'] = SUCCESS;
+        $response['data'] = $bio;
         break;
 
     case 'updateAcademicInfo':
@@ -143,8 +132,7 @@ switch ($_GET['call'])
         $faculty_id = $_POST['faculty_id'];
         
         $data = $db->update_academic_info($auth_user_id, $name, $designation, $department, $blood, $faculty_id);
-        if(!$data || $data <= 0) 
-        {
+        if(!$data || $data <= 0) {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
             return;
@@ -177,8 +165,7 @@ switch ($_GET['call'])
             break;
         }
         $data = $db->update_connect_info($auth_user_id, $address, $phone, $email, $linked_in, $fb_link);
-        if(!$data || $data <= 0) 
-        {
+        if(!$data || $data <= 0) {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Update failed!';
             break;

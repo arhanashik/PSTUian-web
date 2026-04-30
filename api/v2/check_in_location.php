@@ -1,5 +1,5 @@
 <?php
-require_once './auth_validation.php';
+require_once './auth_validator.php';
 require_once './db/check_in_location_db.php';
 require_once './constant.php';
  

@@ -13,10 +13,10 @@ final class FirebaseAuthValidator
 {
     private static ?Auth $auth = null;
     private static ?string $uid = null;
+    private static ?string $email = null;
 
     /**
      * Automatically validates the request.
-     * Call this once after requiring the file.
      */
     public static function validate(): void
     {
@@ -32,7 +32,10 @@ final class FirebaseAuthValidator
 
         try {
             $verifiedToken = self::auth()->verifyIdToken($idToken);
-            self::$uid = $verifiedToken->claims()->get('sub');
+            $claims = $verifiedToken->claims();
+
+            self::$uid = $claims->get('sub');
+            self::$email = $claims->get('email');
         } catch (FailedToVerifyToken $e) {
             self::unauthorized('Invalid or expired authentication token.');
         } catch (\Throwable $e) {
@@ -47,6 +50,28 @@ final class FirebaseAuthValidator
     {
         self::validate();
         return self::$uid;
+    }
+
+    /**
+     * Returns the authenticated Firebase email.
+     */
+    public static function email(): ?string
+    {
+        self::validate();
+        return self::$email;
+    }
+
+    /**
+     * Returns both UID and email.
+     */
+    public static function user(): array
+    {
+        self::validate();
+
+        return [
+            'uid' => self::$uid,
+            'email' => self::$email,
+        ];
     }
 
     /**
@@ -86,9 +111,5 @@ final class FirebaseAuthValidator
 |--------------------------------------------------------------------------
 | Automatic Request Validation
 |--------------------------------------------------------------------------
-|
-| Simply requiring this file will immediately validate the Firebase token.
-| If validation fails, execution stops here automatically.
-|
 */
 FirebaseAuthValidator::validate();
