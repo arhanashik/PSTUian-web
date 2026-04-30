@@ -1,6 +1,6 @@
 <?php
-require_once './auth_validation.php';
-require_once './db/student_db.php';
+require_once './auth_validator.php';
+require_once './db/teacher_db.php';
 require_once './constant.php';
  
 $response = array();
@@ -13,27 +13,22 @@ if(!isset($_GET['call']) || empty($_GET['call'])) {
 }
 
 $call = $_GET['call'];
-$db = new StudentDb();
-
-switch ($call) 
+$db = new TeacherDb();
+ 
+switch ($_GET['call']) 
 {
     case 'getAll':
-        if(!isset($_GET['faculty_id']) || strlen($_GET['faculty_id']) <= 0 
-        || !isset($_GET['batch_id']) ||  strlen($_GET['batch_id']) <= 0) break;
+        if($_GET['faculty_id'] === null || empty($_GET['faculty_id'])) break;
 
         $faculty_id = $_GET['faculty_id'];
-        $batch_id = $_GET['batch_id'];
-        $page = $_GET['page'];
-        $limit = $_GET['limit'];
-
-        $data = $db->getAllByFacultyAndBatch($faculty_id, $batch_id, $page, $limit);
-
-        if ($data === false) {
+        $data = $db->getAll($faculty_id);
+        if($data === false) 
+        {
             $response['code'] = READ_FAILED;
-            $response['message'] = 'Database error occurred.';
+            $response['message'] = 'No data found!';
             return;
         }
-
+        
         $response['code'] = SUCCESS;
         $response['message'] = 'Total ' . count($data) . ' item(s)';
         $response['data'] = $data;
@@ -133,34 +128,21 @@ switch ($call)
         break;
 
     case 'updateAcademicInfo':
-        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
-        || $_POST['name'] === null || strlen($_POST['name']) <= 0 
-        || $_POST['old_id'] === null || strlen($_POST['old_id']) <= 0 
-        || $_POST['id'] === null || strlen($_POST['id']) <= 0 
-        || $_POST['reg'] === null || strlen($_POST['reg']) <= 0 
+        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0
+        || $_POST['name'] === null || strlen($_POST['name']) <= 0  
+        || $_POST['designation'] === null || strlen($_POST['designation']) <= 0 
+        || $_POST['department'] === null || strlen($_POST['department']) <= 0 
         || $_POST['blood'] === null
-        || $_POST['faculty_id'] === null || strlen($_POST['faculty_id']) <= 0 
-        || $_POST['session'] === null || strlen($_POST['session']) <= 0 
-        || $_POST['batch_id'] === null ||  strlen($_POST['batch_id']) <= 0) break;
+        || $_POST['faculty_id'] === null || strlen($_POST['faculty_id']) <= 0) break;
 
         $auth_user_id = $_POST['auth_user_id'];
         $name = $_POST['name'];
-        $old_id = $_POST['old_id'];
-        $id = $_POST['id'];
-        $reg = $_POST['reg'];
+        $designation = $_POST['designation'];
+        $department = $_POST['department'];
         $blood = $_POST['blood'];
         $faculty_id = $_POST['faculty_id'];
-        $session = $_POST['session'];
-        $batch_id = $_POST['batch_id'];
-
-        // if we need to change the id, first check if already exists
-        if($old_id !== $id && $db->get($id)) {
-            $response['code'] = USER_ALREADY_EXIST;   
-            $response['message'] = 'Ops, Account already exists for this id';
-            break;
-        }
         
-        $data = $db->update_academic_info($auth_user_id, $name, $id, $reg, $blood, $faculty_id, $session, $batch_id);
+        $data = $db->update_academic_info($auth_user_id, $name, $designation, $department, $blood, $faculty_id);
         if(!$data || $data <= 0) 
         {
             $response['code'] = WRITE_FAILED;
@@ -178,26 +160,23 @@ switch ($call)
         if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
         || $_POST['address'] === null || $_POST['phone'] === null
         || $_POST['email'] === null || strlen($_POST['email']) <= 0 
-        || $_POST['old_email'] === null || $_POST['cv_link'] === null 
+        || $_POST['old_email'] === null || strlen($_POST['old_email']) <= 0
         || $_POST['linked_in'] === null|| $_POST['fb_link'] === null) break;
 
         $auth_user_id = $_POST['auth_user_id'];
         $address = $_POST['address'];
         $phone = $_POST['phone'];
-        $old_email = $_POST['old_email'];
         $email = $_POST['email'];
-        $cv_link = $_POST['cv_link'];
+        $old_email = $_POST['old_email'];
         $linked_in = $_POST['linked_in'];
         $fb_link = $_POST['fb_link'];
         
         // if we need to change email, first check if already exists
         if($email !== $old_email && $db->getByEmail($email)) {
-            $response['code'] = USER_ALREADY_EXIST;  
             $response['message'] = 'Ops, Account already exists for this email';
             break;
         }
-
-        $data = $db->update_connect_info($auth_user_id, $address, $phone, $email, $cv_link, $linked_in, $fb_link);
+        $data = $db->update_connect_info($auth_user_id, $address, $phone, $email, $linked_in, $fb_link);
         if(!$data || $data <= 0) 
         {
             $response['code'] = WRITE_FAILED;
@@ -209,24 +188,6 @@ switch ($call)
         $response['code'] = SUCCESS;
         $response['message'] = 'Info changed successfullly!';
         $response['data'] = $user;
-        break;
-
-    case 'updateCv':
-        if($_POST['auth_user_id'] === null || strlen($_POST['auth_user_id']) <= 0 
-        || $_POST['cv_link'] === null) break;
-
-        $auth_user_id = $_POST['auth_user_id'];
-        $cv_link = $_POST['cv_link'];
-        $data = $db->update_cv($auth_user_id, $cv_link);
-        if(!$data || $data == 0) 
-        {
-            $response['code'] = WRITE_FAILED;
-            $response['message'] = 'Update failed!';
-            break;
-        }
-
-        $response['code'] = SUCCESS;
-        $response['data'] = $cv_link;
         break;
     
     default:

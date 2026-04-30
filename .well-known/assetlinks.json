@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.workfort.pstuian.debug",
+      "sha256_cert_fingerprints": [
+        "4F:54:7B:CF:DC:2C:B4:5B:76:91:A9:47:6A:8F:DD:5C:98:06:1A:91:64:A6:6A:4B:15:07:3F:9B:BB:B3:CC:3F",
+      ]
+    }
+  }
+]
