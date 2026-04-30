@@ -218,7 +218,7 @@ switch ($_GET['call']) {
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
 
-        if(!($auth_user_id = $user_db->validate($email, $password))) {
+        if(!($auth_user_id = $user_db->validate($email, $old_password))) {
             $response['code'] = VALIDATION_FAILED;
             $response['message'] = 'Invaild Account!';
             break;
