@@ -83,33 +83,29 @@ class TeacherDb extends Db
         $faculty_id,
         $designation,
         $department,
-        $email,
-        $password
+        $email
     ) {
         $sql = "INSERT INTO " . TEACHER_TABLE . "
-                (`name`, `faculty_id`, `designation`, `department`, `email`, `password`)
-                VALUES (?, ?, ?, ?, ?, ?)";
+                (`name`, `faculty_id`, `designation`, `department`, `email`)
+                VALUES (?, ?, ?, ?, ?)";
 
         $stmt = $this->con->prepare($sql);
 
         $stmt->bind_param(
-            "ssssss",
+            "sssss",
             $name,
             $faculty_id,
             $designation,
             $department,
-            $email,
-            $password
+            $email
         );
 
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_auth_user_id($auth_user_id, $email, $password)
+    public function update_auth_user_id($auth_user_id, $email)
     {
-        $sql = "UPDATE " . TEACHER_TABLE . " set auth_user_id = '$auth_user_id', updated_at = NOW()";
-        //condition
-        $sql = $sql . " WHERE email = '$email' AND password = '$password'";
+        $sql = "UPDATE " . TEACHER_TABLE . " set auth_user_id = '$auth_user_id', updated_at = NOW() WHERE email = '$email'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
@@ -168,9 +164,9 @@ class TeacherDb extends Db
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function delete_account($email, $password)
+    public function delete_account($email)
     {
-        $sql = "UPDATE " . TEACHER_TABLE . " set deleted = 1, updated_at = NOW() WHERE email = '$email' AND password = '$password'";
+        $sql = "UPDATE " . TEACHER_TABLE . " set deleted = 1, updated_at = NOW() WHERE email = '$email'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;

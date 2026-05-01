@@ -99,35 +99,31 @@ class StudentDb extends Db
         $faculty_id,
         $batch_id,
         $session,
-        $email,
-        $password
+        $email
     ) {
         $sql = "INSERT INTO " . STUDENT_TABLE . "
-                (`name`, `id`, `reg`, `faculty_id`, `batch_id`, `session`, `email`, `password`)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                (`name`, `id`, `reg`, `faculty_id`, `batch_id`, `session`, `email`)
+                VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->con->prepare($sql);
 
         $stmt->bind_param(
-            "ssssssss",
+            "sssssss",
             $name,
             $id,
             $reg,
             $faculty_id,
             $batch_id,
             $session,
-            $email,
-            $password
+            $email
         );
 
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function update_auth_user_id($auth_user_id, $email, $password)
+    public function update_auth_user_id($auth_user_id, $email)
     {
-        $sql = "UPDATE " . STUDENT_TABLE . " set auth_user_id = '$auth_user_id', updated_at = NOW()";
-        //condition
-        $sql = $sql . " WHERE email = '$email' AND password = '$password'";
+        $sql = "UPDATE " . STUDENT_TABLE . " set auth_user_id = '$auth_user_id', updated_at = NOW() WHERE email = '$email'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;
@@ -194,9 +190,9 @@ class StudentDb extends Db
         return $stmt->execute() && $stmt->affected_rows > 0;
     }
 
-    public function delete_account($email, $password)
+    public function delete_account($email)
     {
-        $sql = "UPDATE " . STUDENT_TABLE . " set deleted = 1, updated_at = NOW() WHERE email = '$email' AND password = '$password'";
+        $sql = "UPDATE " . STUDENT_TABLE . " set deleted = 1, updated_at = NOW() WHERE email = '$email'";
         
         $stmt = $this->con->prepare($sql);
         return $stmt->execute() && $stmt->affected_rows > 0;

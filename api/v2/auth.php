@@ -23,13 +23,11 @@ $util = new Util();
 switch ($_GET['call']) {
     case 'signIn':
         if (!isset($_POST['email']) || strlen($_POST['email']) <= 0
-            || !isset($_POST['password']) || strlen($_POST['password']) <= 0
             || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
             || !isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0) {
             break;
         }
         $email = $_POST['email'];
-        $password = md5($_POST['password']);
         $user_type = $_POST['user_type'];
         $device_id = $_POST['device_id'];
 
@@ -40,45 +38,22 @@ switch ($_GET['call']) {
         }
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
+        $user = $user_db->getByEmail($email);
 
-        if(!($user = $user_db->getByEmail($email))) {
+        if(!$user) {
             $response['code'] = USER_NOT_FOUND;
             $response['message'] = 'Account does not exist!';
             break;
         }
-        unset($user['password']);
 
-        $auth_user_id = $user_db->validate($email, $password);
-        if($auth_user_id === '0') { // legacy user. user_id needs to be updated before signing in
+        if($user['auth_user_id'] === '0') { // legacy user. user_id needs to be updated before signing in
             $response['code'] = USER_ID_INVALID;
             $response['message'] = 'Invalid user id!';
             break;
         }
 
-        if(!$auth_user_id) {
-            $response['code'] = VALIDATION_FAILED;
-            $response['message'] = 'Invaild Account!';
-            break;
-        }
-
-        $time_now = date('Y-m-d H:i:s');
-        $auth_token = $util->getHash($auth_user_id.$password, $time_now);
-        $old_auth = $db->getByUserIdTypeAndDevice($auth_user_id, $user_type, $device_id);
-        if(!$old_auth || empty($old_auth)) {
-            $result = $db->insert($auth_user_id, $user_type, $auth_token, $device_id);
-        } else {
-            $result = $db->update($auth_user_id, $user_type, $auth_token, $device_id);
-        }
-        if(!$result) {
-            $response['code'] = AUTH_FAILED;
-            $response['message'] = 'Failed to authenticate!';
-            break;
-        }
-
         $response['code'] = SUCCESS;
-        $response['message'] = 'Signed in Successfullly!';
-        $response['data'] = $user;
-        $response['auth_token'] = $auth_token;
+        $response['messadage'] = 'Signed in Successfullly!';
 
         break;
 
@@ -90,7 +65,6 @@ switch ($_GET['call']) {
         || !isset($_POST['batch_id']) || strlen($_POST['batch_id']) <= 0
         || !isset($_POST['session']) || strlen($_POST['session']) <= 0
         || !isset($_POST['email']) || strlen($_POST['email']) <= 0
-        || !isset($_POST['password']) || strlen($_POST['password']) <= 0
         || !isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0) {
             break;
         }
@@ -101,7 +75,6 @@ switch ($_GET['call']) {
         $batch_id = $_POST['batch_id'];
         $session = $_POST['session'];
         $email = $_POST['email'];
-        $password = md5($_POST['password']);
         $device_id = $_POST['device_id'];
         $user_type = 'student';
 
@@ -115,18 +88,16 @@ switch ($_GET['call']) {
             $response['message'] = 'Ops, Account already exists for this email';
             break;
         }
-        $result = $studentDb->insert($name, $id, $reg, $faculty_id, $batch_id, $session, $email, $password);
+        $result = $studentDb->insert($name, $id, $reg, $faculty_id, $batch_id, $session, $email);
         if(!$result) {
             $response['code'] = USER_REGISTRATION_FAILED;
             $response['message'] = 'Failed to store information!';
             break;
         }
-        $user = $studentDb->get($id);
-        unset($user['password']);
+        $user = $studentDb->getByEmail($email);
         
         $response['code'] = SUCCESS;
         $response['message'] = 'Sign up Successful!';
-        $response['data'] = $user;
         break;
 
     case 'signUpTeacher':
@@ -135,7 +106,6 @@ switch ($_GET['call']) {
         || !isset($_POST['designation']) || strlen($_POST['designation']) <= 0
         || !isset($_POST['department']) || strlen($_POST['department']) <= 0
         || !isset($_POST['email']) || strlen($_POST['email']) <= 0
-        || !isset($_POST['password']) || strlen($_POST['password']) <= 0
         || !isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0) {
             break;
         }
@@ -144,7 +114,6 @@ switch ($_GET['call']) {
         $designation = $_POST['designation'];
         $department = $_POST['department'];
         $email = $_POST['email'];
-        $password = md5($_POST['password']);
         $device_id = $_POST['device_id'];
         $user_type = 'teacher';
 
@@ -153,30 +122,26 @@ switch ($_GET['call']) {
             $response['message'] = 'Account already exists!';
             break;
         }
-        $result = $teacherDb->insert($name, $faculty_id, $designation, $department, $email, $password);
+        $result = $teacherDb->insert($name, $faculty_id, $designation, $department, $email);
         if(!$result) {
             $response['code'] = USER_REGISTRATION_FAILED;
             $response['message'] = 'Failed to store information!';
             break;
         }
         $user = $teacherDb->getByEmail($email);
-        unset($user['password']);
         
         $response['code'] = SUCCESS;
         $response['message'] = 'Sign up Successful!';
-        $response['data'] = $user;
         break;
 
     case 'updateAuthUserId':
-        if(!isset($_POST['auth_user_id']) ||  strlen($_POST['auth_user_id']) <= 0 
-        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
-        || !isset($_POST['email']) || strlen($_POST['email']) <= 0
-        || !isset($_POST['password']) || strlen($_POST['password']) <= 0) break;
+        require_once './auth_validator.php';
+        $auth_user_id = FirebaseAuthValidator::uid();
+        $auth_email = FirebaseAuthValidator::uid();
+
+        if(!isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0) break;
         
-        $auth_user_id = $_POST['auth_user_id'];
         $user_type = $_POST['user_type'];
-        $email = $_POST['email'];
-        $password = md5($_POST['password']);
 
         if(!($user_type === 'student' || $user_type === 'teacher')) {
             $response['code'] = INVALID_PARAM;
@@ -185,7 +150,7 @@ switch ($_GET['call']) {
         }
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
-        $result = $user_db->update_auth_user_id($auth_user_id, $email, $password);
+        $result = $user_db->update_auth_user_id($auth_user_id, $auth_email);
         if(!$result) {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Failed to upate!';
@@ -193,65 +158,16 @@ switch ($_GET['call']) {
         }
 
         $response['code'] = SUCCESS;
-        $response['data'] = 'Updated successfully';
-
-        break;
-
-    case 'changePassword':
-        if(!isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0
-        || !isset($_POST['email']) || strlen($_POST['email']) <= 0
-        || !isset($_POST['old_password']) || strlen($_POST['old_password']) <= 0
-        || !isset($_POST['new_password']) || strlen($_POST['new_password']) <= 0
-        || !isset($_POST['device_id']) || strlen($_POST['device_id']) <= 0) break;
-
-        $user_type = $_POST['user_type'];
-        $email = $_POST['email'];
-        $old_password = md5($_POST['old_password']);
-        $new_password = md5($_POST['new_password']);
-        $device_id = $_POST['device_id'];
-
-        if(!($user_type === 'student' || $user_type === 'teacher')) {
-            $response['code'] = INVALID_PARAM;
-            $response['message'] = 'Invaild User Type!';
-            break;
-        }
-
-        $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
-
-        if(!($auth_user_id = $user_db->validate($email, $old_password))) {
-            $response['code'] = VALIDATION_FAILED;
-            $response['message'] = 'Invaild Account!';
-            break;
-        }
-
-        if(!$user_db->update_password($email, $old_password, $new_password)) {
-            $response['code'] = WRITE_FAILED;
-            $response['message'] = 'Password change failed. Please try again.';
-            break;
-        }
-
-        // update auth token
-        $time_now = date('Y-m-d H:i:s');
-        $auth_token = $util->getHash($auth_user_id.$new_password, $time_now);
-        $db->update($auth_user_id, $user_type, $auth_token, $device_id);
-
-        $response['code'] = SUCCESS;
-        $response['message'] = 'Password changed successfullly';
-        $response['data'] = $auth_token;
+        $response['message'] = 'Updated successfully';
 
         break;
 
     case 'deleteAccount':
         require_once './auth_validator.php';
-        $uid = FirebaseAuthValidator::uid();
         $auth_email = FirebaseAuthValidator::email();
 
-        if(!isset($_POST['email']) ||  strlen($_POST['email']) <= 0 
-        || !isset($_POST['password']) || strlen($_POST['password']) <= 0
-        || !isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0) break;
+        if(!isset($_POST['user_type']) || strlen($_POST['user_type']) <= 0) break;
 
-        $email = $_POST['email'];
-        $password = $_POST['password'];
         $user_type = $_POST['user_type'];
 
         if(!($user_type === 'student' || $user_type === 'teacher')) {
@@ -261,15 +177,8 @@ switch ($_GET['call']) {
         }
 
         $user_db = ($user_type === 'student')? $studentDb : $teacherDb;
-        $auth_user_id = $user_db->validate($email, $password);
 
-        if(!$auth_user_id || $uid != $auth_user_id || $auth_email != $email) {
-            $response['code'] = VALIDATION_FAILED;
-            $response['message'] = 'Invaild Account!';
-            break;
-        }
-
-        if(!$user_db->delete_account($email, $password)) {
+        if(!$user_db->delete_account($auth_email)) {
             $response['code'] = WRITE_FAILED;
             $response['message'] = 'Account deletion failed. Please try again.';
             break;
@@ -277,7 +186,6 @@ switch ($_GET['call']) {
 
         $response['code'] = SUCCESS;
         $response['message'] = 'Request accepted successfullly. You account will no longer be available. To recover the account, please contact within 30 days before it is permanently deleted!';
-
         break;
 
     default:
